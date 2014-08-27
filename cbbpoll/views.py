@@ -32,7 +32,7 @@ def index():
         user = user,
         posts = posts)
 
-@app.route('/login', methods = ['GET', 'POST'])
+@app.route('/login')
 def login():
     link_refresh = r.get_authorize_url('DifferentUniqueKey',
                                        refreshable=True)
@@ -40,28 +40,28 @@ def login():
     text = "Login with Reddit %s</br></br>" % link_refresh
     return text
 
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        session['remember_me'] = form.remember_me.data
-        return redirect(url_for('index'))
-    return render_template('login.html', 
-        title = 'Sign In',
-        form = form)
 
-@app.route('/authorize_callback')
+@app.route('/authorize_callback', methods = ['GET', 'POST'])
 def authorized():
-    state = request.args.get('state', '')
-    code = request.args.get('code', '')
-    info = r.get_access_information(code)
-    user = r.get_me()
-    variables_text = "State=%s, code=%s, info=%s." % (state, code,
-                                                      str(info))
-    text = 'You are %s and have %u link karma.' % (user.name,
-                                                   user.link_karma)
-    back_link = "<a href='/'>Try again</a>"
-    return variables_text + '</br></br>' + text + '</br></br>' + back_link
+    reddit_state = request.args.get('state', '')
+    reddit_code = request.args.get('code', '')
+    reddit_info = r.get_access_information(reddit_code)
+    reddit_user = r.get_me()
+
+
+    user = User.query.filter_by(nickname = reddit_user.name).first()
+    if user is None:
+      nickname = reddit_user.name
+      user = User(nickname = nickname, role = ROLE_USER, accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
+      db.session.add(user)
+      db.session.commit()
+    remember_me = False
+    if 'remember_me' in session:
+      remember_me = session['remember_me']
+      session.pop('remember_me', None)
+    login_user(user, remember = remember_me)
+    return redirect(request.args.get('next') or url_for('index'))
+
 
 @app.route('/logout')
 def logout():
