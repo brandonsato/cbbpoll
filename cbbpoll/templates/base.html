@@ -1,0 +1,14 @@
+<html>
+  <head>
+    {% if title %}
+    <title>{{title}} - /r/CollegeBasketball User Poll</title>
+    {% else %}
+    <title>/r/CollegeBasketball User Poll</title>
+    {% endif %}
+  </head>
+  <body>
+    <div>/r/CollegeBasketball User Poll: <a href="/index">Home</a></div>
+    <hr>
+    {% block content %}{% endblock %}
+  </body>
+</html>
