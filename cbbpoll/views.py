@@ -21,6 +21,10 @@ def internal_error(error):
 def before_request():
     g.user = current_user
 
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
 @app.route('/')
 @app.route('/index')
 @login_required
