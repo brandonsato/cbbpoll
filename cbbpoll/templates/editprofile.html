@@ -7,6 +7,9 @@
     {{form.hidden_tag()}}
     <table>
         <tr>
+            {% for message in form.email.errors %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
             <td>Your email:</td>
             <td>{{form.email(size = 120)}}</td>
         </tr>

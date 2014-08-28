@@ -7,11 +7,19 @@
     {{form.hidden_tag()}}
     <table>
         <tr>
+            {% for message in form.email.errors %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
+
             <td>Email:</td>
             <td>{{form.email(size = 120)}}</td>
         </tr>
         <tr>
         <tr>
+            {% for message in form.role.errors %}
+            <div class="flash">{{ message }}</div>
+            {% endfor %}
+
             <td>Role:</td>
             <td>{{form.role()}}</td>
         </tr>
