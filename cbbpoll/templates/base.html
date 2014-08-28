@@ -1,5 +1,10 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
+{% import "bootstrap/fixes.html" as fixes %}
+{% block head %}
+  {{super()}}
+  {{fixes.ie8()}}
+{% endblock %}
 {% block title %}
 {% if title %}
 {{title}} - /r/CollegeBasketball User Poll
@@ -42,7 +47,8 @@
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-info" role="alert">
+    <div class="alert alert-info alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         {{ message }}
     </div>
     {% endfor %}
@@ -51,5 +57,8 @@
 {% block content %}
 {% endblock %}
 </div>
+{% block scripts %}
+{{super()}}
+{% endblock %}
 {% endblock %}
 
