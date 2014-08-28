@@ -74,6 +74,7 @@ class Vote(db.Model):
     ballot_id = db.Column(db.Integer, db.ForeignKey('ballot.id'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     rank = db.Column(db.SmallInteger)
+    reason = db.Column(db.String(140))
 
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
