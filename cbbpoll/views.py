@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r
 from forms import LoginForm, EditProfileForm, AdminProfileForm
-from models import User
+from models import User, Poll, Team, Ballot, Vote, Result
 
 @lm.user_loader
 def load_user(id):
@@ -27,7 +27,6 @@ def home():
 
 @app.route('/')
 @app.route('/index')
-@login_required
 def index():
     user = g.user
     posts = [
@@ -47,11 +46,10 @@ def index():
 
 @app.route('/login')
 def login():
-    link_refresh = r.get_authorize_url('DifferentUniqueKey',
-                                       refreshable=True)
-    link_refresh = "<a href=%s>link</a>" % link_refresh
-    text = "Login with Reddit %s</br></br>" % link_refresh
-    return text
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
+    return render_template('login.html',
+      title = "Login or Sign Up",
+      authorize_url = authorize_url)
 
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
