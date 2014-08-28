@@ -46,8 +46,10 @@ def index():
 
 @app.route('/login')
 def login():
+    form = LoginForm()
     authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     return render_template('login.html',
+      form = form,
       title = "Login or Sign Up",
       authorize_url = authorize_url)
 

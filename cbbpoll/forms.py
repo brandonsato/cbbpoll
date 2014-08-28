@@ -1,10 +1,10 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, SelectField
+from wtforms import TextField, BooleanField, SelectField, SubmitField
 from wtforms.validators import Required, Length, Email, Optional
 from cbbpoll import app
 
 class LoginForm(Form):
-    remember_me = BooleanField('remember_me', default = False)
+    submit_button = SubmitField('Login/Sign Up via Reddit');
 
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional()])
