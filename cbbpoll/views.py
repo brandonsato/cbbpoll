@@ -132,4 +132,9 @@ def admin(nickname):
         user = user,
         form = form)
 
+@app.route('/teams')
+def teams():
+    teams = Team.query.all()
+    return render_template('teams.html', teams = teams)
+
 
