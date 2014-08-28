@@ -1,5 +1,4 @@
 {% extends "bootstrap/base.html" %}
-
 {% block title %}
 {% if title %}
 {{title}} - /r/CollegeBasketball User Poll
@@ -7,8 +6,8 @@
 /r/CollegeBasketball User Poll
 {% endif %}
 {% endblock %}
+{% block body %}
 {% block navbar %}
-
     <div class="navbar navbar-default navbar-static-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
@@ -23,20 +22,8 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
-            <li><a href="#about">About</a></li>
+            <li><a href="{{ url_for('teams') }}">Teams</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
           {% if g.user.is_authenticated() %}
@@ -49,11 +36,8 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-
-
-
-
-{% endblock %}
+{% endblock %}      
+<div class="container">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
@@ -63,4 +47,8 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-    {% block content %}{% endblock %}
+{% block content %}
+{% endblock %}
+</div>
+{% endblock %}
+
