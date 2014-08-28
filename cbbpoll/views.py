@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r
-from forms import LoginForm, EditProfileForm
-from models import User, ROLE_USER, ROLE_POLLSTER, ROLE_ADMIN
+from forms import LoginForm, EditProfileForm, AdminProfileForm
+from models import User
 
 @lm.user_loader
 def load_user(id):
@@ -61,7 +61,7 @@ def authorized():
     user = User.query.filter_by(nickname = reddit_user.name).first()
     if user is None:
       nickname = reddit_user.name
-      user = User(nickname = nickname, role = ROLE_USER, accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
+      user = User(nickname = nickname, role = app.config['ROLE_USER'], accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
       db.session.add(user)
       db.session.commit()
     remember_me = False
@@ -105,4 +105,30 @@ def edit():
         form.email.data = g.user.email
     return render_template('editprofile.html',
         form = form)
+
+@app.route('/admin/<nickname>', methods = ['GET', 'POST'])
+@login_required
+def admin(nickname):
+    if not g.user.is_admin():
+        return redirect(url_for('index'))
+    user = User.query.filter_by(nickname = nickname).first()
+    if user == None:
+        flash('User ' + nickname + ' not found.')
+        return redirect(url_for('index'))
+    form = AdminProfileForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(nickname = nickname).first()
+        user.email = form.email.data
+        user.role = form.role.data
+        db.session.add(user)
+        db.session.commit()
+        flash("Your changes have been saved.")
+        return redirect(url_for('admin', nickname = nickname))
+    else:
+        form.email.data = user.email
+        form.role.data = user.role
+    return render_template('adminprofile.html',
+        user = user,
+        form = form)
+
 
