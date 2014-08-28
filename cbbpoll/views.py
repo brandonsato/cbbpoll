@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r
-from forms import LoginForm
+from forms import LoginForm, EditProfileForm
 from models import User, ROLE_USER, ROLE_POLLSTER, ROLE_ADMIN
 
 @lm.user_loader
@@ -67,4 +67,33 @@ def authorized():
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+@app.route('/user/<nickname>')
+def user(nickname):
+    user = User.query.filter_by(nickname = nickname).first()
+    if user == None:
+        flash('User ' + nickname + ' not found.')
+        return redirect(url_for('index'))
+    posts = [
+        { 'author': user, 'body': 'Test post #1' },
+        { 'author': user, 'body': 'Test post #2' }
+    ]
+    return render_template('user.html',
+        user = user,
+        posts = posts)
+
+@app.route('/editprofile', methods = ['GET', 'POST'])
+@login_required
+def edit():
+    form = EditProfileForm()
+    if form.validate_on_submit():
+        g.user.email = form.email.data
+        db.session.add(g.user)
+        db.session.commit()
+        flash('Your changes have been saved.')
+        return redirect(url_for('edit'))
+    else:
+        form.email.data = g.user.email
+    return render_template('editprofile.html',
+        form = form)
 
