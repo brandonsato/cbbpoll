@@ -1,15 +1,11 @@
-from cbbpoll import db
-
-ROLE_USER = 0
-ROLE_POLLSTER = 1
-ROLE_ADMIN = 5
+from cbbpoll import db, app
 
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True)
     nickname = db.Column(db.String(20), index = True, unique = True)
     email = db.Column(db.String(120), index = True, unique = True)
-    role = db.Column(db.SmallInteger, default = ROLE_USER)
+    role = db.Column(db.SmallInteger, default = app.config['ROLE_USER'])
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
@@ -23,6 +19,9 @@ class User(db.Model):
 
     def is_anonymous(self):
         return False
+
+    def is_admin(self):
+        return self.role == app.config['ROLE_ADMIN']
 
     def get_id(self):
         return unicode(self.id)
