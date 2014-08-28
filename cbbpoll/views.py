@@ -106,7 +106,7 @@ def edit():
     return render_template('editprofile.html',
         form = form)
 
-@app.route('/admin/<nickname>', methods = ['GET', 'POST'])
+@app.route('/adminprofile/<nickname>', methods = ['GET', 'POST'])
 @login_required
 def admin(nickname):
     if not g.user.is_admin():
@@ -117,12 +117,11 @@ def admin(nickname):
         return redirect(url_for('index'))
     form = AdminProfileForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(nickname = nickname).first()
         user.email = form.email.data
         user.role = form.role.data
         db.session.add(user)
         db.session.commit()
-        flash("Your changes have been saved.")
+        flash("Admin changes have been saved.")
         return redirect(url_for('admin', nickname = nickname))
     else:
         form.email.data = user.email
