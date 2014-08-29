@@ -19,7 +19,7 @@
 {% block body %}
 {% block navbar %}
     <div class="navbar navbar-default navbar-static-top" role="navigation">
-      <div class="container">
+      <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -36,7 +36,7 @@
             <li><a href="#contact">Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          {% if g.user %}
+          {% if logged_in %}
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}
@@ -47,7 +47,7 @@
       </div>
     </div>
 {% endblock %}      
-<div class="container">
+<div class="container-fluid">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
