@@ -4,6 +4,11 @@ from cbbpoll import app, db, lm, r
 from forms import LoginForm, EditProfileForm, AdminProfileForm
 from models import User, Poll, Team, Ballot, Vote, Result
 
+@app.before_request
+def before_request():
+    g.user = current_user
+    logged_in = getattr(g, "user", None)
+
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -16,10 +21,6 @@ def not_found_error(error):
 def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
-
-@app.before_request
-def before_request():
-    g.user = current_user
 
 @app.route('/home')
 def home():
