@@ -1,3 +1,32 @@
-.ballot-item, .result-item {
-	display:list-item;
+ol.ballot, ol.result {
+    list-style-type: none;    
+    list-style-type: decimal !ie; /*IE 7- hack*/
+ 
+    margin: 0;
+    margin-left: 3em;
+    padding: 0;
+     
+    counter-reset: li-counter;
+}
+ol.ballot > li, ol.result > li{
+    position: relative;
+    margin-bottom: 20px;
+    padding-left: 0.5em;
+    min-height: 3em;
+    border-left: 2px solid #CCCCCC;
+}
+ol.ballot > li:before,  ol.result > li:before {
+    position: absolute;
+    top: 0;
+    left: -1.8em;
+    width: 1.5em;
+     
+    font-size: 3em;
+    line-height: 1;
+    font-weight: bold;
+    text-align: right;
+    color: #464646;
+ 
+    content: counter(li-counter);
+    counter-increment: li-counter;
 }
