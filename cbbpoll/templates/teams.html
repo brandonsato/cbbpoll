@@ -3,9 +3,9 @@
 {% block content %}
 <h1>All Teams</h1>
 <form>
-	<ol class="list-group ballot">
+	<ol class="list-group">
 {% for i in range(1,26) %}
-<li class="list-group-item">
+<li class="list-group-item ballot-item">
 	<h3>{{i}}.</h3>
 	<select class="team" id="team{{i}}">
 		{% for team in teams %}
