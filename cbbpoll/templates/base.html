@@ -1,11 +1,17 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/fixes.html" as fixes %}
+{% set navigation_bar = [
+    (url_for('index'), 'index', 'Home'),
+    (url_for('teams'), 'teams', 'Teams'),
+    ('#contact', 'contact', 'Contact')
+] -%}
+{% set active_page = active_page|default('') -%}
 {% block head %}
 {% block styles %}
 {{super()}}
-      <link rel="stylesheet"
-      href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
+      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
+      <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 {% endblock %}
   {{fixes.ie8()}}
 {% endblock %}
@@ -19,7 +25,7 @@
 {% block body %}
 {% block navbar %}
     <div class="navbar navbar-default navbar-static-top" role="navigation">
-      <div class="container-fluid">
+      <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
@@ -31,9 +37,10 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
-            <li><a href="{{ url_for('teams') }}">Teams</a></li>
-            <li><a href="#contact">Contact</a></li>
+            {% for href, id, caption in navigation_bar %}
+            <li{% if id == active_page %} class="active"{% endif %}>
+            <a href="{{ href|e }}">{{ caption|e }}</a></li>
+            {% endfor %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
           {% if logged_in %}
@@ -47,7 +54,7 @@
       </div>
     </div>
 {% endblock %}      
-<div class="container-fluid">
+<div class="container">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}

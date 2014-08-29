@@ -1,8 +1,9 @@
 {% extends "base.html" %}
+{% set active_page = "teams" %}
 {% block content %}
 <h1>All Teams</h1>
 <form>
-	<ol class="list-group">
+	<ol class="list-group ballot">
 {% for i in range(1,26) %}
 <li class="list-group-item">
 	<h3>{{i}}.</h3>
