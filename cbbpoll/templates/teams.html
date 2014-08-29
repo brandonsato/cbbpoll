@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>All Teams</h1>
+<form>
+	<select class="team" id="team1">
+		{% for team in teams %}
+	<option value={{team.id}} >{{team.full_name}}{% if team.short_name %} ({{team.short_name}}){% endif %}</option>
+	{% endfor %}
+</select>
+</form>
+
 <table class="table">
 	<tr>
 		<th>School Name</th>
@@ -16,3 +24,12 @@
 {% endfor %}
 </table>
 {% endblock %}
+
+{% block scripts %} 
+{{super()}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script>
+        $(document).ready(function() { $("#team1").select2(); });
+ </script>
+
+ {% endblock %}

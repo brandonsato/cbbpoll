@@ -1,5 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Login or Sign Up</h1>
-{{ wtf.quick_form(form, action=authorize_url, method="GET", button_map={'submit_button': 'primary'} ) }}
+<a href="{{authorize_url}}"><button class="btn btn-primary">Login Using Reddit</button></a>
 {% endblock %}

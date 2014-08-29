@@ -4,7 +4,7 @@ from wtforms.validators import Required, Length, Email, Optional
 from cbbpoll import app
 
 class LoginForm(Form):
-    submit_button = SubmitField('Login/Sign Up via Reddit');
+    submit = SubmitField('Login/Sign Up via Reddit');
 
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional()])

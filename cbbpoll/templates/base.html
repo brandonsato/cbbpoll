@@ -2,7 +2,11 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/fixes.html" as fixes %}
 {% block head %}
-  {{super()}}
+{% block styles %}
+{{super()}}
+      <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
+{% endblock %}
   {{fixes.ie8()}}
 {% endblock %}
 {% block title %}
@@ -56,8 +60,7 @@
     {% endwith %}
 {% block content %}
 {% endblock %}
-</div>
-{% block scripts %}
+{% block scripts %} 
 {{super()}}
 {% endblock %}
 {% endblock %}
