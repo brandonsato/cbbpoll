@@ -55,6 +55,12 @@ class Team(db.Model):
     def __repr__(self):
         return '<Team %r>' % (self.short_name)
 
+    def __str__(self):
+        s = self.full_name
+        if self.short_name:
+            s = "".join([s, " (", self.short_name, ")"])
+        return s
+
 class Ballot(db.Model):
     __tablename__ = 'ballot'
     id = db.Column(db.Integer, primary_key = True)
