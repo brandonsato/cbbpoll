@@ -1,7 +1,12 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, BooleanField, SelectField, SubmitField
-from wtforms.validators import Required, Length, Email, Optional
+from wtforms import TextField, SelectField, SubmitField, FieldList, FormField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.validators import Required, Email, Optional, DataRequired
 from cbbpoll import app
+from models import Team
+
+def allTeams():
+    return Team.query
 
 class LoginForm(Form):
     submit = SubmitField('Login/Sign Up via Reddit');
@@ -14,3 +19,13 @@ class AdminProfileForm(Form):
     role = SelectField('Role', choices=[(app.config['ROLE_USER'], 'User'),
         (app.config['ROLE_POLLSTER'], 'Pollster'),
         (app.config['ROLE_ADMIN'], 'Admin')], coerce=int)
+
+
+class VoteForm(Form):
+    team = QuerySelectField('Team', query_factory=allTeams, allow_blank=True, blank_text='Select a Team', 
+        validators=[DataRequired(message="You must select a team.")])
+    reason = TextField('Reason', validators=[Optional()])
+
+class PollBallotForm(Form):
+    votes = FieldList(FormField(VoteForm), min_entries=25, max_entries=25)
+    submit = SubmitField('Submit Ballot')

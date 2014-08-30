@@ -1,13 +1,13 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r
-from forms import LoginForm, EditProfileForm, AdminProfileForm
+from forms import LoginForm, EditProfileForm, AdminProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote, Result
 
 @app.before_request
 def before_request():
     g.user = current_user
-    logged_in = getattr(g, "user", None)
+    logged_in = g.user.is_authenticated()
 
 @lm.user_loader
 def load_user(id):
@@ -139,5 +139,17 @@ def admin(nickname):
 def teams():
     teams = Team.query.all()
     return render_template('teams.html', teams = teams)
+
+@app.route('/submitballot', methods = ['GET', 'POST'])
+def submitballot():
+    teams = Team.query.all()
+    form = PollBallotForm()
+    if form.validate_on_submit():
+        flash('Ballot submitted.')
+        return redirect(url_for('index'))
+
+    return render_template('submitballot.html', teams = teams, form=form)
+
+
 
 
