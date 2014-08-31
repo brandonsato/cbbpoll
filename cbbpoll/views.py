@@ -7,7 +7,9 @@ from models import User, Poll, Team, Ballot, Vote, Result
 @app.before_request
 def before_request():
     g.user = current_user
-    logged_in = g.user.is_authenticated()
+    if g.user.is_authenticated():
+        db.session.add(g.user)
+        db.session.commit()
 
 @lm.user_loader
 def load_user(id):
@@ -23,7 +25,6 @@ def internal_error(error):
     return render_template('500.html'), 500
 
 @app.route('/')
-@app.route('/index')
 def index():
     user = g.user
     posts = [
@@ -57,8 +58,6 @@ def authorized():
     reddit_code = request.args.get('code', '')
     reddit_info = r.get_access_information(reddit_code)
     reddit_user = r.get_me()
-
-
     user = User.query.filter_by(nickname = reddit_user.name).first()
     if user is None:
       nickname = reddit_user.name
@@ -84,13 +83,8 @@ def user(nickname):
     if user == None:
         flash('User ' + nickname + ' not found.')
         return redirect(url_for('index'))
-    posts = [
-        { 'author': user, 'body': 'Test post #1' },
-        { 'author': user, 'body': 'Test post #2' }
-    ]
     return render_template('user.html',
-        user = user,
-        posts = posts)
+        user = user)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
 @login_required
