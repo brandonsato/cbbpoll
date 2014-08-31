@@ -12,13 +12,13 @@
 {{form.hidden_tag()}}
 	<ol class="list-group ballot">
 {% for vote in form.votes %}
-    <li class="list-group-item">
+    <li class="list-group-item{% if vote.team.errors %} list-group-item-warning{% endif %}">
     	{% if vote.team.errors %}
     		{% for error in vote.team.errors %}
     			{{ error }}
     		{% endfor %}
     	{% endif %}
-    {{vote.team() }}
+    {{vote.team(class_="team") }}
     {{vote.reason()}}
 		</li>
 
@@ -30,9 +30,9 @@
 
 {% block scripts %} 
 {{super()}}
-<d script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script>
-        $(document).ready(function() { $("select.team").select2({width: '40%'}); });
+        $(document).ready(function() { $("select.team").select2({width: "40%"}); });
 </script>
 
  {% endblock %}
