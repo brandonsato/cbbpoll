@@ -43,7 +43,7 @@
             {% endfor %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          {% if logged_in %}
+          {% if g.user.is_authenticated() %}
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}

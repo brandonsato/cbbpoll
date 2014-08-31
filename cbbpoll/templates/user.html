@@ -3,6 +3,4 @@
 <h1>User: {{user.nickname}}</h1>
 <hr>
 {% if user.id == g.user.id %}<p><a href="{{url_for('edit')}}">Edit Profile</a></p>{% endif %}
-{% for post in posts %}
-{% endfor %}
 {% endblock %}
