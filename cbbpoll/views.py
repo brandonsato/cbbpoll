@@ -22,10 +22,6 @@ def internal_error(error):
     db.session.rollback()
     return render_template('500.html'), 500
 
-@app.route('/home')
-def home():
-    return render_template('home.html')
-
 @app.route('/')
 @app.route('/index')
 def index():
