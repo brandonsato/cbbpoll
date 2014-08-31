@@ -3,5 +3,5 @@
 
 {% block content %}
 <h1>Edit Your Profile</h1>
-{{ wtf.quick_form(form) }}
+{{ wtf.quick_form(form, button_map={'submit' : 'primary'}) }}
 {% endblock %}
