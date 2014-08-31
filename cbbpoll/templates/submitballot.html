@@ -8,18 +8,26 @@
     </div>
 {% endfor %}
 
-<form action="" method="post" name="ballot">
+<form action="" method="post" name="ballot" role="form">
 {{form.hidden_tag()}}
 	<ol class="list-group ballot">
 {% for vote in form.votes %}
-    <li class="list-group-item{% if vote.team.errors %} list-group-item-warning{% endif %}">
+    <li class="list-group-item{% if vote.team.errors %} list-group-item-danger{% endif %}">
     	{% if vote.team.errors %}
     		{% for error in vote.team.errors %}
-    			{{ error }}
+    		<div class="row">{{ error }}</div>
     		{% endfor %}
     	{% endif %}
-    {{vote.team(class_="team") }}
-    {{vote.reason()}}
+    	<div class="row">
+    		<div class="col-md-6">
+    {{vote.team.label(class_="sr-only") }}
+    {{vote.team(class_="team form-control") }}
+        </div>
+        <div class="col-md-6">
+    {{vote.reason.label(class_="sr-only") }}
+    {{vote.reason(class_="form-control", placeholder="Explanation (optional)")}}
+  			</div>
+  		</div>
 		</li>
 
 {% endfor %}  
@@ -32,7 +40,7 @@
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script>
-        $(document).ready(function() { $("select.team").select2({width: "40%"}); });
+        $(document).ready(function() { $("select.team").select2(); });
 </script>
 
  {% endblock %}
