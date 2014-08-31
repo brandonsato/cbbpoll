@@ -10,9 +10,11 @@ def allTeams():
 
 class LoginForm(Form):
     submit = SubmitField('Login/Sign Up via Reddit');
+    
 
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional()])
+    submit = SubmitField('Save Changes')
 
 class AdminProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional()])
