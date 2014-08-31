@@ -23,6 +23,9 @@ class User(db.Model):
     def is_admin(self):
         return self.role == app.config['ROLE_ADMIN']
 
+    def is_pollster(self):
+        return self.role >= app.config['ROLE_POLLSTER']
+
     def get_id(self):
         return unicode(self.id)
 

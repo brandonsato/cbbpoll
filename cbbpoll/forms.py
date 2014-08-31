@@ -19,6 +19,7 @@ class AdminProfileForm(Form):
     role = SelectField('Role', choices=[(app.config['ROLE_USER'], 'User'),
         (app.config['ROLE_POLLSTER'], 'Pollster'),
         (app.config['ROLE_ADMIN'], 'Admin')], coerce=int)
+    submit = SubmitField('Save Changes')
 
 
 class VoteForm(Form):
