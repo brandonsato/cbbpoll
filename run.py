@@ -1,3 +1,3 @@
-from mysite import app
+from cbbpoll import app
 
 app.run(debug=True)

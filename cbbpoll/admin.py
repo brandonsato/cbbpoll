@@ -1,4 +1,4 @@
-from flask import redirect, url_for
+from flask import redirect, url_for, flash
 from flask.ext import admin
 from flask.ext.admin import expose
 from flask.ext.admin.contrib import sqla
@@ -9,13 +9,13 @@ from models import User
 
 class AdminModelView(sqla.ModelView):
     def is_accessible(self):
-        return getattr(current_user, 'is_admin', False)
+        return current_user.is_admin()
 
 class MyAdminIndexView(admin.AdminIndexView):
     @expose('/')
     def index(self):
-        if not getattr(current_user, 'is_admin', False):
-            return redirect(url_for('teams'))
+        if not current_user.is_admin():
+            return redirect(url_for('index'))
         return super(MyAdminIndexView, self).index()
 
 
@@ -28,5 +28,5 @@ class UserAdmin(AdminModelView):
 
 
 # Create admin
-admin = admin.Admin(app, 'Simple Models')
+admin = admin.Admin(app, 'Simple Models', index_view=MyAdminIndexView())
 admin.add_view(UserAdmin(User, db.session))
