@@ -50,7 +50,7 @@ def authorized():
     user = User.query.filter_by(nickname = reddit_user.name).first()
     if user is None:
       nickname = reddit_user.name
-      user = User(nickname = nickname, role = app.config['ROLE_USER'], accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
+      user = User(nickname = nickname, role = 'u', accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
       db.session.add(user)
       db.session.commit()
     remember_me = False
