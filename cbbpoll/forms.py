@@ -1,5 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms import TextField, SelectField, SubmitField, FieldList, FormField
+from flask.ext.admin.form.fields import Select2Field
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import Required, Email, Optional, DataRequired, Length
 from cbbpoll import app
@@ -15,14 +16,6 @@ class LoginForm(Form):
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional(), Length(max=120) ])
     submit = SubmitField('Save Changes')
-
-class AdminProfileForm(Form):
-    email = TextField('Email', validators = [Email(), Optional(), Length(max=120)])
-    role = SelectField('Role', choices=[(app.config['ROLE_USER'], 'User'),
-        (app.config['ROLE_POLLSTER'], 'Pollster'),
-        (app.config['ROLE_ADMIN'], 'Admin')], coerce=int)
-    submit = SubmitField('Save Changes')
-
 
 class VoteForm(Form):
     team = QuerySelectField('Team', query_factory=allTeams, allow_blank=True, blank_text='Select a Team', 

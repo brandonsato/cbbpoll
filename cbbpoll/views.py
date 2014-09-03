@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r
-from forms import LoginForm, EditProfileForm, AdminProfileForm, PollBallotForm
+from forms import LoginForm, EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote, Result
 
 @app.before_request
@@ -27,20 +27,9 @@ def internal_error(error):
 @app.route('/')
 def index():
     user = g.user
-    posts = [
-        { 
-            'author': { 'nickname': 'John' }, 
-            'body': 'Beautiful day in Portland!' 
-        },
-        { 
-            'author': { 'nickname': 'Susan' }, 
-            'body': 'The Avengers movie was so cool!' 
-        }
-    ]
     return render_template('index.html',
         title = 'Home',
-        user = user,
-        posts = posts)
+        user = user)
 
 @app.route('/login')
 def login():
@@ -81,7 +70,7 @@ def logout():
 def user(nickname):
     user = User.query.filter_by(nickname = nickname).first()
     if user == None:
-        flash('User ' + nickname + ' not found.')
+        flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     return render_template('user.html',
         user = user)
@@ -94,52 +83,38 @@ def edit():
         g.user.email = form.email.data
         db.session.add(g.user)
         db.session.commit()
-        flash('Your changes have been saved.')
+        flash('Your changes have been saved.', 'info')
         return redirect(url_for('edit'))
     else:
         form.email.data = g.user.email
     return render_template('editprofile.html',
         form = form)
 
-@app.route('/adminprofile/<nickname>', methods = ['GET', 'POST'])
-@login_required
-def admin(nickname):
-    if not g.user.is_admin():
-        return redirect(url_for('index'))
-    user = User.query.filter_by(nickname = nickname).first()
-    if user == None:
-        flash('User ' + nickname + ' not found.')
-        return redirect(url_for('index'))
-    form = AdminProfileForm()
-    if form.validate_on_submit():
-        user.email = form.email.data
-        user.role = form.role.data
-        db.session.add(user)
-        db.session.commit()
-        flash("Admin changes have been saved.")
-        return redirect(url_for('admin', nickname = nickname))
-    else:
-        form.email.data = user.email
-        form.role.data = user.role
-    return render_template('adminprofile.html',
-        user = user,
-        form = form)
-
 @app.route('/teams')
 def teams():
     teams = Team.query.all()
-    return render_template('teams.html', teams = teams)
+    return render_template('teams.html', teams=teams)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
 def submitballot():
     teams = Team.query.all()
     form = PollBallotForm()
     if form.validate_on_submit():
-        flash('Ballot submitted.')
+        flash('Ballot submitted.', 'success')
+        flash(form.votes[1], 'warning')
         return redirect(url_for('index'))
 
-    return render_template('submitballot.html', teams = teams, form=form)
+    return render_template('submitballot.html', teams=teams, form=form)
 
-
+@app.route('/poll/<s>/<w>')
+def results(s, w):
+    poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
+    if not poll:
+        flash('No such poll', 'warning')
+        return redirect(url_for('index'))
+    elif not poll.has_completed:
+        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
+        return redirect(url_for('index'))
+    return render_template('results.html', season=s, week=w, poll=poll, teams = Team.query)
 
 

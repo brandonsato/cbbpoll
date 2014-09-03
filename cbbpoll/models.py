@@ -1,3 +1,4 @@
+import datetime
 from cbbpoll import db, app
 
 class User(db.Model):
@@ -5,7 +6,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     nickname = db.Column(db.String(20), index = True, unique = True)
     email = db.Column(db.String(120), index = True, unique = True)
-    role = db.Column(db.SmallInteger, default = app.config['ROLE_USER'])
+    role = db.Column(db.Enum('u','p','a'), default = 'u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
@@ -21,10 +22,10 @@ class User(db.Model):
         return False
 
     def is_admin(self):
-        return self.role == app.config['ROLE_ADMIN']
+        return self.role == 'a'
 
     def is_pollster(self):
-        return self.role >= app.config['ROLE_POLLSTER']
+        return self.role == 'p' or self.role == 'a'
 
     def get_id(self):
         return unicode(self.id)
@@ -39,8 +40,14 @@ class Poll(db.Model):
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined')
+    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined', order_by="desc(Result.score)")
     ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined')
+
+    def is_open(self):
+        return (datetime.now > self.openTime and datetime.now < self.closeTime)
+
+    def has_completed(self):
+        return datetime.now > self.closeTime
 
 
     def __repr__(self):
@@ -61,7 +68,7 @@ class Team(db.Model):
     def __str__(self):
         s = self.full_name
         if self.short_name:
-            s = "".join([s, " (", self.short_name, ")"])
+            s = "".join([self.short_name, " (", s, ")"])
         return s
 
 class Ballot(db.Model):
@@ -71,7 +78,6 @@ class Ballot(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined')
-
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
@@ -93,9 +99,10 @@ class Result(db.Model):
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     score = db.Column(db.Integer)
+    onevotes = db.Column(db.Integer)
 
     def __repr__(self):
-        return '<Result %r for team %r on Poll %r>' % (self.id, self.team_id, self.poll)
+        return '<Result %r for Poll %r: %r %r points>' % (self.id, self.poll_id, Team.query.get(self.team_id).flair, self.score)
 
 
 
