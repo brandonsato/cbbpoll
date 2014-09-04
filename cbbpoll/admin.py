@@ -84,7 +84,7 @@ class BallotAdmin(AdminModelView):
 
 
 # Create admin
-admin = admin.Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView())
+admin = admin.Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
 admin.add_view(UserAdmin(User, db.session))
 admin.add_view(TeamAdmin(Team, db.session))
 admin.add_view(PollAdmin(Poll, db.session))

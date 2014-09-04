@@ -1,6 +1,6 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from cbbpoll import app, db, lm, r
+from cbbpoll import app, db, lm, r, admin
 from forms import LoginForm, EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote, Result
 from datetime import datetime
@@ -28,24 +28,26 @@ def load_user(id):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html'), 404
+    return render_template('404.html', authorize_url = authorize_url), 404
 
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
-    return render_template('500.html'), 500
+    return render_template('500.html', authorize_url = authorize_url), 500
 
 @app.route('/')
 def index():
     user = g.user
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     return render_template('index.html',
         title = 'Home',
-        user = user)
+        user = user,
+        authorize_url = authorize_url)
 
 @app.route('/login')
 def login():
-    form = LoginForm()
     authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
+    form = LoginForm()
     return render_template('login.html',
       form = form,
       title = "Login or Sign Up",
@@ -79,16 +81,18 @@ def logout():
 
 @app.route('/user/<nickname>')
 def user(nickname):
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     user = user_by_nickname(nickname)
     if user == None:
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     return render_template('user.html',
-        user = user)
+        user = user, authorize_url = authorize_url)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
 @login_required
 def edit():
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     form = EditProfileForm()
     if form.validate_on_submit():
         g.user.email = form.email.data
@@ -99,16 +103,19 @@ def edit():
     else:
         form.email.data = g.user.email
     return render_template('editprofile.html',
-        form = form)
+        form = form, authorize_url = authorize_url)
 
 @app.route('/teams')
 def teams():
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     teams = Team.query.all()
-    return render_template('teams.html', teams=teams)
+    return render_template('teams.html', 
+      teams=teams, authorize_url = authorize_url)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
 @login_required
 def submitballot():
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     poll = open_polls().first()
     if not poll:
         flash('No open polls', 'info')
@@ -123,13 +130,14 @@ def submitballot():
         ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
         db.session.commit()
-
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
-    return render_template('submitballot.html', teams=teams, form=form)
+    return render_template('submitballot.html', 
+      teams=teams, form=form, authorize_url = authorize_url, poll=poll)
 
 @app.route('/poll/<int:s>/<int:w>')
 def results(s, w):
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
     if not poll:
         flash('No such poll', 'warning')
@@ -137,12 +145,14 @@ def results(s, w):
     elif not poll.has_completed:
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
-    return render_template('results.html', season=s, week=w, poll=poll, teams = Team.query)
+    return render_template('results.html', 
+      season=s, week=w, poll=poll, teams = Team.query, authorize_url = authorize_url)
 
 @app.route('/results')
 @app.route('/results/')
 @app.route('/results/<int:page>')
 def polls(page=1):
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     polls = completed_polls().paginate(page, 1, False).items;
     poll = polls[page-1]
     if not poll:
@@ -151,8 +161,8 @@ def polls(page=1):
     elif not poll.has_completed:
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
-    return render_template('results.html', season=poll.season, week=poll.week, polls=polls, poll=poll, page=page, teams=Team.query)
-
+    return render_template('results.html', 
+      season=poll.season, week=poll.week, polls=polls, poll=poll, page=page, teams=Team.query, authorize_url = authorize_url)
 
 
 

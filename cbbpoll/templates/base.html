@@ -46,6 +46,9 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           {% if g.user.is_authenticated() %}
+            {% if g.user.is_admin() %}
+            <li><a href="{{url_for('admin.index')}}">Admin</a></li>
+            {% endif %}
             {% if g.user.is_pollster() %}
             <li><div>
               <a href="{{url_for('submitballot')}}" class="btn btn-primary navbar-btn">Create Ballot</a>
@@ -54,7 +57,7 @@
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}
-            <li><a href="{{ url_for('login') }}">Login/Sign Up</a></li>
+            <li><a href="{{authorize_url}}">Login/Sign Up</a></li>
           {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
