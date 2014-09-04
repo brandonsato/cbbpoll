@@ -1,37 +1,11 @@
 {% extends "base.html" %}
+{% set active_page = "results" %}
+
 {% block content %}
-<h1>Results for Week {{poll.week}} of {{poll.season-1}}-{{poll.season-2000}}</h1>
-<table class="table table-striped">
-	<tr>
-		<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
-	</tr>
-	{% set prev_score = -1 %}
-	{% for result in poll.results %}
-	{%- if loop.index < 26 -%}
-	<tr>
-		<td>
-			{% if result.score == prev_score %}
-				{% set rank = prev_rank %}
-			{% else %}
-				{% set rank = loop.index %}
-			{% endif %}
-			{% set prev_rank = rank %}
-			{% set prev_score = result.score %}
-			{{rank}}
-		</td>
-		<td>
-			{{ teams.get(result.team_id).short_name }}
-		</td>
-		<td>
-			{{ result.score}}{% if result.onevotes and result.onevotes > 0 %}({{result.onevotes}}){%endif%}
-		</td>
-	</tr>
-	{%- elif loop.index == 26 -%}
-</table>
-	<div class='panel panel-default'>
-		<div class='panel-body'>
-			<strong>Others Receiving Votes:</strong> {{ teams.get(result.team_id).short_name }}({{result.score}}){%- else -%}, {{ teams.get(result.team_id).short_name }}({{result.score}})
-	{%- endif -%}
-	{% endfor %}
-</div></div>
+<h1>Results for Week {{polls[page-1].week}} of {{polls[page-1].season-1}}-{{polls[page-1].season-2000}}</h1>
+{% include 'resulttable.html' %}
+<ul class="pager">
+{% if polls[page-1].has_next %}<li class="previous"><a href="{{ url_for('index', page = polls[page-1].next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
+{% if polls[page-1].has_prev %}<li class="next"><a href="{{ url_for('index', page = poll[page-1].prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
+</ul>
 {% endblock %}

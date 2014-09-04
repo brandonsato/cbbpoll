@@ -1,0 +1,33 @@
+<table class="table table-striped">
+	<tr>
+		<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
+	</tr>
+	{% set prev_score = -1 %}
+	{% for result in poll.results %}
+	{%- if loop.index < 26 -%}
+	<tr>
+		<td>
+			{% if result.score == prev_score %}
+				{% set rank = prev_rank %}
+			{% else %}
+				{% set rank = loop.index %}
+			{% endif %}
+			{% set prev_rank = rank %}
+			{% set prev_score = result.score %}
+			{{rank}}
+		</td>
+		<td>
+			{{ teams.get(result.team_id).short_name }}
+		</td>
+		<td>
+			{{ result.score}}{% if result.onevotes and result.onevotes > 0 %}({{result.onevotes}}){%endif%}
+		</td>
+	</tr>
+	{%- elif loop.index == 26 -%}
+</table>
+	<div class='panel panel-default'>
+		<div class='panel-body'>
+			<strong>Others Receiving Votes:</strong> {{ teams.get(result.team_id).short_name }}({{result.score}}){%- else -%}, {{ teams.get(result.team_id).short_name }}({{result.score}})
+	{%- endif -%}
+	{% endfor %}
+</div></div>

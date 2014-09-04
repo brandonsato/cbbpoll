@@ -30,7 +30,7 @@ class AdminModelView(sqla.ModelView):
 class MyAdminIndexView(admin.AdminIndexView):
     @expose('/')
     def index(self):
-        if not current_user.is_admin():
+        if current_user.is_anonymous() or not current_user.is_admin():
             return redirect(url_for('index'))
         return super(MyAdminIndexView, self).index()
 
@@ -68,11 +68,6 @@ class ResultAdmin(AdminModelView):
         validators=[InputRequired(message="You must select a team.")],
         coerce=int
         ))
-    # form_args = {
-    #     'team_id': {
-    #         'query' : lambda: Team.query
-    #     }
-    # }
 
 class VoteAdmin(AdminModelView):
 		column_display_pk = True
