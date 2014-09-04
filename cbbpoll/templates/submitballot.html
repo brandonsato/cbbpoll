@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% set active_page = "submitballot" %}
 {% block content %}
-<h1>Submit a Ballot for </h1>
+<h1>Submit a Ballot for {{poll.season-1}}-{{poll.season-2000}} Week {{poll.week}}</h1>
   {{ wtf.form_errors(form, hiddens=True) }}
 <form method="post" name="ballot" role="form">
 {{form.hidden_tag()}}
