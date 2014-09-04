@@ -4,8 +4,8 @@ from cbbpoll import db, app
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True)
-    nickname = db.Column(db.String(20), index = True, unique = True)
-    email = db.Column(db.String(120), index = True, unique = True)
+    nickname = db.Column(db.String(20), index = True)
+    email = db.Column(db.String(120), index = True)
     role = db.Column(db.Enum('u','p','a'), default = 'u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
