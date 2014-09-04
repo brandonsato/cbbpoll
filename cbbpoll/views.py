@@ -62,14 +62,17 @@ def authorized():
     reddit_user = r.get_me()
     user = user_by_nickname(reddit_user.name)
     if user is None:
-      nickname = reddit_user.name
-      user = User(nickname = nickname, role = 'u', accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
-      db.session.add(user)
-      db.session.commit()
+        nickname = reddit_user.name
+        user = User(nickname = nickname, role = 'u', accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
+    else:
+        user.accessToken = reddit_info['access_token']
+        user.refreshToken = reddit_info['refresh_token']
+    db.session.add(user)
+    db.session.commit()
     remember_me = False
     if 'remember_me' in session:
-      remember_me = session['remember_me']
-      session.pop('remember_me', None)
+        remember_me = session['remember_me']
+        session.pop('remember_me', None)
     login_user(user, remember = remember_me)
     return redirect(request.args.get('next') or url_for('index'))
 
