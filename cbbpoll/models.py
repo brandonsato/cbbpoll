@@ -3,7 +3,7 @@ from cbbpoll import db, app
 
 class User(db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     nickname = db.Column(db.String(20), index = True)
     email = db.Column(db.String(120), index = True)
     role = db.Column(db.Enum('u','p','a'), default = 'u')
