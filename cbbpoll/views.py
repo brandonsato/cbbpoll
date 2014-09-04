@@ -28,10 +28,12 @@ def load_user(id):
 
 @app.errorhandler(404)
 def not_found_error(error):
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     return render_template('404.html', authorize_url = authorize_url), 404
 
 @app.errorhandler(500)
 def internal_error(error):
+    authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
     db.session.rollback()
     return render_template('500.html', authorize_url = authorize_url), 500
 
