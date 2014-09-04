@@ -3,6 +3,17 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from cbbpoll import app, db, lm, r
 from forms import LoginForm, EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote, Result
+from datetime import datetime
+
+def user_by_nickname(name):
+    return User.query.filter_by(nickname = name).first()
+
+def completed_polls():
+    return Poll.query.filter(Poll.closeTime < datetime.now()).order_by(Poll.closeTime.desc())
+
+def open_polls():
+    return Poll.query.filter(Poll.closeTime > datetime.now()).filter(Poll.openTime < datetime.now())
+
 
 @app.before_request
 def before_request():
@@ -47,7 +58,7 @@ def authorized():
     reddit_code = request.args.get('code', '')
     reddit_info = r.get_access_information(reddit_code)
     reddit_user = r.get_me()
-    user = User.query.filter_by(nickname = reddit_user.name).first()
+    user = user_by_nickname(reddit_user.name)
     if user is None:
       nickname = reddit_user.name
       user = User(nickname = nickname, role = 'u', accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
@@ -68,7 +79,7 @@ def logout():
 
 @app.route('/user/<nickname>')
 def user(nickname):
-    user = User.query.filter_by(nickname = nickname).first()
+    user = user_by_nickname(nickname)
     if user == None:
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
@@ -96,17 +107,28 @@ def teams():
     return render_template('teams.html', teams=teams)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
+@login_required
 def submitballot():
+    poll = open_polls().first()
+    if not poll:
+        flash('No open polls', 'info')
+        return redirect(url_for('index'))
+    ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
+    if ballot:
+        flash('Ballot already submitted to this poll', 'warning')
+        return redirect(url_for('index'))
     teams = Team.query.all()
     form = PollBallotForm()
     if form.validate_on_submit():
-        flash('Ballot submitted.', 'success')
-        flash(form.votes[1], 'warning')
-        return redirect(url_for('index'))
+        ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
+        db.session.add(ballot)
+        db.session.commit()
 
+        flash('Ballot submitted.', 'success')
+        return redirect(url_for('index'))
     return render_template('submitballot.html', teams=teams, form=form)
 
-@app.route('/poll/<s>/<w>')
+@app.route('/poll/<int:s>/<int:w>')
 def results(s, w):
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
     if not poll:
@@ -116,5 +138,21 @@ def results(s, w):
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     return render_template('results.html', season=s, week=w, poll=poll, teams = Team.query)
+
+@app.route('/results')
+@app.route('/results/')
+@app.route('/results/<int:page>')
+def polls(page=1):
+    polls = completed_polls().paginate(page, 1, False).items;
+    poll = polls[page-1]
+    if not poll:
+        flash('No such poll', 'warning')
+        return redirect(url_for('index'))
+    elif not poll.has_completed:
+        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
+        return redirect(url_for('index'))
+    return render_template('results.html', season=poll.season, week=poll.week, polls=polls, poll=poll, page=page, teams=Team.query)
+
+
 
 

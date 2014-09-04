@@ -1,25 +1,23 @@
 {% extends "base.html" %}
 {% set active_page = "submitballot" %}
 {% block content %}
-<h1>Ballot</h1>
-{% for error in form.errors[votes] %}
-    <div class="alert alert-warning">
-        {{field}}{{error}}
-    </div>
-{% endfor %}
-
-<form action="" method="post" name="ballot" role="form">
+<h1>Submit a Ballot for </h1>
+  {{ wtf.form_errors(form, hiddens=True) }}
+<form method="post" name="ballot" role="form">
 {{form.hidden_tag()}}
 	<ol class="list-group ballot">
 {% for vote in form.votes %}
     <li class="list-group-item{% if vote.team.errors %} list-group-item-danger{% endif %}">
     	{% if vote.team.errors %}
+    		<div class="container">
     		{% for error in vote.team.errors %}
     		<div class="row">{{ error }}</div>
     		{% endfor %}
+    		</div>
     	{% endif %}
     	<div class="row">
     		<div class="col-md-6">
+    {{vote.hidden_tag()}}
     {{vote.team.label(class_="sr-only") }}
     {{vote.team(class_="team form-control") }}
         </div>
@@ -32,8 +30,11 @@
 
 {% endfor %}  
 </ol>
-<input type="submit" value="Save Changes">
+<div class="row">
+<div class="col-md-12">{{form.submit(class_="btn btn-primary btn-lg pull-right")}}</div>
+</div>
 </form>
+</div>
 {% endblock %}
 
 {% block scripts %} 
