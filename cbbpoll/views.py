@@ -33,8 +33,9 @@ def not_found_error(error):
 
 @app.errorhandler(500)
 def internal_error(error):
+    authorize_url = g.authorize_url
     db.session.rollback()
-    return render_template('500.html', authorize_url=g.authorize_url), 500
+    return render_template('500.html', authorize_url=authorize_url), 500
 
 @app.route('/')
 def index():
