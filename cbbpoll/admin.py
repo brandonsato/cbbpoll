@@ -72,7 +72,7 @@ class ResultAdmin(AdminModelView):
 class VoteAdmin(AdminModelView):
 		column_display_pk = True
 		form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
-		column_list = ['id', 'ballot_id', 'rank', 'team', 'reason']
+		column_list = ['id', 'ballot_id', 'rank', 'team_id', 'reason']
 
 class BallotAdmin(AdminModelView):
 		column_display_pk = True

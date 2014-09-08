@@ -129,6 +129,11 @@ def submitballot():
         ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
         db.session.commit()
+
+        for voteRank, vote in enumerate(form.votes):
+            voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data )
+            db.session.add(voteModel)
+        db.session.commit()
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
     return render_template('submitballot.html', 
