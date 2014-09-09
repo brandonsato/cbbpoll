@@ -5,3 +5,4 @@ db_repository
 .venv
 config.py
 TODO
+*.pyc
