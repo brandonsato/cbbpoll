@@ -13,28 +13,28 @@
 {% endif %}
 <form method="post" name="ballot" role="form">
 {{form.hidden_tag()}}
-	<ol class="list-group ballot">
+    <ol class="list-group ballot">
 {% for vote in form.votes %}
     <li class="list-group-item{% if vote.team.errors %} list-group-item-danger{% endif %}">
-    	{% if vote.team.errors %}
-    		<div class="container">
-    		{% for error in vote.team.errors %}
-    		<div class="row">{{ error }}</div>
-    		{% endfor %}
-    		</div>
-    	{% endif %}
-    	<div class="row">
-    		<div class="col-md-6">
+        {% if vote.team.errors %}
+            <div class="container">
+            {% for error in vote.team.errors %}
+            <div class="row">{{ error }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-6">
     {{vote.hidden_tag()}}
     {{vote.team.label(class_="sr-only") }}
     {{vote.team(class_="team form-control") }}
-        </div>
-        <div class="col-md-6">
+            </div>
+            <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
     {{vote.reason(class_="form-control", placeholder="Explanation (optional)")}}
-  			</div>
-  		</div>
-		</li>
+            </div>
+        </div>
+    </li>
 
 {% endfor %}  
 </ol>
