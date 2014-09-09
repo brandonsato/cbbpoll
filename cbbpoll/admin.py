@@ -54,9 +54,9 @@ class TeamAdmin(AdminModelView):
     column_searchable_list = ('full_name', 'short_name', 'nickname', 'conference')
 
 class PollAdmin(AdminModelView):
-		column_display_pk = True
-		form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots', 'results']
-		column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'ballots', 'results']
+        column_display_pk = True
+        form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots', 'results']
+        column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'ballots', 'results']
 
 class ResultAdmin(AdminModelView):
     column_display_pk = True
@@ -70,14 +70,14 @@ class ResultAdmin(AdminModelView):
         ))
 
 class VoteAdmin(AdminModelView):
-		column_display_pk = True
-		form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
-		column_list = ['id', 'ballot_id', 'rank', 'team_id', 'reason']
+        column_display_pk = True
+        form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
+        column_list = ['id', 'ballot_id', 'rank', 'team_id', 'reason']
 
 class BallotAdmin(AdminModelView):
-		column_display_pk = True
-		form_columns = ['user_id', 'poll_id']
-		column_list = ['id', 'user_id', 'poll_id', 'updated', 'votes']
+        column_display_pk = True
+        form_columns = ['user_id', 'poll_id']
+        column_list = ['id', 'user_id', 'poll_id', 'updated', 'votes']
 
 
 

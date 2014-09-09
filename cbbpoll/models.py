@@ -10,7 +10,8 @@ class User(db.Model):
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
-    ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'joined')
+    ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'joined', cascade="all, delete-orphan",
+                    passive_deletes=True)
 
     def is_authenticated(self):
         return True
@@ -40,8 +41,10 @@ class Poll(db.Model):
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined', order_by="desc(Result.score)")
-    ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined')
+    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined', order_by="desc(Result.score)", cascade="all, delete-orphan",
+                    passive_deletes=True)
+    ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined', cascade="all, delete-orphan",
+                    passive_deletes=True)
 
     def is_open(self):
         return (datetime.now > self.openTime and datetime.now < self.closeTime)
@@ -75,17 +78,18 @@ class Ballot(db.Model):
     __tablename__ = 'ballot'
     id = db.Column(db.Integer, primary_key = True)
     updated = db.Column(db.DateTime)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id'))
-    votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
+    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
+    votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined', cascade="all, delete-orphan",
+                    passive_deletes=True)
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return '<Ballot %r>' % (self.id)
 
 class Vote(db.Model):
     __tablename__ = 'vote'
     id = db.Column(db.Integer, primary_key = True)
-    ballot_id = db.Column(db.Integer, db.ForeignKey('ballot.id'))
+    ballot_id = db.Column(db.Integer, db.ForeignKey('ballot.id', ondelete='CASCADE'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     rank = db.Column(db.SmallInteger)
     reason = db.Column(db.String(140))
@@ -96,7 +100,7 @@ class Vote(db.Model):
 class Result(db.Model):
     __tablename__ = 'result'
     id = db.Column(db.Integer, primary_key = True)
-    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id'))
+    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     score = db.Column(db.Integer)
     onevotes = db.Column(db.Integer)

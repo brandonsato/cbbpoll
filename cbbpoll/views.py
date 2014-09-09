@@ -49,9 +49,9 @@ def index():
 def login():
     form = LoginForm()
     return render_template('login.html',
-      form = form,
-      title = "Login or Sign Up",
-      authorize_url=g.authorize_url)
+        form = form,
+        title = "Login or Sign Up",
+        authorize_url=g.authorize_url)
 
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
@@ -63,7 +63,9 @@ def authorized():
     user = user_by_nickname(reddit_user.name)
     if user is None:
         nickname = reddit_user.name
-        user = User(nickname = nickname, role = 'u', accessToken = reddit_info['access_token'], refreshToken = reddit_info['refresh_token'])
+        user = User(nickname = nickname, role = 'u', 
+            accessToken = reddit_info['access_token'], 
+            refreshToken = reddit_info['refresh_token'])
     else:
         user.accessToken = reddit_info['access_token']
         user.refreshToken = reddit_info['refresh_token']
@@ -110,7 +112,7 @@ def edit():
 def teams():
     teams = Team.query.all()
     return render_template('teams.html', 
-      teams=teams, authorize_url = g.authorize_url)
+        teams=teams, authorize_url = g.authorize_url)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
 @login_required
@@ -128,8 +130,8 @@ def submitballot():
     if form.validate_on_submit():
         ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
+        # must commit to get ballot id
         db.session.commit()
-
         for voteRank, vote in enumerate(form.votes):
             voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data )
             db.session.add(voteModel)
@@ -149,7 +151,7 @@ def results(s, w):
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     return render_template('results.html', 
-      season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
+        season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
 
 @app.route('/results')
 @app.route('/results/')
@@ -164,7 +166,8 @@ def polls(page=1):
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     return render_template('results.html', 
-      season=poll.season, week=poll.week, polls=polls, poll=poll, page=page, teams=Team.query, authorize_url = g.authorize_url)
+        season=poll.season, week=poll.week, polls=polls, poll=poll, 
+        page=page, teams=Team.query, authorize_url = g.authorize_url)
 
 
 

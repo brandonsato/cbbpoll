@@ -2,7 +2,15 @@
 {% set active_page = "submitballot" %}
 {% block content %}
 <h1>Submit a Ballot for {{poll.season-1}}-{{poll.season-2000}} Week {{poll.week}}</h1>
-  {{ wtf.form_errors(form, hiddens=True) }}
+{% if form.votes.errors %}
+{% for error in form.votes.errors %}
+{% if error and error is string %}
+<div class="alert alert-danger" role="alert">
+<strong>Error: </strong>{{ error }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
 <form method="post" name="ballot" role="form">
 {{form.hidden_tag()}}
 	<ol class="list-group ballot">
