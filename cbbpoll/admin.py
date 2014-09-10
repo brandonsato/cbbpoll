@@ -25,7 +25,7 @@ def teamChoices():
 class AdminModelView(sqla.ModelView):
     form_base_class = flask_wtf__Form
     def is_accessible(self):
-        return current_user.is_admin()
+        return not current_user.is_anonymous() and current_user.is_admin()
 
 class MyAdminIndexView(admin.AdminIndexView):
     @expose('/')
