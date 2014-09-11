@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ballot}}</h1>
+<hr>
+<table class="table table-striped">
+	<tr>
+		<th>Rank</th><th>Team</th><th>Reason</th>
+	</tr>
+	{% for vote in votes %}
+	<tr>
+		<td>
+			{{vote.rank}}
+		</td>
+		<td>
+			{{ teams.get(vote.team).short_name }}
+		</td>
+		<td>
+			{{ vote.reason }}
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}

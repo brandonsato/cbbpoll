@@ -85,12 +85,13 @@ def logout():
     return redirect(url_for('index'))
 
 @app.route('/user/<nickname>')
-def user(nickname):
+@app.route('/user/<nickname>/<int:page>')
+def user(nickname, page=1):
     user = user_by_nickname(nickname)
     if user == None:
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
-    return render_template('user.html',
+    return render_template('user.html', ballots = user.ballots.paginate(page,10,False),
         user = user, authorize_url = g.authorize_url)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
@@ -133,8 +134,15 @@ def submitballot():
         # must commit to get ballot id
         db.session.commit()
         for voteRank, vote in enumerate(form.votes):
-            voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data )
+            voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data)
             db.session.add(voteModel)
+            result = Result.query.filter_by(poll_id = poll.id).filter_by(team_id= vote.team.data.id).first()
+            if not result:
+                result = Result(poll_id = ballot.poll_id, team_id = vote.team.data.id, score = (25-voteRank), onevotes = ((25-voteRank)/25) )
+            else:
+                result.score += 25-voteRank
+                result.onevotes += (25-voteRank)/25
+            db.session.add(result)
         db.session.commit()
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
@@ -168,6 +176,19 @@ def polls(page=1):
     return render_template('results.html', 
         season=poll.season, week=poll.week, polls=polls, poll=poll, 
         page=page, teams=Team.query, authorize_url = g.authorize_url)
+
+@app.route('/ballot/<int:ballot_id>')
+def ballot(ballot_id):
+    ballot = Ballot.query.get(ballot_id)
+    if not ballot:
+        flash('No such ballot', 'warning')
+        return redirect(url_for('index'))
+    votes = []
+    for vote in ballot.votes:
+        votes.append({'rank':vote.rank, 'team':vote.team_id, 'reason':vote.reason})
+    votes.sort(key=lambda vote: vote['rank'])
+    return render_template('ballot.html', ballot=ballot, votes=votes, 
+        teams=Team.query, authorize_url=g.authorize_url)
 
 
 

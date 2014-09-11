@@ -10,7 +10,7 @@ class User(db.Model):
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
-    ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'joined', cascade="all, delete-orphan",
+    ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
 
     def is_authenticated(self):
@@ -56,6 +56,9 @@ class Poll(db.Model):
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)
 
+    def __str__(self):
+        return 'Poll for Week %r of %r-%r' % (int(self.week), int(self.season-1), int(self.season-2000))
+
 class Team(db.Model):
     __tablename__ = 'team'
     id = db.Column(db.Integer, primary_key = True)
@@ -85,6 +88,9 @@ class Ballot(db.Model):
 
     def __repr__(self):
         return '<Ballot %r>' % (self.id)
+
+    def __str__(self):
+        return "".join([self.pollster.nickname,"'s Ballot for ", str(self.fullpoll)])
 
 class Vote(db.Model):
     __tablename__ = 'vote'
