@@ -45,15 +45,6 @@ def index():
         user = user,
         authorize_url=g.authorize_url)
 
-@app.route('/login')
-def login():
-    form = LoginForm()
-    return render_template('login.html',
-        form = form,
-        title = "Login or Sign Up",
-        authorize_url=g.authorize_url)
-
-
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
 def authorized():
     reddit_state = request.args.get('state', '')
