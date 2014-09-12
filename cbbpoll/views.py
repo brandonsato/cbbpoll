@@ -69,7 +69,6 @@ def authorized():
     login_user(user, remember = remember_me)
     return redirect(request.args.get('next') or url_for('index'))
 
-
 @app.route('/logout')
 def logout():
     logout_user()
@@ -173,6 +172,10 @@ def ballot(ballot_id):
     ballot = Ballot.query.get(ballot_id)
     if not ballot:
         flash('No such ballot', 'warning')
+        return redirect(url_for('index'))
+    poll = Poll.query.get(ballot.poll_id)
+    if not poll.has_completed():
+        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     votes = []
     for vote in ballot.votes:

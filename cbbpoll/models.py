@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from cbbpoll import db, app
 
 class User(db.Model):
@@ -47,10 +47,10 @@ class Poll(db.Model):
                     passive_deletes=True)
 
     def is_open(self):
-        return (datetime.now > self.openTime and datetime.now < self.closeTime)
+        return (datetime.utcnow() > self.openTime and datetime.utcnow() < self.closeTime)
 
     def has_completed(self):
-        return datetime.now > self.closeTime
+        return (datetime.utcnow() > self.closeTime)
 
 
     def __repr__(self):
