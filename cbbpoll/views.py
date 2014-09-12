@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r, admin
-from forms import LoginForm, EditProfileForm, PollBallotForm
+from forms import EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote, Result
 from datetime import datetime
 
@@ -17,11 +17,22 @@ def open_polls():
 
 @app.before_request
 def before_request():
-    g.authorize_url = r.get_authorize_url('cbbloginkey',refreshable=True)
-    g.user = current_user
-    if g.user.is_authenticated():
-        db.session.add(g.user)
-        db.session.commit()
+    # prevent generating multiple oauth states per page load
+    if request.endpoint != 'static':
+        g.user = current_user
+        # don't need an authorize_url if the user is logged in
+        # but must be initialized for passing to render_template
+        if g.user.is_authenticated():
+            db.session.add(g.user)
+            db.session.commit()
+            g.authorize_url = ''
+        elif request.endpoint != 'authorized':
+            from uuid import uuid1
+            state = str(uuid1()) 
+            session['oauth_state'] = state
+            session['last_path'] = request.path
+            g.authorize_url = r.get_authorize_url(state,refreshable=True)
+
 
 @lm.user_loader
 def load_user(id):
@@ -51,6 +62,10 @@ def authorized():
     reddit_code = request.args.get('code', '')
     reddit_info = r.get_access_information(reddit_code)
     reddit_user = r.get_me()
+    next_path = session['last_path']
+    if reddit_state != session['oauth_state']:
+        flash("Invalid state given, please try again.", 'danger')
+        return redirect(next_path or url_for('index'))
     user = user_by_nickname(reddit_user.name)
     if user is None:
         nickname = reddit_user.name
@@ -67,15 +82,17 @@ def authorized():
         remember_me = session['remember_me']
         session.pop('remember_me', None)
     login_user(user, remember = remember_me)
-    return redirect(request.args.get('next') or url_for('index'))
+    return redirect(next_path or url_for('index'))
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    next_path = session['last_path']
+    return redirect(next_path or url_for('index'))
 
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
+@app.route('/user/<nickname>/<int:page>/')
 def user(nickname, page=1):
     user = user_by_nickname(nickname)
     if user == None:
@@ -153,6 +170,7 @@ def results(s, w):
 
 @app.route('/results')
 @app.route('/results/')
+@app.route('/results/<int:page>/')
 @app.route('/results/<int:page>')
 def polls(page=1):
     polls = completed_polls().paginate(page, 1, False).items;
@@ -167,6 +185,7 @@ def polls(page=1):
         season=poll.season, week=poll.week, polls=polls, poll=poll, 
         page=page, teams=Team.query, authorize_url = g.authorize_url)
 
+@app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
 def ballot(ballot_id):
     ballot = Ballot.query.get(ballot_id)
