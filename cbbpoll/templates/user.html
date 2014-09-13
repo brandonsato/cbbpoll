@@ -12,4 +12,8 @@
 {% else %}
 No ballots submitted
 {% endif %}
+<ul class="pager">
+{% if ballots.items.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.next_num) }}">&larr; Older</a></li>{% endif %}
+{% if ballots.items.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.prev_num) }}">Newer &rarr;</a></li>{% endif %}
+</ul>
 {% endblock %}
