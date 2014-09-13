@@ -17,7 +17,9 @@
 			{{rank}}
 		</td>
 		<td>
-			{{ teams.get(result.team_id).short_name }}
+			{% if teams.get(result.team_id).short_name %}{{ teams.get(result.team_id).short_name }}
+			{% else %}{{teams.get(result.team_id).full_name }}
+			{% endif %}
 		</td>
 		<td>
 			{{ result.score}}{% if result.onevotes and result.onevotes > 0 %}({{result.onevotes}}){%endif%}
