@@ -56,7 +56,8 @@ def index():
         title = 'Home',
         user = user,
         poll = poll,
-        authorize_url=g.authorize_url)
+        authorize_url=g.authorize_url,
+        teams=Team.query)
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
 def authorized():
