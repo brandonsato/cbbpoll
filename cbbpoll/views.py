@@ -51,9 +51,11 @@ def internal_error(error):
 @app.route('/')
 def index():
     user = g.user
+    poll = completed_polls().first()
     return render_template('index.html',
         title = 'Home',
         user = user,
+        poll = poll,
         authorize_url=g.authorize_url)
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])

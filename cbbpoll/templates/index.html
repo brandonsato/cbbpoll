@@ -1,9 +1,13 @@
 {% extends "base.html" %}
 {% set active_page = "index" %}
 {% block content %}
+{% if not g.user.is_authenticated() %}
 <div class="jumbotron">
   <h1>Welcome!</h1>
   <p>This is the test site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Pollsters are not being added at this time, but feel free to login or create an account with the big button below.</p>
   <p><a href="{{authorize_url}}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
 </div>
+{% endif %}
+<h2> Latest Poll Results </h2>
+{% include 'resulttable.html' %}
 {% endblock %}
