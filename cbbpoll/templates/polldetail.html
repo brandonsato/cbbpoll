@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% set active_page = "poll" %}
+
+{% block content %}
+<h1>Results for Week {{week}} of {{season-1}}-{{season-2000}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button>
+</h1>
+{% include 'resulttable.html' %}
+<div class="pop-bg">
+	&nbsp;
+</div>
+<div class="pop">
+  <span>✖</span>
+  <h3>Reddit Formatted Table</h3>
+  <textarea readonly>
+Rank||Team|Score(First Place Votes)
+:--:|:--:|:---|:---{% set prev_score = -1 %}{% for result in poll.results %}{%- if loop.index < 26 -%}{% if result.score == prev_score %}{% set rank = prev_rank %}{% else %}{% set rank = loop.index %}{% endif %}{% set prev_rank = rank %}{% set prev_score = result.score %}
+#{{rank}}|{%- if teams.get(result.team_id).flair -%}[](/{{teams.get(result.team_id).flair}}){%-endif-%}|{%-if teams.get(result.team_id).short_name-%}{{teams.get(result.team_id).short_name}}{%-else-%}{{teams.get(result.team_id).full_name}}{%-endif-%}|{{ result.score}}{%- if result.onevotes and result.onevotes > 0 -%}({{result.onevotes}}){%-endif-%}
+{% elif loop.index == 26 %}
+
+Others Receiving Votes: {{teams.get(result.team_id).short_name}}({{result.score}}){%- else -%}, {{ teams.get(result.team_id).short_name }}({{result.score}})
+{%- endif -%}
+{% endfor %}
+  </textarea>
+</div>
+{% endblock %}
+{% block scripts %} 
+{{super()}}
+<script>
+ $(document).ready(function () {
+     $(".reddit-table").click(function () {
+         $(".pop, .pop-bg").fadeIn(100);
+         positionPopup();
+     });
+
+     $(".pop > span, .pop-bg").click(function () {
+         $(".pop, .pop-bg").fadeOut(100);
+     });
+ });
+</script>
+{% endblock %}

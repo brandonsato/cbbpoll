@@ -41,4 +41,6 @@ class PollBallotForm(Form):
                 raise ValidationError()
         if len(seen_twice) > 0:
             raise ValidationError('Each team may only appear once per ballot')
-            
+
+class EmailReminderForm(Form):
+    submit = SubmitField('Send Email Reminder')

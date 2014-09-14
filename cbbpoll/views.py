@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from cbbpoll import app, db, lm, r, admin
-from forms import EditProfileForm, PollBallotForm
+from cbbpoll import app, db, lm, r, admin, email
+from forms import EditProfileForm, PollBallotForm, EmailReminderForm
 from models import User, Poll, Team, Ballot, Vote, Result
 from datetime import datetime
 
@@ -159,16 +159,15 @@ def submitballot():
     return render_template('submitballot.html', 
       teams=teams, form=form, authorize_url = g.authorize_url, poll=poll)
 
-@app.route('/poll/<int:s>/<int:w>')
+@app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def results(s, w):
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
     elif not poll.has_completed:
-        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
-        return redirect(url_for('index'))
-    return render_template('results.html', 
+        flash('Poll has not yet completed!', 'warning')
+    return render_template('polldetail.html', 
         season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
 
 @app.route('/results')
