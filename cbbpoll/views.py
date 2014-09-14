@@ -90,8 +90,8 @@ def authorized():
 @app.route('/logout')
 def logout():
     logout_user()
-    next_path = session['last_path']
-    return redirect(next_path or url_for('index'))
+    flash ('Successfully Logged Out', 'success')
+    return redirect(url_for('index'))
 
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
