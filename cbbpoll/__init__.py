@@ -18,4 +18,4 @@ migrate = Migrate(app, db)
 r = praw.Reddit('/r/CollegeBasketball User Poll test')
 r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'], app.config['REDDIT_CLIENT_SECRET'], app.config['REDDIT_REDIRECT_URI'])
 
-from cbbpoll import views, models #, admin
+from cbbpoll import views, models, admin
