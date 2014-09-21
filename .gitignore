@@ -6,3 +6,5 @@ db_repository
 config.py
 TODO
 *.pyc
+
+*.swp
