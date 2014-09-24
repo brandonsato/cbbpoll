@@ -15,11 +15,16 @@ from cbbpoll import app, db
 from models import User, Team, Ballot, Poll, Result, Vote
 
 def teamChoices():
-    teams = Team.query.all()
-    choices = [('-1', '')]
-    for team in teams:
-        choice = ((team.id, str(team)))
-        choices.append(choice)
+    try:
+        teams = Team.query.all()
+        choices = [('-1', '')]
+        for team in teams:
+            choice = ((team.id, str(team)))
+            choices.append(choice)
+    except Exception:
+        choices = None
+
+
     return choices
 
 class AdminModelView(sqla.ModelView):
@@ -64,7 +69,7 @@ class ResultAdmin(AdminModelView):
     column_list = ['id', 'poll_id', 'team_id', 'score', 'onevotes']
     form_overrides = dict(team_id=Select2Field)
     form_args = dict(
-        team_id=dict(choices = teamChoices(), 
+        team_id=dict(choices = teamChoices(),
         validators=[InputRequired(message="You must select a team.")],
         coerce=int
         ))
