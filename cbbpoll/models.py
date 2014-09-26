@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from cbbpoll import db, app
 
 class User(db.Model):
@@ -52,6 +52,13 @@ class Poll(db.Model):
     def has_completed(self):
         return (datetime.utcnow() > self.closeTime)
 
+    def closing_three_days(self):
+        untilClose =  self.openTime - datetime.utcnow()
+        return untilClose < timedelta(days=3,hours=0) and untilClose > timedelta(days=2, hours=23)
+
+    def closing_twelve_hours(self):
+        untilClose = self.closeTime - datetime.utcnow()
+        return untilClose < timedelta(hours=12) and untilClose > timedelta(hours=11)
 
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)
