@@ -42,8 +42,8 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 class UserAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['nickname', 'email', 'role']
-    column_list = ['id', 'nickname', 'email', 'role']
+    form_columns = ['nickname', 'email', 'emailConfirmed', 'role']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role']
     column_searchable_list = ('nickname', 'email')
     form_overrides = dict(role=Select2Field)
     form_args = dict(

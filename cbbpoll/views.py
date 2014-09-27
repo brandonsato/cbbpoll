@@ -28,7 +28,7 @@ def before_request():
             g.authorize_url = ''
         elif request.endpoint != 'authorized':
             from uuid import uuid1
-            state = str(uuid1()) 
+            state = str(uuid1())
             session['oauth_state'] = state
             session['last_path'] = request.path
             g.authorize_url = r.get_authorize_url(state,refreshable=True)
@@ -72,8 +72,8 @@ def authorized():
     user = user_by_nickname(reddit_user.name)
     if user is None:
         nickname = reddit_user.name
-        user = User(nickname = nickname, role = 'u', 
-            accessToken = reddit_info['access_token'], 
+        user = User(nickname = nickname, role = 'u',
+            accessToken = reddit_info['access_token'],
             refreshToken = reddit_info['refresh_token'])
     else:
         user.accessToken = reddit_info['access_token']
@@ -109,20 +109,48 @@ def user(nickname, page=1):
 def edit():
     form = EditProfileForm()
     if form.validate_on_submit():
-        g.user.email = form.email.data
+        if form.email.data == g.user.email:
+            return redirect(url_for('edit'))
+        provisionalEmail = form.email.data
+        if g.user.email is None:
+            g.user.email = provisionalEmail
+            g.user.emailConfirmed = False
         db.session.add(g.user)
         db.session.commit()
-        flash('Your changes have been saved.', 'info')
-        return redirect(url_for('edit'))
-    else:
-        form.email.data = g.user.email
+        email.send_email('Confirm Your Account', [provisionalEmail], 'confirmation',
+            user=g.user, token=g.user.generate_confirmation_token(email=provisionalEmail))
+        flash('Please check your email for a confirmation message.', 'warning')
+        return redirect(url_for('index'))
+
+    form.email.data = g.user.email
     return render_template('editprofile.html',
         form = form, authorize_url = g.authorize_url)
+
+@app.route('/confirm/<token>')
+@login_required
+def confirm(token):
+    if current_user.confirm(token):
+        print(current_user.email)
+        flash('You have successfully confirmed your email address.  Thanks!')
+    else:
+        flash('The confirmation link is invalid or has expired.')
+    return redirect(url_for('index'))
+
+@app.route('/confirm')
+@login_required
+def retry_confirm():
+    if current_user.emailConfirmed:
+        flash('Your email address has been confirmed.', 'success')
+        return redirect(url_for('index'))
+    token = current_user.generate_confirmation_token()
+    email.send_email('Confirm Your Account', [current_user], 'confirmation', token=token)
+    flash('A new confirmation email has been sent to you.', 'info')
+    return redirect(url_for('index'))
 
 @app.route('/teams')
 def teams():
     teams = Team.query.all()
-    return render_template('teams.html', 
+    return render_template('teams.html',
         teams=teams, authorize_url = g.authorize_url)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
@@ -156,7 +184,7 @@ def submitballot():
         db.session.commit()
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
-    return render_template('submitballot.html', 
+    return render_template('submitballot.html',
       teams=teams, form=form, authorize_url = g.authorize_url, poll=poll)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
@@ -167,7 +195,7 @@ def results(s, w):
         return redirect(url_for('index'))
     elif not poll.has_completed:
         flash('Poll has not yet completed!', 'warning')
-    return render_template('polldetail.html', 
+    return render_template('polldetail.html',
         season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
 
 @app.route('/results')
@@ -183,8 +211,8 @@ def polls(page=1):
     elif not poll.has_completed:
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
-    return render_template('results.html', 
-        season=poll.season, week=poll.week, polls=polls, poll=poll, 
+    return render_template('results.html',
+        season=poll.season, week=poll.week, polls=polls, poll=poll,
         page=page, teams=Team.query, authorize_url = g.authorize_url)
 
 @app.route('/ballot/<int:ballot_id>/')
@@ -202,8 +230,7 @@ def ballot(ballot_id):
     for vote in ballot.votes:
         votes.append({'rank':vote.rank, 'team':vote.team_id, 'reason':vote.reason})
     votes.sort(key=lambda vote: vote['rank'])
-    return render_template('ballot.html', ballot=ballot, votes=votes, 
+    return render_template('ballot.html', ballot=ballot, votes=votes,
         teams=Team.query, authorize_url=g.authorize_url)
-
 
 
