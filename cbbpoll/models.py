@@ -46,16 +46,11 @@ class User(db.Model):
         if data.get('confirm') != self.id:
             return False
         if data.get('email') == self.email and self.emailConfirmed:
-            print('this')
             #Avoid a database write, but don't want to give an error to user.
             return True
-        print('that')
         self.email = data.get('email')
         self.emailConfirmed = True
-        print(self.email)
-        print(self.emailConfirmed)
         db.session.add(self)
-        db.session.commit()
         return True
 
     def __repr__(self):

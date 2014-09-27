@@ -112,11 +112,11 @@ def edit():
         if form.email.data == g.user.email:
             return redirect(url_for('edit'))
         provisionalEmail = form.email.data
-        if g.user.email is None:
+        if g.user.email is None or g.user.emailConfirmed == False:
             g.user.email = provisionalEmail
             g.user.emailConfirmed = False
-        db.session.add(g.user)
-        db.session.commit()
+            db.session.add(g.user)
+            db.session.commit()
         email.send_email('Confirm Your Account', [provisionalEmail], 'confirmation',
             user=g.user, token=g.user.generate_confirmation_token(email=provisionalEmail))
         flash('Please check your email for a confirmation message.', 'warning')
