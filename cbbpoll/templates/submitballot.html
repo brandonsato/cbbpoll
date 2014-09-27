@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% set active_page = "submitballot" %}
 {% block content %}
-<h1>Submit a Ballot for {{poll.season-1}}-{{poll.season-2000}} Week {{poll.week}}</h1>
+<h1>Submit a Ballot for {{poll.season-1}}-{{poll.season-2000}}
+    {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %}
+</h1>
 {% if form.votes.errors %}
 {% for error in form.votes.errors %}
 {% if error and error is string %}
@@ -36,7 +38,7 @@
         </div>
     </li>
 
-{% endfor %}  
+{% endfor %}
 </ol>
 <div class="row">
 <div class="col-md-12">{{form.submit(class_="btn btn-primary btn-lg pull-right")}}</div>
@@ -45,7 +47,7 @@
 </div>
 {% endblock %}
 
-{% block scripts %} 
+{% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script>
