@@ -133,13 +133,23 @@ def submitballot():
         flash('No open polls', 'info')
         return redirect(url_for('index'))
     ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
-    if ballot:
-        flash('Ballot already submitted to this poll', 'warning')
-        return redirect(url_for('index'))
     teams = Team.query.all()
-    form = PollBallotForm()
+    if ballot:
+        voteDicts = [{} for i in range(25)]
+        for vote in ballot.votes:
+            voteIndex = vote.rank-1
+            voteDicts[voteIndex]['team'] = Team.query.get(vote.team_id)
+            voteDicts[voteIndex]['reason'] = vote.reason
+        print voteDicts
+        data_in = {'votes': voteDicts}
+        form = PollBallotForm(data = data_in)
+    else:
+        form = PollBallotForm()
+
     if form.validate_on_submit():
-        ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
+        if ballot:
+            db.session.delete(ballot)
+        ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
         # must commit to get ballot id
         db.session.commit()
@@ -165,7 +175,7 @@ def results(s, w):
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
-    elif not poll.has_completed:
+    elif not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed!', 'warning')
     return render_template('polldetail.html', 
         season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
@@ -180,7 +190,7 @@ def polls(page=1):
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
-    elif not poll.has_completed:
+    elif not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     return render_template('results.html', 
@@ -195,7 +205,7 @@ def ballot(ballot_id):
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
-    if not poll.has_completed():
+    if not poll.has_completed() and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     votes = []
