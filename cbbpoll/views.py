@@ -109,6 +109,13 @@ def user(nickname, page=1):
 def edit():
     form = EditProfileForm()
     if form.validate_on_submit():
+        if not form.email.data:
+            g.user.email = None;
+            g.user.emailConfirmed = None;
+            db.session.add(g.user)
+            db.session.commit()
+            flash('Email address successfully cleared from profile.', 'info')
+            return redirect(url_for('index'))
         if form.email.data == g.user.email:
             return redirect(url_for('edit'))
         provisionalEmail = form.email.data
@@ -131,9 +138,9 @@ def edit():
 def confirm(token):
     if current_user.confirm(token):
         print(current_user.email)
-        flash('You have successfully confirmed your email address.  Thanks!')
+        flash('You have successfully confirmed your email address.  Thanks!', 'success')
     else:
-        flash('The confirmation link is invalid or has expired.')
+        flash('The confirmation link is invalid or has expired.', 'danger')
     return redirect(url_for('index'))
 
 @app.route('/confirm')

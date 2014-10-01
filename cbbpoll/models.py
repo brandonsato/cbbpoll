@@ -51,6 +51,7 @@ class User(db.Model):
         self.email = data.get('email')
         self.emailConfirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
     def __repr__(self):
