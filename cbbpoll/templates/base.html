@@ -49,11 +49,9 @@
             {% if g.user.is_admin() %}
             <li><a href="{{url_for('admin.index')}}">Admin</a></li>
             {% endif %}
-            {% if g.user.is_pollster() %}
             <li><div>
-              <a href="{{url_for('submitballot')}}" class="btn btn-primary navbar-btn">Create Ballot</a>
+              <a href="{{url_for('submitballot')}}" class="btn btn-primary navbar-btn">Submit/Edit Ballot</a>
             </div></li>
-            {% endif %}
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}
