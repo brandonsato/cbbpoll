@@ -76,7 +76,7 @@ class Poll(db.Model):
         return (datetime.utcnow() > self.closeTime)
 
     def closing_three_days(self):
-        untilClose =  self.openTime - datetime.utcnow()
+        untilClose =  self.closeTime - datetime.utcnow()
         return untilClose < timedelta(days=3,hours=0) and untilClose > timedelta(days=2, hours=23)
 
     def closing_twelve_hours(self):
