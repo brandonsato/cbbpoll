@@ -1,0 +1,11 @@
+Dear {{ user.nickname }},
+
+Welcome to the /r/CollegeBasketball user poll!
+
+To confirm your email address, please click on the following link:
+
+{{ url_for('confirm', token=token, _external=True) }}
+
+Thanks!
+
+Note: replies to this email address are not monitored.

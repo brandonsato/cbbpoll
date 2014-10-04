@@ -1,0 +1,9 @@
+Dear {{ user.nickname }},
+
+The /r/CollegeBasketball User {{poll}} is open for ballot submission! Follow the link below to submit your ballot.
+
+{{ url_for('submitballot', _external = True) }}
+
+Thanks!
+
+Note: replies to this email address are not monitored.

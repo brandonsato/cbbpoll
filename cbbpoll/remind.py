@@ -3,7 +3,7 @@ from flask.ext.script import Manager
 from cbbpoll import app, email
 from models import User, Poll
 
-#These are meant to be run hourly, more frequently than that will result in multiple reminders being sent
+# These are meant to be run hourly, more frequently than that will result in multiple reminders being sent
 
 ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots')
 
@@ -20,21 +20,19 @@ def viaEmail():
         users = User.query.all()
         recipients = []
         for user in users:
-            if user.is_pollster() and user.email:
-                recipients.append(user.email)
+            if user.is_pollster() and user.email and user.emailConfirmed:
+                recipients.append(user)
         if recipients:
             if new_poll:
-                email.send_email("[/r/CollegeBasketball] REMINDER: User "+str(new_poll)+" is Open for Ballot Submission", 
-                    'cbbuserpoll@gmail.com', 
-                    recipients, 
-                    str(new_poll) + " is open for ballot submission! \n\nGo to http://www.cbbpoll.com to submit your ballot", 
-                    str(new_poll) + " is open for ballot submission! \n\nGo to http://www.cbbpoll.com to submit your ballot")
+                for user in recipients:
+                    print 'sending open email'
+                    email.send_email("[/r/CollegeBasketball] User "+str(new_poll)+" is Open for Ballot Submission!", 
+                    [user.email], 'email_remind_open', user=user, poll = new_poll)
             if closing_poll:
-                email.send_email("[/r/CollegeBasketball] REMINDER: User "+str(new_poll)+" is Closing Soon", 
-                    'cbbuserpoll@gmail.com', 
-                    recipients, 
-                    str(new_poll) + " is closing for ballot submission! \n\nGo to http://www.cbbpoll.com to submit your ballot", 
-                    str(new_poll) + " is closing for ballot submission! \n\nGo to http://www.cbbpoll.com to submit your ballot")
+                for user in recipients:
+                    print 'sending close email'
+                    email.send_email("[/r/CollegeBasketball] REMINDER: User "+str(closing_poll)+" is Closing Soon", 
+                    [user.email], 'email_remind_close', user=user, poll = closing_poll)
 
 @ReminderCommand.command
 def viaRedditPM():

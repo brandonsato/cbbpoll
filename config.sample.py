@@ -1,5 +1,5 @@
 # Modify these values for your app and environment and rename to config.py
-# Don't track changes to this file for security purposes. 
+# Don't track changes to this file for security purposes.
 
 CSRF_ENABLED = True
 SECRET_KEY = 'Hard to guess!'
@@ -21,3 +21,4 @@ MAIL_USE_TLS = False
 MAIL_USE_SSL = True
 MAIL_USERNAME = 'gmail-username'
 MAIL_PASSWORD = 'gmail-password'
+MAIL_FROM = 'from.address@example.com'

@@ -8,8 +8,8 @@ def send_async_email(app, msg):
     with app.app_context():
         mail.send(msg)
 
-def send_email(subject, sender, recipients, text_body, html_body):
-    msg = Message(subject, sender = sender, recipients = recipients)
-    msg.body = text_body
-    msg.html = html_body
+def send_email(subject, recipients, template, **kwargs):
+    msg = Message(subject, sender = app.config['MAIL_FROM'], recipients = recipients)
+    msg.body = render_template(template + '.txt', **kwargs)
+    #msg.html = html_body
     send_async_email(app, msg)
