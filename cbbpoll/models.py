@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
 from cbbpoll import db, app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     nickname = db.Column(db.String(20), index = True)
     email = db.Column(db.String(120), index = True)
+    emailConfirmed = db.Column(db.Boolean, default=False)
     role = db.Column(db.Enum('u','p','a'), default = 'u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
@@ -31,6 +33,27 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
+    def generate_confirmation_token(self, expiration=3600, email=email):
+        s = Serializer(app.config['SECRET_KEY'], expiration)
+        return s.dumps({'confirm': self.id, 'email': email})
+
+    def confirm(self, token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+        if data.get('email') == self.email and self.emailConfirmed:
+            #Avoid a database write, but don't want to give an error to user.
+            return True
+        self.email = data.get('email')
+        self.emailConfirmed = True
+        db.session.add(self)
+        db.session.commit()
+        return True
+
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
@@ -53,7 +76,7 @@ class Poll(db.Model):
         return (datetime.utcnow() > self.closeTime)
 
     def closing_three_days(self):
-        untilClose =  self.openTime - datetime.utcnow()
+        untilClose =  self.closeTime - datetime.utcnow()
         return untilClose < timedelta(days=3,hours=0) and untilClose > timedelta(days=2, hours=23)
 
     def closing_twelve_hours(self):
