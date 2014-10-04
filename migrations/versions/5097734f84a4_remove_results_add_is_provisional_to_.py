@@ -1,14 +1,14 @@
 """Remove Results, add is_provisional to Ballot
 
 Revision ID: 5097734f84a4
-Revises: a0c44ab3695
+Revises: 3993e089e5a6
 Create Date: 2014-10-02 04:04:53.838550
 
 """
 
 # revision identifiers, used by Alembic.
 revision = '5097734f84a4'
-down_revision = 'a0c44ab3695'
+down_revision = '3993e089e5a6'
 
 from alembic import op
 import sqlalchemy as sa
