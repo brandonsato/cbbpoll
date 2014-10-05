@@ -116,7 +116,7 @@ def edit():
             db.session.commit()
             flash('Email address successfully cleared from profile.', 'info')
             return redirect(url_for('index'))
-        if form.email.data == g.user.email:
+        if form.email.data == g.user.email and g.user.emailConfirmed:
             return redirect(url_for('edit'))
         provisionalEmail = form.email.data
         if g.user.email is None or g.user.emailConfirmed == False:
