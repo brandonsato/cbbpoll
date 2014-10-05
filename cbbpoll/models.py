@@ -94,6 +94,7 @@ class Team(db.Model):
     short_name = db.Column(db.String(50))
     flair = db.Column(db.String(50))
     nickname = db.Column(db.String(50))
+    png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
 
     def __repr__(self):
