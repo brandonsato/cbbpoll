@@ -75,8 +75,10 @@ def internal_error(error):
 def index():
     user = g.user
     poll = completed_polls().first()
+    (results, official_ballots, provisional_ballots) = generate_results(poll)
     return render_template('index.html',
         title = 'Home',
+        results = results,
         user = user,
         poll = poll,
         authorize_url=g.authorize_url,
@@ -212,7 +214,7 @@ def submitballot():
             ballot.updated = datetime.utcnow()
             ballot.is_provisional = not pollster
         else:
-            ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id, 
+            ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id,
             is_provisional = not pollster)
         db.session.add(ballot)
         # must commit to get ballot id
@@ -223,8 +225,8 @@ def submitballot():
         db.session.commit()
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
-    return render_template('submitballot.html', 
-      teams=teams, form=form, authorize_url = g.authorize_url, poll=poll, 
+    return render_template('submitballot.html',
+      teams=teams, form=form, authorize_url = g.authorize_url, poll=poll,
       is_provisional = not pollster, editing = editing)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
@@ -237,9 +239,9 @@ def results(s, w):
         flash('Poll has not yet completed!', 'warning')
     (results, official_ballots, provisional_ballots) = generate_results(poll)
 
-    return render_template('polldetail.html', 
-        season=s, week=w, poll=poll, results=results, official_ballots = official_ballots, 
-        provisional_ballots = provisional_ballots, users = User.query, 
+    return render_template('polldetail.html',
+        season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
+        provisional_ballots = provisional_ballots, users = User.query,
         teams = Team.query, authorize_url = g.authorize_url)
 
 
@@ -258,9 +260,9 @@ def polls(page=1):
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots) = generate_results(poll)
 
-    return render_template('results.html', 
-        season=poll.season, week=poll.week, polls=polls, poll=poll, 
-        official_ballots = official_ballots, page=page, results=results, 
+    return render_template('results.html',
+        season=poll.season, week=poll.week, polls=polls, poll=poll,
+        official_ballots = official_ballots, page=page, results=results,
         users = User.query, teams=Team.query, authorize_url = g.authorize_url)
 
 @app.route('/ballot/<int:ballot_id>/')
