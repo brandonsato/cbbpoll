@@ -29,12 +29,16 @@
 			{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}
 		</td>
 	</tr>
-	{%- elif loop.index == 26 -%}
+	{%- if loop.index == 25 -%}
 </table>
+	{%- endif -%}
+	{%- elif loop.index == 26 -%}
 	<div class='panel panel-default'>
 		<div class='panel-body'>
 			<strong>Others Receiving Votes:</strong> {{ team.short_name }}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
 	{%- endif -%}
 	{% endfor %}
+	{%- if results|length > 25 -%}
 </div></div>
+{% endif %}
 {% endif %}

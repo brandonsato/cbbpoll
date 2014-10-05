@@ -38,6 +38,20 @@ Others Receiving Votes: {{team.short_name}}({{result[1][0]}}){%- else -%}, {{ te
 {% endfor %}
   </textarea>
 </div>
+
+<div>
+  <h5>Official Ballots</h5>
+  {% for ballot in official_ballots %}
+  {%- if loop.index != 1 %}, {% endif %}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {%- endfor %}
+  <h5>Provisional Ballots</h5>
+  {% for ballot in provisional_ballots %}
+  {%- if loop.index != 1 -%}, {%- endif -%}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {% endfor %}
+</div>
+
 {% endblock %}
 {% block scripts %} 
 {{super()}}
