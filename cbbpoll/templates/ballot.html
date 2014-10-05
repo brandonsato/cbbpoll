@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ballot}}</h1>
+<h1>{{ballot}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></h1>
 <hr>
+{% if ballot.is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> This is a provisional ballot. It does not count towards this poll's results.</div>{% endif %}
 <table class="table table-striped">
 	<tr>
 		<th>Rank</th><th>Team</th><th>Reason</th>
 	</tr>
-	{% for vote in votes %}
+	{% for vote in votes %}{% set team = teams.get(vote.team) %}
 	<tr>
 		<td>
 			{{vote.rank}}
 		</td>
 		<td>
-			{{ teams.get(vote.team).short_name }}
+			{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}
 		</td>
 		<td>
 			{{ vote.reason }}
@@ -20,5 +21,32 @@
 	</tr>
 	{% endfor %}
 </table>
+<div class="pop">
+  <span>✖</span>
+  <h3>Reddit Formatted Table</h3>
+  <textarea readonly>
+Rank||Team|Reason
+:--:|:--:|:---|:---
+{% set prev_score = -1 -%}
+{%- for vote in votes -%}
+{%- set team = teams.get(vote.team) -%}
+#{{vote.rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{vote.reason}}
+{% endfor %}
+ </textarea>
+</div>
+{% endblock %}
+{% block scripts %} 
+{{super()}}
+<script>
+ $(document).ready(function () {
+     $(".reddit-table").click(function () {
+         $(".pop, .pop-bg").fadeIn(100);
+         positionPopup();
+     });
 
+     $(".pop > span, .pop-bg").click(function () {
+         $(".pop, .pop-bg").fadeOut(100);
+     });
+ });
+</script>
 {% endblock %}

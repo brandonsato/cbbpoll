@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r, admin, email
 from forms import EditProfileForm, PollBallotForm, EmailReminderForm
-from models import User, Poll, Team, Ballot, Vote, Result
+from models import User, Poll, Team, Ballot, Vote
 from datetime import datetime
 
 def user_by_nickname(name):
@@ -13,6 +13,29 @@ def completed_polls():
 
 def open_polls():
     return Poll.query.filter(Poll.closeTime > datetime.now()).filter(Poll.openTime < datetime.now())
+
+def generate_results(poll, use_provisionals=False):
+    results_dict = {}
+    official_ballots = []
+    provisional_ballots = []
+    for ballot in poll.ballots:
+        if ballot.is_provisional:
+            provisional_ballots.append(ballot)
+        else:
+            official_ballots.append(ballot)
+    counted_ballots = list(official_ballots)
+    if use_provisionals:
+        official_ballots.extend(provisional_ballots)
+    for ballot in counted_ballots:
+        for vote in ballot.votes:
+            if vote.team_id in results_dict:
+                results_dict[vote.team_id][0] += 26-vote.rank
+            else:
+                results_dict[vote.team_id] = [26-vote.rank, 0]
+            if vote.rank == 1:
+                results_dict[vote.team_id][1] += 1
+    results = sorted(results_dict.items(), key = lambda (k,v): (v[0],v[1]), reverse=True)
+    return (results, official_ballots, provisional_ballots)
 
 
 @app.before_request
@@ -52,8 +75,10 @@ def internal_error(error):
 def index():
     user = g.user
     poll = completed_polls().first()
+    (results, official_ballots, provisional_ballots) = generate_results(poll)
     return render_template('index.html',
         title = 'Home',
+        results = results,
         user = user,
         poll = poll,
         authorize_url=g.authorize_url,
@@ -168,31 +193,41 @@ def submitballot():
         flash('No open polls', 'info')
         return redirect(url_for('index'))
     ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
-    if ballot:
-        flash('Ballot already submitted to this poll', 'warning')
-        return redirect(url_for('index'))
     teams = Team.query.all()
-    form = PollBallotForm()
+    pollster = current_user.is_pollster()
+    editing = bool(ballot)
+    if ballot:
+        vote_dicts = [{} for i in range(25)]
+        for vote in ballot.votes:
+            vote_index = vote.rank-1
+            vote_dicts[vote_index]['team'] = Team.query.get(vote.team_id)
+            vote_dicts[vote_index]['reason'] = vote.reason
+        data_in = {'votes': vote_dicts}
+        form = PollBallotForm(data = data_in)
+    else:
+        form = PollBallotForm()
+
     if form.validate_on_submit():
-        ballot = Ballot(updated = datetime.now(), poll_id = poll.id, user_id = g.user.id)
+        if ballot:
+            for vote in ballot.votes:
+                db.session.delete(vote)
+            ballot.updated = datetime.utcnow()
+            ballot.is_provisional = not pollster
+        else:
+            ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id,
+            is_provisional = not pollster)
         db.session.add(ballot)
         # must commit to get ballot id
         db.session.commit()
         for voteRank, vote in enumerate(form.votes):
             voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data)
             db.session.add(voteModel)
-            result = Result.query.filter_by(poll_id = poll.id).filter_by(team_id= vote.team.data.id).first()
-            if not result:
-                result = Result(poll_id = ballot.poll_id, team_id = vote.team.data.id, score = (25-voteRank), onevotes = ((25-voteRank)/25) )
-            else:
-                result.score += 25-voteRank
-                result.onevotes += (25-voteRank)/25
-            db.session.add(result)
         db.session.commit()
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
     return render_template('submitballot.html',
-      teams=teams, form=form, authorize_url = g.authorize_url, poll=poll)
+      teams=teams, form=form, authorize_url = g.authorize_url, poll=poll,
+      is_provisional = not pollster, editing = editing)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def results(s, w):
@@ -200,10 +235,15 @@ def results(s, w):
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
-    elif not poll.has_completed:
+    elif not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed!', 'warning')
+    (results, official_ballots, provisional_ballots) = generate_results(poll)
+
     return render_template('polldetail.html',
-        season=s, week=w, poll=poll, teams = Team.query, authorize_url = g.authorize_url)
+        season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
+        provisional_ballots = provisional_ballots, users = User.query,
+        teams = Team.query, authorize_url = g.authorize_url)
+
 
 @app.route('/results')
 @app.route('/results/')
@@ -215,12 +255,15 @@ def polls(page=1):
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
-    elif not poll.has_completed:
+    elif not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
+    (results, official_ballots, provisional_ballots) = generate_results(poll)
+
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
-        page=page, teams=Team.query, authorize_url = g.authorize_url)
+        official_ballots = official_ballots, page=page, results=results,
+        users = User.query, teams=Team.query, authorize_url = g.authorize_url)
 
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
@@ -230,7 +273,7 @@ def ballot(ballot_id):
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
-    if not poll.has_completed():
+    if not poll.has_completed() and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     votes = []

@@ -64,8 +64,6 @@ class Poll(db.Model):
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined', order_by="desc(Result.score)", cascade="all, delete-orphan",
-                    passive_deletes=True)
     ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
 
@@ -115,12 +113,13 @@ class Ballot(db.Model):
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
+    is_provisional = db.Column(db.Boolean, default = False)
 
     def __repr__(self):
         return '<Ballot %r>' % (self.id)
 
     def __str__(self):
-        return "".join([self.pollster.nickname,"'s Ballot for ", str(self.fullpoll)])
+        return "%s's Ballot for Week %s of %s-%s" % (self.pollster.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
 
 class Vote(db.Model):
     __tablename__ = 'vote'
@@ -132,19 +131,6 @@ class Vote(db.Model):
 
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
-
-class Result(db.Model):
-    __tablename__ = 'result'
-    id = db.Column(db.Integer, primary_key = True)
-    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    score = db.Column(db.Integer)
-    onevotes = db.Column(db.Integer)
-
-    def __repr__(self):
-        return '<Result %r for Poll %r: %r %r points>' % (self.id, self.poll_id, Team.query.get(self.team_id).flair, self.score)
-
-
 
 
 

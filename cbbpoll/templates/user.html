@@ -6,7 +6,7 @@
 {% if ballots.items %}
 <div class="list-group">
 {% for ballot in ballots.items %}
-<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}</a>
+<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}{%if ballot.is_provisional %} (Provisional){%endif%}</a>
 {% endfor %}
 </div>
 {% else %}
