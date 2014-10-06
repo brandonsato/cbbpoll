@@ -3,7 +3,7 @@
 <h1>{{ballot}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></h1>
 <hr>
 {% if ballot.is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> This is a provisional ballot. It does not count towards this poll's results.</div>{% endif %}
-<table class="ballot table table-striped">
+<table class="ballot-view table table-striped">
 	<tr>
 		<th>Rank</th><th>Team</th><th>Reason</th>
 	</tr>
@@ -24,7 +24,7 @@
 <div class="pop">
   <span>✖</span>
   <h3>Reddit Formatted Table</h3>
-  <textarea readonly>
+    <textarea readonly name="reddit-table" id="reddit-table">
 Rank||Team|Reason
 :--:|:--:|:---|:---
 {% set prev_score = -1 -%}
@@ -48,5 +48,19 @@ Rank||Team|Reason
          $(".pop, .pop-bg").fadeOut(100);
      });
  });
+</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
+<script>
+var clientTarget = new ZeroClipboard( $("#copy-button"), {
+    moviePath: "//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.swf",
+    debug: false
+} );
+
+clientTarget.on( "load", function(clientTarget)
+{
+    clientTarget.on( "complete", function(clientTarget, args) {
+        clientTarget.setText( args.text );
+    } );
+} );
 </script>
 {% endblock %}

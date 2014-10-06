@@ -30,7 +30,16 @@
             <div class="col-md-6">
     {{vote.hidden_tag()}}
     {{vote.team.label(class_="sr-only") }}
-    {{vote.team(class_="team form-control") }}
+    <select class="team form-control" id="{{vote.team.id}}" name="{{vote.team.id}}">
+    {% for subvote in vote.team -%}
+    {% if subvote.data != '__None' -%}
+    {% set item = subvote(**{'data-logo': subvote.label.text.png_url()}) -%}
+    {% else -%}
+    {% set item = subvote -%}
+    {% endif -%}
+    {{item}}
+    {% endfor -%}
+    </select>
             </div>
             <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
@@ -53,6 +62,27 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script>
         $(document).ready(function() { $("select.team").select2(); });
+         $(function(){
+
+        function format(item) {
+            if(item.id=='__None') {
+                return item.text;
+              }
+            return '<img class="dropdown-logo" src="' + $(item.element).data('logo')+'"> '+item.text;
+        }
+
+        function formatSelection(item) {
+          // return selection template
+          return '<b>' + item.text + '</b>';
+        }
+
+        $('select').select2({
+          // Specify format function for dropdown item
+          formatResult: format,
+          // Specify format function for selected item
+          formatSelection: format
+        });
+      });
 </script>
 
  {% endblock %}
