@@ -6,6 +6,7 @@
 <table class="table">
 	<tr>
 		<th>School Name</th>
+		<th>Logo</th>
 		<th>Nickname</th>
 		<th>Conference</th>
 		<th>Short Name</th>
@@ -14,6 +15,7 @@
 {% for team in teams %}
 	<tr>
 		<td>{{team.full_name}}</td>
+		<td><img src="{{team.png_url()}}"></td>
 		<td>{{team.nickname}}</td>
 		<td>{{team.conference}}</td>
 		<td>{{team.short_name}}</td>

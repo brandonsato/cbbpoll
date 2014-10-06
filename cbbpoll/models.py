@@ -97,6 +97,9 @@ class Team(db.Model):
     png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
 
+    def png_url(self, size=30):
+        return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
+
     def __repr__(self):
         return '<Team %r>' % (self.short_name)
 

@@ -1,7 +1,8 @@
 {% if poll %}
-<table class="table table-striped">
+<div class="col-md-8">
+<table class="results table table-striped">
 	<tr>
-		<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
+		<th>Rank</th><th>&nbsp;</th><th>Team</th><th>Score(First Place Votes)</th>
 	</tr>
 	{% set prev_score = -1 %}
 	{% set prev_onevotes = -1 %}
@@ -21,6 +22,9 @@
 			{{rank}}
 		</td>
 		<td>
+		</td>
+		<td>
+			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> 
 			{% if team.short_name %}{{ team.short_name }}
 			{% else %}{{ team.full_name }}
 			{% endif %}
@@ -41,4 +45,5 @@
 	{%- if results|length > 25 -%}
 </div></div>
 {% endif %}
+</div>
 {% endif %}

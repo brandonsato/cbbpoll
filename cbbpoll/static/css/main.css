@@ -67,3 +67,7 @@ ol.ballot > li:before,  ol.result > li:before {
     width: 284px;
     height: 86%;
 }
+.results, .ballot{
+    font-size: 1.2em;
+}
+

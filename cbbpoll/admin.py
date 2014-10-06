@@ -54,8 +54,8 @@ class UserAdmin(AdminModelView):
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['full_name', 'short_name', 'nickname', 'conference', 'flair']
-    column_list = ['id', 'full_name', 'short_name', 'nickname', 'conference', 'flair']
+    form_columns = ['full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
+    column_list = ['id', 'full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
     column_searchable_list = ('full_name', 'short_name', 'nickname', 'conference')
 
 class PollAdmin(AdminModelView):
