@@ -6,6 +6,22 @@
 </h1>
 <hr>
 {% include 'resulttable.html' %}
+
+<div>
+  <h5>Official Ballots</h5>
+  {% for ballot in official_ballots %}
+  {%- if loop.index != 1 %}, {% endif %}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {%- endfor %}
+  {%if provisional_ballots%}
+  <h5>Provisional Ballots</h5>
+  {% for ballot in provisional_ballots %}
+  {%- if loop.index != 1 -%}, {%- endif -%}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {% endfor %}
+  {% endif %}
+</div>
+
 <ul class="pager">
 {% if polls[page-1].has_next %}<li class="previous"><a href="{{ url_for('index', page = polls[page-1].next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
 {% if polls[page-1].has_prev %}<li class="next"><a href="{{ url_for('index', page = poll[page-1].prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
@@ -19,8 +35,8 @@
     <textarea readonly name="reddit-table" id="reddit-table">
 Rank||Team|Score(First Place Votes)
 :--:|:--:|:---|:---
-{% set prev_score = -1 -%}
-{%- for result in results -%}
+{%- set prev_score = -1 -%}
+{%- for result in results %}
   {% set team = teams.get(result[0]) %}
     {%- if loop.index < 26 -%}
       {%- if result[1][0] == prev_score -%}
@@ -36,20 +52,11 @@ Others Receiving Votes: {{team.short_name}}({{result[1][0]}}){%- else -%}, {{ te
 {%- endif -%}
 {% endfor %}
   </textarea>
+    <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
+
 </div>
 
-<div>
-  <h5>Official Ballots</h5>
-  {% for ballot in official_ballots %}
-  {%- if loop.index != 1 %}, {% endif %}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {%- endfor %}
-  <h5>Provisional Ballots</h5>
-  {% for ballot in provisional_ballots %}
-  {%- if loop.index != 1 -%}, {%- endif -%}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {% endfor %}
-</div>
+
 {% endblock %}
 {% block scripts %} 
 {{super()}}

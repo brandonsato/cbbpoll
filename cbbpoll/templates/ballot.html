@@ -33,6 +33,8 @@ Rank||Team|Reason
 #{{vote.rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{vote.reason}}
 {% endfor %}
  </textarea>
+   <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
+
 </div>
 {% endblock %}
 {% block scripts %} 

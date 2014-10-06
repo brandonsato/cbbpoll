@@ -75,12 +75,18 @@ def internal_error(error):
 def index():
     user = g.user
     poll = completed_polls().first()
-    (results, official_ballots, provisional_ballots) = generate_results(poll)
+    if poll:
+        (results, official_ballots, provisional_ballots) = generate_results(poll)
+    else:
+        results = official_ballots = provisional_ballots = None
     return render_template('index.html',
         title = 'Home',
         results = results,
         user = user,
         poll = poll,
+        official_ballots = official_ballots, 
+        provisional_ballots = provisional_ballots, 
+        users = User.query,
         authorize_url=g.authorize_url,
         teams=Team.query)
 
@@ -262,7 +268,7 @@ def polls(page=1):
 
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
-        official_ballots = official_ballots, page=page, results=results,
+        official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
         users = User.query, teams=Team.query, authorize_url = g.authorize_url)
 
 @app.route('/ballot/<int:ballot_id>/')
