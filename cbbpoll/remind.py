@@ -43,4 +43,4 @@ def viaEmail():
 def viaRedditPM():
     reminders= generate_reminders()
     for user in reminders['pm_list']:
-        message.send_reddit_pm('brandonsato', reminders['subject'], 'pm'+reminders['template'], user=user, poll=reminders['poll'])
+        message.send_reddit_pm(user.nickname, reminders['subject'], 'pm'+reminders['template'], user=user, poll=reminders['poll'])
