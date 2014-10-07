@@ -1,12 +1,15 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from cbbpoll import app, db, lm, r, admin, email
+from cbbpoll import app, db, lm, r, bot, admin, message
 from forms import EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote
 from datetime import datetime
 
 def user_by_nickname(name):
     return User.query.filter_by(nickname = name).first()
+
+def team_by_flair(flair):
+    return Team.query.filter_by(flair = flair).first()
 
 def completed_polls():
     return Poll.query.filter(Poll.closeTime < datetime.utcnow()).order_by(Poll.closeTime.desc())
@@ -101,14 +104,23 @@ def authorized():
         flash("Invalid state given, please try again.", 'danger')
         return redirect(next_path or url_for('index'))
     user = user_by_nickname(reddit_user.name)
+    user_flair = bot.get_flair('collegebasketball', reddit_user.name)
+    team_id = None
+    if user_flair:
+        flair_text = user_flair['flair_text']
+        team_object = team_by_flair(flair_text)
+        if team_object:
+            team_id = team_object.id
     if user is None:
         nickname = reddit_user.name
         user = User(nickname = nickname, role = 'u',
             accessToken = reddit_info['access_token'],
-            refreshToken = reddit_info['refresh_token'])
+            refreshToken = reddit_info['refresh_token'],
+            flair = team_id)
     else:
         user.accessToken = reddit_info['access_token']
         user.refreshToken = reddit_info['refresh_token']
+        user.flair = team_id
     db.session.add(user)
     db.session.commit()
     remember_me = False
@@ -140,14 +152,19 @@ def user(nickname, page=1):
 def edit():
     form = EditProfileForm()
     if form.validate_on_submit():
+        g.user.emailReminders = form.emailReminders.data
+        g.user.pmReminders = form.pmReminders.data
         if not form.email.data:
             g.user.email = None;
             g.user.emailConfirmed = None;
             db.session.add(g.user)
             db.session.commit()
-            flash('Email address successfully cleared from profile.', 'info')
-            return redirect(url_for('index'))
+            flash('Profile Successfully Updated.', 'info')
+            return redirect(url_for('edit'))
         if form.email.data == g.user.email and g.user.emailConfirmed:
+            db.session.add(g.user)
+            db.session.commit()
+            flash('Profile Successfully Updated.', 'info')
             return redirect(url_for('edit'))
         provisionalEmail = form.email.data
         if g.user.email is None or g.user.emailConfirmed == False:
@@ -155,14 +172,16 @@ def edit():
             g.user.emailConfirmed = False
             db.session.add(g.user)
             db.session.commit()
-        email.send_email('Confirm Your Account', [provisionalEmail], 'confirmation',
+        message.send_email('Confirm Your Account', [provisionalEmail], 'confirmation',
             user=g.user, token=g.user.generate_confirmation_token(email=provisionalEmail))
         flash('Please check your email for a confirmation message.', 'warning')
-        return redirect(url_for('index'))
+        return redirect(url_for('edit'))
 
     form.email.data = g.user.email
+    form.emailReminders.data = g.user.emailReminders
+    form.pmReminders.data = g.user.pmReminders
     return render_template('editprofile.html',
-        form = form, authorize_url = g.authorize_url)
+        form = form, authorize_url = g.authorize_url, user = g.user)
 
 @app.route('/confirm/<token>')
 @login_required
@@ -181,7 +200,7 @@ def retry_confirm():
         flash('Your email address has been confirmed.', 'success')
         return redirect(url_for('index'))
     token = current_user.generate_confirmation_token()
-    email.send_email('Confirm Your Account', [current_user], 'confirmation', token=token)
+    message.send_email('Confirm Your Account', [current_user], 'confirmation', token=token)
     flash('A new confirmation email has been sent to you.', 'info')
     return redirect(url_for('index'))
 
@@ -291,5 +310,4 @@ def ballot(ballot_id):
     votes.sort(key=lambda vote: vote['rank'])
     return render_template('ballot.html', ballot=ballot, votes=votes,
         teams=Team.query, authorize_url=g.authorize_url)
-
 

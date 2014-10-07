@@ -140,5 +140,3 @@ class Vote(db.Model):
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
 
-
-

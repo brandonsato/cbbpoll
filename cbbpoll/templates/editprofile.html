@@ -3,5 +3,33 @@
 
 {% block content %}
 <h1>Edit Your Profile</h1>
-{{ wtf.quick_form(form, button_map={'submit' : 'primary'}) }}
+<div class="col-md-5">
+<form class="form form-horizontal" method="post" role="form">
+ {{ form.hidden_tag() }}
+ {{ wtf.form_errors(form, hiddens="only") }}
+ {%- if user.emailConfirmed -%}
+<div class="form-group has-success has-feedback">
+{%- else -%}
+<div class="form-group has-feedback">
+{%-endif-%}
+<label class="control-label" for="email">Email{%- if user.emailConfirmed %} (Confirmed){%-endif-%}</label>
+{{form.email( class_="form-control")}}
+</div>
+{%- if user.emailConfirmed -%}
+<span class="glyphicon glyphicon-ok has-success form-control-feedback"></span>
+{%-endif-%}
+{{ wtf.form_field(form.emailReminders) }}
+{% if user.is_pollster() %}
+<div class="checkbox disabled">
+  <label>
+    <input type="checkbox" value="" disabled checked>
+    All pollsters get Reddit PM Reminders
+  </label>
+</div>
+{% else %}
+{{ wtf.form_field(form.pmReminders) }}
+{% endif %}
+{{ wtf.form_field(form.submit, button_map={'submit' : 'primary pull-right'})}}
+</form>
+</div>
 {% endblock %}
