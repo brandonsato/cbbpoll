@@ -106,7 +106,6 @@ def authorized():
     user = user_by_nickname(reddit_user.name)
     user_flair = bot.get_flair('collegebasketball', reddit_user.name)
     team_id = None
-    x = team_id [3]
     if user_flair and user_flair['flair_text']:
         flair_text = user_flair['flair_text']
         team_object = team_by_flair(flair_text)
