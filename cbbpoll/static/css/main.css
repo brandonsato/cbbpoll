@@ -34,13 +34,11 @@ ol.ballot > li:before,  ol.result > li:before {
     display: none;
     position: fixed;
     top: 75px;
-    left: 50%;
-    width: 300px;
-    height: 80%;
+    right: 25px;
+    width: 275px;
+    height: 200px;
     background: #ffffff;
-    padding: 8px;
     outline: 10px solid rgba(0, 0, 0, 0.2);
-    min-height: 150px;
 }
 .pop-bg {
     display: none;
@@ -65,8 +63,8 @@ ol.ballot > li:before,  ol.result > li:before {
     height: 30px;
 }
 .pop > textarea {
-    width: 284px;
-    height: 80%;
+    width: 270px;
+    height: 100px;
 }
 .results, .ballot-view{
     font-size: 1.2em;

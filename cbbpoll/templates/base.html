@@ -13,15 +13,16 @@
       <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
       <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
       <link rel="stylesheet" href="{{url_for('static', filename='css/select2-bootstrap.css')}}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 {% endblock %}
   {{fixes.ie8()}}
 {% endblock %}
 {% block title %}
 {% if title %}
-{{title}} - /r/CollegeBasketball User Poll
+{{title}} - /r/CollegeBasketball Poll
 {% else %}
-/r/CollegeBasketball User Poll
+/r/CollegeBasketball Poll
 {% endif %}
 {% endblock %}
 {% block body %}
@@ -35,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{{ url_for('index') }}">/r/CollegeBasketball User Poll</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">/r/CollegeBasketball Poll</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -73,8 +74,12 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
+<div class="container">
+<div class='col-md-12'>
 {% block content %}
 {% endblock %}
+</div>
+</div>
 {% block scripts %}
 {{super()}}
 <script>
