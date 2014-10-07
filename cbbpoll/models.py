@@ -12,6 +12,9 @@ class User(db.Model):
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
+    emailReminders = db.Column(db.Boolean, default=False)
+    pmReminders = db.Column(db.Boolean, default=False)
+    flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
 
@@ -96,6 +99,7 @@ class Team(db.Model):
     nickname = db.Column(db.String(50))
     png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
+    fans = db.relationship('User', backref = 'team')
 
     def png_url(self, size=30):
         return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)

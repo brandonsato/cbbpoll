@@ -1,39 +1,46 @@
 from flask import render_template
 from flask.ext.script import Manager
-from cbbpoll import app, email
-from models import User, Poll
+from cbbpoll import app, email, r
+from models import User, Poll, Ballot
+from datetime import datetime, timedelta
+from sqlalchemy import and_, or_
 
 # These are meant to be run hourly, more frequently than that will result in multiple reminders being sent
 
 ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots')
 
-@ReminderCommand.command
-def viaEmail():
-    polls = Poll.query.all()
-    new_poll, closing_poll = None, None
-    for poll in polls:
-        if poll.closing_three_days():
-            new_poll = poll
-        if poll.closing_twelve_hours():
-            closing_poll = poll    
-    if new_poll or closing_poll:
-        users = User.query.all()
+def generate_reminders(self):
+    (poll_type, subject, template, users, recipients) = (None, None, None, [], [])
+    poll = Poll.query.filter(and_(Poll.openTime < datetime.utcnow(), Poll.openTime > datetime.utcnow() - timedelta(hours=1))).first()
+    if poll:
+        poll_type = 0 #new poll
+    else:
+        poll = Poll.query.filter(and_(Poll.closeTime < datetime.utcnow()+timedelta(hours=12), Poll.closeTime > datetime.utcnow()+timedelta(hours=11))).first()
+        if poll:
+            poll_type = 1 #closing poll
+    if poll:
+        users = User.query.filter(or_(User.role == 'p',User.role=='a')).all()
         recipients = []
         for user in users:
-            if user.is_pollster() and user.email and user.emailConfirmed:
+            if user.email and user.emailConfirmed:
                 recipients.append(user)
-        if recipients:
-            if new_poll:
-                for user in recipients:
-                    print 'sending open email'
-                    email.send_email("[/r/CollegeBasketball] User "+str(new_poll)+" is Open for Ballot Submission!", 
-                    [user.email], 'email_remind_open', user=user, poll = new_poll)
-            if closing_poll:
-                for user in recipients:
-                    print 'sending close email'
-                    email.send_email("[/r/CollegeBasketball] REMINDER: User "+str(closing_poll)+" is Closing Soon", 
-                    [user.email], 'email_remind_close', user=user, poll = closing_poll)
+        if poll_type == 0: #new poll
+            subject = "[/r/CollegeBasketball] User "+str(poll)+" is Open for Ballot Submission!"
+            template = "_remind_open"
+        elif poll_type == 1: #closing poll
+            subject = "[/r/CollegeBasketball] REMINDER: User "+str(poll)+" is Closing Soon"
+            template = "_remind_close"
+    return {'poll': poll, 'type':poll_type, 'subject': subject, 'template': template, 'pollsters': users, 'confirmed_pollsters': recipients}
+
+@ReminderCommand.command
+def viaEmail():
+    reminders = generate_reminders()
+    for user in reminders['recipients']:
+        email.send_email(reminders['subject'], [user.email], 'email'+reminders['template'], user=user, poll=reminders['poll'])
 
 @ReminderCommand.command
 def viaRedditPM():
-    pass
+    reminders= generate_reminders()
+    r.login(app.config['REDDIT_USERNAME'], app.config['REDDIT_PASSWORD'])
+    for user in reminders['users']:
+        email.send_reddit_pm(user.nickname, reminders['subject'], 'pm'+reminders['template'])

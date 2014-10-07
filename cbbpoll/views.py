@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r, admin, email
-from forms import EditProfileForm, PollBallotForm, EmailReminderForm
+from forms import EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote
 from datetime import datetime
 
