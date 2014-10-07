@@ -11,7 +11,7 @@ ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots'
 
 def generate_reminders():
     (poll_type, subject, template, users, recipients) = (None, None, None, [], [])
-    poll = Poll.query.filter(and_(Poll.openTime < datetime.utcnow(), Poll.openTime > datetime.utcnow() - timedelta(hours=100000))).first()
+    poll = Poll.query.filter(and_(Poll.openTime < datetime.utcnow(), Poll.openTime > datetime.utcnow() - timedelta(hours=1))).first()
     if poll:
         poll_type = 0 #new poll
     else:
