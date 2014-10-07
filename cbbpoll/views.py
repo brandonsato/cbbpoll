@@ -9,10 +9,10 @@ def user_by_nickname(name):
     return User.query.filter_by(nickname = name).first()
 
 def completed_polls():
-    return Poll.query.filter(Poll.closeTime < datetime.now()).order_by(Poll.closeTime.desc())
+    return Poll.query.filter(Poll.closeTime < datetime.utcnow()).order_by(Poll.closeTime.desc())
 
 def open_polls():
-    return Poll.query.filter(Poll.closeTime > datetime.now()).filter(Poll.openTime < datetime.now())
+    return Poll.query.filter(Poll.closeTime > datetime.utcnow()).filter(Poll.openTime < datetime.now())
 
 def generate_results(poll, use_provisionals=False):
     results_dict = {}
@@ -257,7 +257,10 @@ def results(s, w):
 @app.route('/results/<int:page>')
 def polls(page=1):
     polls = completed_polls().paginate(page, 1, False).items;
-    poll = polls[page-1]
+    if len(polls) >= page:
+        poll = polls[page-1]
+    else:
+        poll = None
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
