@@ -1,10 +1,11 @@
-from flask import redirect, url_for, flash
+from flask import redirect, url_for
 from flask.ext import admin
 from flask.ext.admin import expose
 from flask.ext.admin.contrib import sqla
 from flask.ext.admin.form.fields import Select2Field
 from flask.ext.admin.form import FormOpts
 from flask.ext.login import current_user
+from flask.ext.admin.actions import action
 from wtforms.fields import SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
@@ -23,8 +24,6 @@ def teamChoices():
             choices.append(choice)
     except Exception:
         choices = None
-
-
     return choices
 
 class AdminModelView(sqla.ModelView):
@@ -42,15 +41,28 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 class UserAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['nickname', 'email', 'emailConfirmed', 'role']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role']
+    form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'emailReminders', 'pmReminders']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'team', 'team.conference']
     column_searchable_list = ('nickname', 'email')
+    column_filters = ('team.conference', 'role')
     form_overrides = dict(role=Select2Field)
     form_args = dict(
      #Pass the choices to the `SelectField`
         role=dict(
         choices=[('u', 'user'), ('p', 'pollster'), ('a', 'admin')]
         ))
+
+    @action('promote', 'Make Pollster', 'Are you sure you want to set the selected users to pollsters?')
+    def action_promote(self, ids):
+        for Id in ids:
+            User.query.get(Id).role = 'p'
+        db.session.commit()
+
+    @action('demote', 'Make User', 'Are you sure you want to demote the selected users to user?')
+    def action_demote(self, ids):
+        for Id in ids:
+            User.query.get(Id).role = 'u'
+        db.session.commit()
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
@@ -63,11 +75,10 @@ class PollAdmin(AdminModelView):
     form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots']
     column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'ballots']
 
-
 class VoteAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
-    column_list = ['id', 'ballot_id', 'rank', 'team_id', 'reason']
+    column_list = ['id', 'ballot_id', 'rank', 'team', 'reason']
     form_overrides = dict(team_id=Select2Field)
     form_args = dict(
         team_id=dict(choices = teamChoices(),
