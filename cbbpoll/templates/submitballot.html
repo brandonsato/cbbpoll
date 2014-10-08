@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% set active_page = "submitballot" %}
 {% block content %}
-<h1>Submit a Ballot for {{poll.season-1}}-{{poll.season-2000}} Week {{poll.week}}</h1>
+<h1>{%if editing %}Edit{% else %}Submit a{% endif %} Ballot for {{poll.season-1}}-{{poll.season-2000}}
+    {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %}
+</h1>
+{% if is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> You are not an approved voter. You may submit a provisional ballot, but it will not count towards this poll's results.</div>{% endif %}
 {% if form.votes.errors %}
 {% for error in form.votes.errors %}
 {% if error and error is string %}
@@ -27,7 +30,16 @@
             <div class="col-md-6">
     {{vote.hidden_tag()}}
     {{vote.team.label(class_="sr-only") }}
-    {{vote.team(class_="team form-control") }}
+    <select class="team form-control" id="{{vote.team.id}}" name="{{vote.team.id}}">
+    {% for subvote in vote.team -%}
+    {% if subvote.data != '__None' -%}
+    {% set item = subvote(**{'data-logo': subvote.label.text.png_url()}) -%}
+    {% else -%}
+    {% set item = subvote -%}
+    {% endif -%}
+    {{item}}
+    {% endfor -%}
+    </select>
             </div>
             <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
@@ -36,7 +48,7 @@
         </div>
     </li>
 
-{% endfor %}  
+{% endfor %}
 </ol>
 <div class="row">
 <div class="col-md-12">{{form.submit(class_="btn btn-primary btn-lg pull-right")}}</div>
@@ -45,11 +57,42 @@
 </div>
 {% endblock %}
 
-{% block scripts %} 
+{% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script>
         $(document).ready(function() { $("select.team").select2(); });
+         $(function(){
+
+        function format(item) {
+            if(item.id=='__None') {
+                return item.text;
+              }
+            return '<img class="dropdown-logo" src="' + $(item.element).data('logo')+'"> '+item.text;
+        }
+
+        function formatSelection(item) {
+          // return selection template
+          return '<b>' + item.text + '</b>';
+        }
+
+        function sort(results, container, query) {
+            if(query.term) {
+                return results.sort(function(a, b) {
+                    return a.text.toLowerCase().indexOf(query.term.toLowerCase()) - b.text.toLowerCase().indexOf(query.term.toLowerCase());
+                })
+            }
+        }
+
+        $('select').select2({
+          // Specify format function for dropdown item
+          formatResult: format,
+          // Specify format function for selected item
+          formatSelection: format,
+          // Specify sort function
+          sortResults: sort
+        });
+      });
 </script>
 
  {% endblock %}

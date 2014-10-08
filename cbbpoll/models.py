@@ -1,17 +1,32 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from cbbpoll import db, app
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+
 
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key = True, autoincrement=True)
     nickname = db.Column(db.String(20), index = True)
     email = db.Column(db.String(120), index = True)
+    emailConfirmed = db.Column(db.Boolean, default=False)
     role = db.Column(db.Enum('u','p','a'), default = 'u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
+    emailReminders = db.Column(db.Boolean, default=False)
+    pmReminders = db.Column(db.Boolean, default=False)
+    flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
+    
+    @hybrid_property
+    def remind_viaEmail(self):
+        return self.emailConfirmed & self.emailReminders
+
+    @hybrid_property
+    def remind_viaRedditPM(self):
+        return (self.role == 'p') | (self.role =='a')
 
     def is_authenticated(self):
         return True
@@ -31,6 +46,27 @@ class User(db.Model):
     def get_id(self):
         return unicode(self.id)
 
+    def generate_confirmation_token(self, expiration=3600, email=email):
+        s = Serializer(app.config['SECRET_KEY'], expiration)
+        return s.dumps({'confirm': self.id, 'email': email})
+
+    def confirm(self, token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return False
+        if data.get('confirm') != self.id:
+            return False
+        if data.get('email') == self.email and self.emailConfirmed:
+            #Avoid a database write, but don't want to give an error to user.
+            return True
+        self.email = data.get('email')
+        self.emailConfirmed = True
+        db.session.add(self)
+        db.session.commit()
+        return True
+
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
@@ -41,17 +77,24 @@ class Poll(db.Model):
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    results = db.relationship('Result', backref = 'fullpoll', lazy = 'joined', order_by="desc(Result.score)", cascade="all, delete-orphan",
-                    passive_deletes=True)
     ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
 
+    @hybrid_property
     def is_open(self):
-        return (datetime.utcnow() > self.openTime and datetime.utcnow() < self.closeTime)
+        return (datetime.utcnow() > self.openTime) & (datetime.utcnow() < self.closeTime)
 
+    @hybrid_property
     def has_completed(self):
         return (datetime.utcnow() > self.closeTime)
 
+    @hybrid_property
+    def recently_opened(self):
+        return (self.openTime < datetime.utcnow()) & (self.openTime > datetime.utcnow() - timedelta(hours=1))
+
+    @hybrid_property
+    def closing_soon(self):
+        return (self.closeTime < datetime.utcnow() + timedelta(hours=12)) & (self.closeTime > datetime.utcnow() + timedelta(hours=11))
 
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)
@@ -66,7 +109,12 @@ class Team(db.Model):
     short_name = db.Column(db.String(50))
     flair = db.Column(db.String(50))
     nickname = db.Column(db.String(50))
+    png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
+    fans = db.relationship('User', backref = 'team')
+
+    def png_url(self, size=30):
+        return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
 
     def __repr__(self):
         return '<Team %r>' % (self.short_name)
@@ -85,12 +133,13 @@ class Ballot(db.Model):
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
+    is_provisional = db.Column(db.Boolean, default = False)
 
     def __repr__(self):
         return '<Ballot %r>' % (self.id)
 
     def __str__(self):
-        return "".join([self.pollster.nickname,"'s Ballot for ", str(self.fullpoll)])
+        return "%s's Ballot for Week %s of %s-%s" % (self.pollster.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
 
 class Vote(db.Model):
     __tablename__ = 'vote'
@@ -102,19 +151,4 @@ class Vote(db.Model):
 
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
-
-class Result(db.Model):
-    __tablename__ = 'result'
-    id = db.Column(db.Integer, primary_key = True)
-    poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
-    team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
-    score = db.Column(db.Integer)
-    onevotes = db.Column(db.Integer)
-
-    def __repr__(self):
-        return '<Result %r for Poll %r: %r %r points>' % (self.id, self.poll_id, Team.query.get(self.team_id).flair, self.score)
-
-
-
-
 

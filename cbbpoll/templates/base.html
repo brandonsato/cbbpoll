@@ -13,15 +13,16 @@
       <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
       <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
       <link rel="stylesheet" href="{{url_for('static', filename='css/select2-bootstrap.css')}}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 {% endblock %}
   {{fixes.ie8()}}
 {% endblock %}
 {% block title %}
 {% if title %}
-{{title}} - /r/CollegeBasketball User Poll
+{{title}} - /r/CollegeBasketball Poll
 {% else %}
-/r/CollegeBasketball User Poll
+/r/CollegeBasketball Poll
 {% endif %}
 {% endblock %}
 {% block body %}
@@ -35,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="{{ url_for('index') }}">/r/CollegeBasketball User Poll</a>
+          <a class="navbar-brand" href="{{ url_for('index') }}">/r/CollegeBasketball Poll</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -49,11 +50,9 @@
             {% if g.user.is_admin() %}
             <li><a href="{{url_for('admin.index')}}">Admin</a></li>
             {% endif %}
-            {% if g.user.is_pollster() %}
             <li><div>
-              <a href="{{url_for('submitballot')}}" class="btn btn-primary navbar-btn">Create Ballot</a>
+              <a href="{{url_for('submitballot')}}" class="btn btn-primary navbar-btn">Submit/Edit Ballot</a>
             </div></li>
-            {% endif %}
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}
@@ -63,7 +62,7 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-{% endblock %}      
+{% endblock %}
 <div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -75,10 +74,24 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
+<div class="container">
+<div class='col-md-12'>
 {% block content %}
 {% endblock %}
-{% block scripts %} 
+</div>
+</div>
+{% block scripts %}
 {{super()}}
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-55211274-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
 {% endblock %}
 {% endblock %}
 

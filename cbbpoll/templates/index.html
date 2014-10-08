@@ -4,10 +4,32 @@
 {% if not g.user.is_authenticated() %}
 <div class="jumbotron">
   <h1>Welcome!</h1>
-  <p>This is the test site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Pollsters are not being added at this time, but feel free to login or create an account with the big button below.</p>
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Pollsters are not being added at this time, but feel free to login or create an account with the big button below.</p>
   <p><a href="{{authorize_url}}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
 </div>
+{% elif not poll %}
+<div class="jumbotron">
+  <h1>Welcome!</h1>
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are no completed polls yet, but we can't wait for the season to start!
+</div>
+
 {% endif %}
+{% if poll %}
 <h2> Latest Poll Results </h2>
 {% include 'resulttable.html' %}
+<div>
+  <h5>Official Ballots</h5>
+  {% for ballot in official_ballots %}
+  {%- if loop.index != 1 %}, {% endif %}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {%- endfor %}
+  {%if provisional_ballots%}
+  <h5>Provisional Ballots</h5>
+  {% for ballot in provisional_ballots %}
+  {%- if loop.index != 1 -%}, {%- endif -%}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {% endfor %}
+  {% endif %}
+</div>
+{% endif %}
 {% endblock %}

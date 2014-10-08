@@ -1,8 +1,8 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, SelectField, SubmitField, FieldList, FormField
+from wtforms import TextField, SubmitField, FieldList, FormField, BooleanField
 from flask.ext.admin.form.fields import Select2Field
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import Required, Email, Optional, DataRequired, Length, ValidationError
+from wtforms.validators import Email, Optional, DataRequired, Length, ValidationError
 from cbbpoll import app
 from models import Team
 
@@ -15,6 +15,8 @@ class LoginForm(Form):
 
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional(), Length(max=120) ])
+    emailReminders = BooleanField('Email Reminders')
+    pmReminders = BooleanField('Reddit PM Reminders')
     submit = SubmitField('Save Changes')
 
 class VoteForm(Form):
@@ -41,4 +43,3 @@ class PollBallotForm(Form):
                 raise ValidationError()
         if len(seen_twice) > 0:
             raise ValidationError('Each team may only appear once per ballot')
-            

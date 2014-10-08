@@ -1,12 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Ballots Submitted by {{user.nickname}}</h1>
-{% if user.id == g.user.id %}<p><a href="{{url_for('edit')}}">Edit Your Profile</a></p>{% endif %}
+
+<h1>{% if user.flair -%} <img src='{{user.team.png_url(40)}}' alt='{{user.team.name}} Logo'>
+{%-endif -%}
+{{user.nickname}}</h1>
+
+{%- if user.id == g.user.id %}<p><a href="{{url_for('edit')}}">Edit Your Profile</a></p>{% endif %}
 <hr>
+<h4>Submitted Ballots</h4>
 {% if ballots.items %}
 <div class="list-group">
 {% for ballot in ballots.items %}
-<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}</a>
+<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}{%if ballot.is_provisional %} (Provisional){%endif%}</a>
 {% endfor %}
 </div>
 {% else %}
