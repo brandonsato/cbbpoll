@@ -1,4 +1,4 @@
-from flask import redirect, url_for, flash
+from flask import redirect, url_for
 from flask.ext import admin
 from flask.ext.admin import expose
 from flask.ext.admin.contrib import sqla

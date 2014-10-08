@@ -10,20 +10,17 @@ from sqlalchemy import and_, or_
 ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots')
 
 def generate_reminders():
-    (poll_type, subject, template, users, recipients) = (None, None, None, [], [])
-    poll = Poll.query.filter(and_(Poll.openTime < datetime.utcnow(), Poll.openTime > datetime.utcnow() - timedelta(hours=1))).first()
+    (poll_type, subject, template, email_list, pm_list) = (None, None, None, [], [])
+    poll = Poll.query.filter(Poll.recently_opened == True).first()
     if poll:
         poll_type = 0 #new poll
     else:
-        poll = Poll.query.filter(and_(Poll.closeTime < datetime.utcnow()+timedelta(hours=12), Poll.closeTime > datetime.utcnow()+timedelta(hours=11))).first()
+        poll = Poll.query.filter(Poll.closing_soon == True).first()
         if poll:
             poll_type = 1 #closing poll
     if poll:
-        email_users = User.query.filter(and_(User.emailReminders == True, User.emailConfirmed == True))
-        email_list = email_users.all()
-        pollsters = User.query.filter(or_(User.role =='p', User.role == 'a'))
-        pm_users = User.query.filter(User.pmReminders == True)
-        pm_list = pollsters.union(pm_users).all()
+        email_list = User.query.filter(User.remind_viaEmail == True).all()
+        pm_list = User.query.filter(User.remind_viaRedditPM == True).all()
 
         if poll_type == 0: #new poll
             subject = "[/r/CollegeBasketball] User "+str(poll)+" is Open for Ballot Submission!"

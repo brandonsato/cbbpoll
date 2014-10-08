@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
 from cbbpoll import db, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -17,6 +19,14 @@ class User(db.Model):
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
+    
+    @hybrid_property
+    def remind_viaEmail(self):
+        return self.emailConfirmed & self.emailReminders
+
+    @hybrid_property
+    def remind_viaRedditPM(self):
+        return (self.role == 'p') | (self.role =='a')
 
     def is_authenticated(self):
         return True
@@ -70,19 +80,21 @@ class Poll(db.Model):
     ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
 
+    @hybrid_property
     def is_open(self):
-        return (datetime.utcnow() > self.openTime and datetime.utcnow() < self.closeTime)
+        return (datetime.utcnow() > self.openTime) & (datetime.utcnow() < self.closeTime)
 
+    @hybrid_property
     def has_completed(self):
         return (datetime.utcnow() > self.closeTime)
 
-    def closing_three_days(self):
-        untilClose =  self.closeTime - datetime.utcnow()
-        return untilClose < timedelta(days=3,hours=0) and untilClose > timedelta(days=2, hours=23)
+    @hybrid_property
+    def recently_opened(self):
+        return (self.openTime < datetime.utcnow()) & (self.openTime > datetime.utcnow() - timedelta(hours=1))
 
-    def closing_twelve_hours(self):
-        untilClose = self.closeTime - datetime.utcnow()
-        return untilClose < timedelta(hours=12) and untilClose > timedelta(hours=11)
+    @hybrid_property
+    def closing_soon(self):
+        return (self.closeTime < datetime.utcnow() + timedelta(hours=12)) & (self.closeTime > datetime.utcnow() + timedelta(hours=11))
 
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)

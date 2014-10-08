@@ -12,10 +12,10 @@ def team_by_flair(flair):
     return Team.query.filter_by(flair = flair).first()
 
 def completed_polls():
-    return Poll.query.filter(Poll.closeTime < datetime.utcnow()).order_by(Poll.closeTime.desc())
+    return Poll.query.filter(Poll.has_completed == True)
 
 def open_polls():
-    return Poll.query.filter(Poll.closeTime > datetime.utcnow()).filter(Poll.openTime < datetime.now())
+    return Poll.query.filter(Poll.is_open == True)
 
 def generate_results(poll, use_provisionals=False):
     results_dict = {}
@@ -144,7 +144,8 @@ def user(nickname, page=1):
     if user == None:
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
-    return render_template('user.html', ballots = user.ballots.paginate(page,10,False),
+    ballots = user.ballots.filter(Poll.has_completed == True)
+    return render_template('user.html', ballots = ballots.paginate(page,10,False),
         user = user, authorize_url = g.authorize_url)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
@@ -301,7 +302,7 @@ def ballot(ballot_id):
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
-    if not poll.has_completed() and not current_user.is_admin():
+    if not poll.has_completed and (current_user.is_anonymous() or not current_user.is_admin()):
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     votes = []
