@@ -76,11 +76,21 @@
           return '<b>' + item.text + '</b>';
         }
 
+        function sort(results, container, query) {
+            if(query.term) {
+                return results.sort(function(a, b) {
+                    return a.text.toLowerCase().indexOf(query.term.toLowerCase()) - b.text.toLowerCase().indexOf(query.term.toLowerCase());
+                })
+            }
+        }
+
         $('select').select2({
           // Specify format function for dropdown item
           formatResult: format,
           // Specify format function for selected item
-          formatSelection: format
+          formatSelection: format,
+          // Specify sort function
+          sortResults: sort
         });
       });
 </script>
