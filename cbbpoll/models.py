@@ -55,7 +55,7 @@ class User(db.Model):
     def was_pollster_at(self, timestamp):
         mostRecent = VoterEvent.query.filter_by(user=self) \
             .group_by(VoterEvent.timestamp) \
-            .having(VoterEvent.timestamp < datetime.utcnow()) \
+            .having(VoterEvent.timestamp < timestamp) \
             .order_by(VoterEvent.timestamp.desc()) \
             .first()
         return mostRecent and mostRecent.is_voter
