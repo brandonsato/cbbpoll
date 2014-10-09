@@ -10,7 +10,7 @@ from wtforms.fields import SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from flask_wtf import Form as flask_wtf__Form
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 from cbbpoll import app, db
@@ -79,6 +79,20 @@ class PollAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots']
     column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'ballots']
+
+    @action('close', 'Close Poll', 'This will snap the poll at the current time.  Continue?')
+    def action_close(self, id):
+        poll = Poll.query.get(id)
+        poll.closeTime = datetime.utcnow()
+        db.session.add(poll)
+        db.session.commit()
+
+    @action('open', 'Open Poll', 'This will cause the poll to close this time tomorrow.  Continue?')
+    def action_open(self, id):
+        poll = Poll.query.get(id)
+        poll.closeTime = datetime.utcnow() + timedelta(days=1)
+        db.session.add(poll)
+        db.session.commit()
 
 class VoteAdmin(AdminModelView):
     column_display_pk = True
