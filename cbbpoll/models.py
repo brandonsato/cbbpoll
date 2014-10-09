@@ -48,7 +48,7 @@ class User(db.Model):
         return self.was_pollster_at(datetime.utcnow())
     @is_pollster.setter
     def is_pollster(self, value):
-        event = VoterEvent(timestamp = datetime.utcnow(), user_id = self.id, is_voter = value)
+        event = VoterEvent(timestamp = datetime.utcnow() - timedelta(seconds = 1), user_id = self.id, is_voter = value)
         db.session.add(event)
         db.session.commit()
 
