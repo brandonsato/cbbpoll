@@ -10,10 +10,11 @@ from wtforms.fields import SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from flask_wtf import Form as flask_wtf__Form
+from datetime import datetime
 
 
 from cbbpoll import app, db
-from models import User, Team, Ballot, Poll, Vote
+from models import User, Team, Ballot, Poll, Vote, VoterEvent
 
 def teamChoices():
     try:
@@ -42,7 +43,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 class UserAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'emailReminders', 'pmReminders']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'team', 'team.conference']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_pollster', 'team', 'team.conference']
     column_searchable_list = ('nickname', 'email')
     column_filters = ('team.conference', 'role')
     form_overrides = dict(role=Select2Field)
@@ -55,14 +56,18 @@ class UserAdmin(AdminModelView):
     @action('promote', 'Make Pollster', 'Are you sure you want to set the selected users to pollsters?')
     def action_promote(self, ids):
         for Id in ids:
-            User.query.get(Id).role = 'p'
-        db.session.commit()
+            user = User.query.get(Id)
+            user.is_pollster = True
+            db.session.add(user)
+            db.session.commit()
 
-    @action('demote', 'Make User', 'Are you sure you want to demote the selected users to user?')
+    @action('demote', 'Make User', 'Are you sure you want to revoke the selected users\' voter status?')
     def action_demote(self, ids):
         for Id in ids:
-            User.query.get(Id).role = 'u'
-        db.session.commit()
+            user = User.query.get(Id)
+            user.is_pollster = False
+            db.session.add(user)
+            db.session.commit()
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
@@ -88,8 +93,14 @@ class VoteAdmin(AdminModelView):
 
 class BallotAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['user_id', 'poll_id', 'is_provisional']
+    form_columns = ['user_id', 'poll_id']
     column_list = ['id', 'user_id', 'poll_id', 'updated', 'votes', 'is_provisional']
+
+class VoterEventAdmin(AdminModelView):
+    column_display_pk = True
+    form_columns = ['user_id', 'is_voter', 'timestamp']
+    column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
+    column_default_sort = ('timestamp', True)
 
 
 # Create admin
@@ -99,3 +110,4 @@ admin.add_view(TeamAdmin(Team, db.session))
 admin.add_view(PollAdmin(Poll, db.session))
 admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
+admin.add_view(VoterEventAdmin(VoterEvent, db.session))

@@ -87,8 +87,8 @@ def index():
         results = results,
         user = user,
         poll = poll,
-        official_ballots = official_ballots, 
-        provisional_ballots = provisional_ballots, 
+        official_ballots = official_ballots,
+        provisional_ballots = provisional_ballots,
         users = User.query,
         authorize_url=g.authorize_url,
         teams=Team.query)
@@ -220,7 +220,7 @@ def submitballot():
         return redirect(url_for('index'))
     ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
     teams = Team.query.all()
-    pollster = current_user.is_pollster()
+    pollster = current_user.is_pollster
     editing = bool(ballot)
     if ballot:
         vote_dicts = [{} for i in range(25)]
@@ -238,10 +238,8 @@ def submitballot():
             for vote in ballot.votes:
                 db.session.delete(vote)
             ballot.updated = datetime.utcnow()
-            ballot.is_provisional = not pollster
         else:
-            ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id,
-            is_provisional = not pollster)
+            ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
         # must commit to get ballot id
         db.session.commit()
