@@ -19,7 +19,7 @@
 <span class="glyphicon glyphicon-ok has-success form-control-feedback"></span>
 {%-endif-%}
 {{ wtf.form_field(form.emailReminders) }}
-{% if user.is_pollster() %}
+{% if user.is_pollster %}
 <div class="checkbox disabled">
   <label>
     <input type="checkbox" value="" disabled checked>

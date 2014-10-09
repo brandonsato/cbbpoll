@@ -10,7 +10,7 @@ class User(db.Model):
     nickname = db.Column(db.String(20), index = True)
     email = db.Column(db.String(120), index = True)
     emailConfirmed = db.Column(db.Boolean, default=False)
-    role = db.Column(db.Enum('u','p','a'), default = 'u')
+    role = db.Column(db.Enum('u', 'a'), default = 'u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
@@ -19,7 +19,8 @@ class User(db.Model):
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
-    
+    voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic')
+
     @hybrid_property
     def remind_viaEmail(self):
         return self.emailConfirmed & self.emailReminders
@@ -40,8 +41,24 @@ class User(db.Model):
     def is_admin(self):
         return self.role == 'a'
 
+    @property
     def is_pollster(self):
-        return self.role == 'p' or self.role == 'a'
+        #latestEvent = VoterEvent.query.filter_by(user=self).order_by(VoterEvent.timestamp.desc()).first()
+        #return latestEvent and latestEvent.is_voter
+        return self.was_pollster_at(datetime.utcnow())
+    @is_pollster.setter
+    def is_pollster(self, value):
+        event = VoterEvent(timestamp = datetime.utcnow() - timedelta(seconds = 1), user_id = self.id, is_voter = value)
+        db.session.add(event)
+        db.session.commit()
+
+    def was_pollster_at(self, timestamp):
+        mostRecent = VoterEvent.query.filter_by(user=self) \
+            .group_by(VoterEvent.timestamp) \
+            .having(VoterEvent.timestamp < timestamp) \
+            .order_by(VoterEvent.timestamp.desc()) \
+            .first()
+        return mostRecent and mostRecent.is_voter
 
     def get_id(self):
         return unicode(self.id)
@@ -133,7 +150,13 @@ class Ballot(db.Model):
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined', cascade="all, delete-orphan",
                     passive_deletes=True)
-    is_provisional = db.Column(db.Boolean, default = False)
+
+    @property
+    def is_provisional(self):
+        return not self.pollster.was_pollster_at(self.fullpoll.closeTime)
+    @is_provisional.setter
+    def is_provisional(self, value):
+        raise AttributeError('is_provisional is not a settable field')
 
     def __repr__(self):
         return '<Ballot %r>' % (self.id)
@@ -151,4 +174,14 @@ class Vote(db.Model):
 
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
+
+class VoterEvent(db.Model):
+    __tablename__ = 'voter_event'
+    id = db.Column(db.Integer, primary_key = True)
+    timestamp = db.Column(db.DateTime)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    is_voter = db.Column(db.Boolean)
+
+    def __repr__(self):
+        return '<VoterEvent %r>' % (self.id)
 
