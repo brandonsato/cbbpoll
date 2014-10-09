@@ -247,7 +247,7 @@ def submitballot():
         flash('Ballot submitted.', 'success')
         return redirect(url_for('index'))
     return render_template('submitballot.html',
-      teams=teams, form=form, authorize_url = g.authorize_url, poll=poll,
+      teams=teams, form=form, poll=poll,
       is_provisional = not pollster, editing = editing)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
