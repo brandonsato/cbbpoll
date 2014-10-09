@@ -81,6 +81,8 @@ def index():
 def authorized():
     reddit_state = request.args.get('state', '')
     reddit_code = request.args.get('code', '')
+    if not reddit_state or not reddit_code:
+        return redirect(url_for('index'))
     reddit_info = r.get_access_information(reddit_code)
     reddit_user = r.get_me()
     next_path = session['last_path']
