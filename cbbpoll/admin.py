@@ -50,10 +50,10 @@ class UserAdmin(AdminModelView):
     form_args = dict(
      #Pass the choices to the `SelectField`
         role=dict(
-        choices=[('u', 'user'), ('p', 'pollster'), ('a', 'admin')]
+        choices=[('u', 'user'), ('a', 'admin')]
         ))
 
-    @action('promote', 'Make Pollster', 'Are you sure you want to set the selected users to pollsters?')
+    @action('promote', 'Make Pollster', 'Are you sure you want to grant voter status to the selected users?')
     def action_promote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
@@ -61,7 +61,7 @@ class UserAdmin(AdminModelView):
             db.session.add(user)
             db.session.commit()
 
-    @action('demote', 'Make User', 'Are you sure you want to revoke the selected users\' voter status?')
+    @action('demote', 'Revoke Pollster Status', 'Are you sure you want to revoke voter status from the selected users?')
     def action_demote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
