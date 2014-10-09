@@ -43,21 +43,7 @@ def generate_results(poll, use_provisionals=False):
 
 @app.before_request
 def before_request():
-    # prevent generating multiple oauth states per page load
-    if request.endpoint != 'static':
-        g.user = current_user
-        # don't need an authorize_url if the user is logged in
-        # but must be initialized for passing to render_template
-        if g.user.is_authenticated():
-            db.session.add(g.user)
-            db.session.commit()
-            g.authorize_url = ''
-        elif request.endpoint != 'authorized':
-            from uuid import uuid1
-            state = str(uuid1())
-            session['oauth_state'] = state
-            session['last_path'] = request.path
-            g.authorize_url = r.get_authorize_url(state,refreshable=True)
+    g.user = current_user
 
 
 @lm.user_loader
@@ -66,13 +52,12 @@ def load_user(id):
 
 @app.errorhandler(404)
 def not_found_error(error):
-    return render_template('404.html', authorize_url=g.authorize_url), 404
+    return render_template('404.html'), 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    authorize_url = g.authorize_url
     db.session.rollback()
-    return render_template('500.html', authorize_url=authorize_url), 500
+    return render_template('500.html'), 500
 
 @app.route('/')
 def index():
@@ -90,7 +75,6 @@ def index():
         official_ballots = official_ballots,
         provisional_ballots = provisional_ballots,
         users = User.query,
-        authorize_url=g.authorize_url,
         teams=Team.query)
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
@@ -136,6 +120,17 @@ def logout():
     flash ('Successfully Logged Out', 'success')
     return redirect(url_for('index'))
 
+@app.route('/login')
+def login():
+    next = request.args.get('next')
+    from uuid import uuid1
+    state = str(uuid1())
+    session['oauth_state'] = state
+    session['last_path'] = next
+    authorize_url = r.get_authorize_url(state,refreshable=True)
+    return redirect(authorize_url)
+
+
 @app.route('/user/<nickname>')
 @app.route('/user/<nickname>/<int:page>')
 @app.route('/user/<nickname>/<int:page>/')
@@ -146,7 +141,7 @@ def user(nickname, page=1):
         return redirect(url_for('index'))
     ballots = user.ballots.filter(Poll.has_completed == True)
     return render_template('user.html', ballots = ballots.paginate(page,10,False),
-        user = user, authorize_url = g.authorize_url)
+        user = user)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
 @login_required
@@ -182,7 +177,7 @@ def edit():
     form.emailReminders.data = g.user.emailReminders
     form.pmReminders.data = g.user.pmReminders
     return render_template('editprofile.html',
-        form = form, authorize_url = g.authorize_url, user = g.user)
+        form = form, user = g.user)
 
 @app.route('/confirm/<token>')
 @login_required
@@ -209,7 +204,7 @@ def retry_confirm():
 def teams():
     teams = Team.query.all()
     return render_template('teams.html',
-        teams=teams, authorize_url = g.authorize_url)
+        teams=teams)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
 @login_required
@@ -266,7 +261,7 @@ def results(s, w):
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
-        teams = Team.query, authorize_url = g.authorize_url)
+        teams = Team.query)
 
 
 @app.route('/results')
@@ -290,7 +285,7 @@ def polls(page=1):
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
-        users = User.query, teams=Team.query, authorize_url = g.authorize_url)
+        users = User.query, teams=Team.query)
 
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
@@ -308,5 +303,5 @@ def ballot(ballot_id):
         votes.append({'rank':vote.rank, 'team':vote.team_id, 'reason':vote.reason})
     votes.sort(key=lambda vote: vote['rank'])
     return render_template('ballot.html', ballot=ballot, votes=votes,
-        teams=Team.query, authorize_url=g.authorize_url)
+        teams=Team.query)
 

@@ -56,7 +56,7 @@
             <li><a href="{{ url_for('user', nickname = g.user.nickname) }}">Your Profile</a></li>
             <li><a href="{{ url_for('logout') }}">Logout</a></li>
           {% else %}
-            <li><a href="{{authorize_url}}">Login/Sign Up</a></li>
+            <li><a href="{{ url_for('login') }}">Login/Sign Up</a></li>
           {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
