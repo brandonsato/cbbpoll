@@ -14,7 +14,7 @@
   <tr>
   {%- for poll in polls -%}
     {% set team = teams.get(results[poll.week][i][0]) %}
-    <td> {{ team.short_name }} </td>
+    <td> <img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> {{ team.short_name }} </td>
   {%- endfor -%}
   </tr>
 {%- endfor -%}
