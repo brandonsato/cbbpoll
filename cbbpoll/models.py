@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 from cbbpoll import db, app
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
+from sqlalchemy.ext.hybrid import hybrid_property
+from flask.ext.login import AnonymousUserMixin
 
 
 class User(db.Model):
@@ -86,6 +87,10 @@ class User(db.Model):
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+class AnonymousUser(AnonymousUserMixin):
+    def is_admin(self):
+        return False
 
 class Poll(db.Model):
     __tablename__ = 'poll'

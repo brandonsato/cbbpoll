@@ -2,6 +2,7 @@
 {% block content %}
 <h1>{{ballot}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></h1>
 <hr>
+{% if not ballot.fullpoll.has_completed %}<div class="alert alert-info" role="alert">This Poll is still active. {%if ballot.pollster == g.user %} <a href="{{url_for('submitballot')}}" class='alert-link'>Edit your ballot</a>{% endif %}</div>{% endif %}
 {% if ballot.is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> This is a provisional ballot. It does not count towards this poll's results.</div>{% endif %}
 <table class="ballot-view table table-striped">
 	<tr>

@@ -11,14 +11,14 @@
 {% if ballots.items %}
 <div class="list-group">
 {% for ballot in ballots.items %}
-<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}{%if ballot.is_provisional %} (Provisional){%endif%}</a>
+<a class="list-group-item{% if not ballot.fullpoll.has_completed %} list-group-item-info{% endif %}" href="{{url_for('ballot', ballot_id=ballot.id)}}"><strong>{{ballot}}</strong>{%if ballot.is_provisional %} (Provisional){%endif%}{% if not ballot.fullpoll.has_completed %} (Poll is Active){% endif %}</a>
 {% endfor %}
 </div>
 {% else %}
 No ballots submitted
 {% endif %}
 <ul class="pager">
-{% if ballots.items.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.next_num) }}">&larr; Older</a></li>{% endif %}
-{% if ballots.items.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.prev_num) }}">Newer &rarr;</a></li>{% endif %}
+{% if ballots.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.next_num) }}">&larr; Older</a></li>{% endif %}
+{% if ballots.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.prev_num) }}">Newer &rarr;</a></li>{% endif %}
 </ul>
 {% endblock %}

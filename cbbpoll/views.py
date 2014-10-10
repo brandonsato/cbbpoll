@@ -142,6 +142,11 @@ def user(nickname, page=1):
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     ballots = user.ballots.filter(Poll.has_completed == True)
+    if user == g.user or g.user.is_admin():
+        pending_ballot = user.ballots.filter(Poll.has_completed == False).first()
+        if pending_ballot:
+            ballots = user.ballots
+    ballots = ballots.join(Poll, Ballot.fullpoll).order_by(Poll.closeTime.desc())
     return render_template('user.html', ballots = ballots.paginate(page,10,False),
         user = user)
 
@@ -153,8 +158,8 @@ def edit():
         g.user.emailReminders = form.emailReminders.data
         g.user.pmReminders = form.pmReminders.data
         if not form.email.data:
-            g.user.email = None;
-            g.user.emailConfirmed = None;
+            g.user.email = None
+            g.user.emailConfirmed = None
             db.session.add(g.user)
             db.session.commit()
             flash('Profile Successfully Updated.', 'info')
@@ -252,7 +257,7 @@ def submitballot():
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def polls(s, w):
-    poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
+    poll = Poll.query.filter_by(season=s).filter_by(week=w).first()
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
@@ -271,7 +276,7 @@ def polls(s, w):
 @app.route('/results/<int:page>/')
 @app.route('/results/<int:page>')
 def results(page=1):
-    polls = completed_polls().paginate(page, 1, False);
+    polls = completed_polls().paginate(page, 1, False)
     poll = polls.items[0]
     if not poll:
         flash('No such poll', 'warning')
@@ -294,7 +299,7 @@ def ballot(ballot_id):
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
-    if not poll.has_completed and (current_user.is_anonymous() or not current_user.is_admin()):
+    if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
         return redirect(url_for('index'))
     votes = []
