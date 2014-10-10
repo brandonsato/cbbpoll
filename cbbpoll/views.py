@@ -4,12 +4,10 @@ from cbbpoll import app, db, lm, r, bot, admin, message
 from forms import EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote
 from datetime import datetime
+from botactions import update_flair
 
 def user_by_nickname(name):
     return User.query.filter_by(nickname = name).first()
-
-def team_by_flair(flair):
-    return Team.query.filter_by(flair = flair).first()
 
 def completed_polls():
     return Poll.query.filter(Poll.has_completed == True).order_by(Poll.closeTime.desc())
@@ -90,23 +88,14 @@ def authorized():
         flash("Invalid state given, please try again.", 'danger')
         return redirect(next_path or url_for('index'))
     user = user_by_nickname(reddit_user.name)
-    user_flair = bot.get_flair('collegebasketball', reddit_user.name)
-    team_id = None
-    if user_flair and user_flair['flair_text']:
-        flair_text = user_flair['flair_text']
-        team_object = team_by_flair(flair_text)
-        if team_object:
-            team_id = team_object.id
     if user is None:
         nickname = reddit_user.name
         user = User(nickname = nickname, role = 'u',
             accessToken = reddit_info['access_token'],
-            refreshToken = reddit_info['refresh_token'],
-            flair = team_id)
+            refreshToken = reddit_info['refresh_token'])
     else:
         user.accessToken = reddit_info['access_token']
         user.refreshToken = reddit_info['refresh_token']
-        user.flair = team_id
     db.session.add(user)
     db.session.commit()
     remember_me = False
@@ -114,6 +103,7 @@ def authorized():
         remember_me = session['remember_me']
         session.pop('remember_me', None)
     login_user(user, remember = remember_me)
+    update_flair(user)
     return redirect(next_path or url_for('index'))
 
 @app.route('/logout')
