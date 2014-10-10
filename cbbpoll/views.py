@@ -12,7 +12,7 @@ def team_by_flair(flair):
     return Team.query.filter_by(flair = flair).first()
 
 def completed_polls():
-    return Poll.query.filter(Poll.has_completed == True)
+    return Poll.query.filter(Poll.has_completed == True).order_by(Poll.closeTime.desc())
 
 def open_polls():
     return Poll.query.filter(Poll.is_open == True)
