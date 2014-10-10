@@ -251,7 +251,7 @@ def submitballot():
       is_provisional = not pollster, editing = editing)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
-def results(s, w):
+def polls(s, w):
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first();
     if not poll:
         flash('No such poll', 'warning')
@@ -270,12 +270,9 @@ def results(s, w):
 @app.route('/results/')
 @app.route('/results/<int:page>/')
 @app.route('/results/<int:page>')
-def polls(page=1):
-    polls = completed_polls().paginate(page, 1, False).items;
-    if len(polls) >= page:
-        poll = polls[page-1]
-    else:
-        poll = None
+def results(page=1):
+    polls = completed_polls().paginate(page, 1, False);
+    poll = polls.items[0]
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))

@@ -2,7 +2,7 @@
 {% set active_page = "results" %}
 
 {% block content %}
-<h1>Results for Week {{polls[page-1].week}} of {{polls[page-1].season-1}}-{{polls[page-1].season-2000}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button>
+<h1>Results for Week {{poll.week}} of {{poll.season-1}}-{{poll.season-2000}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button>
 </h1>
 <hr>
 {% include 'resulttable.html' %}
@@ -21,11 +21,12 @@
   {% endfor %}
   {% endif %}
 </div>
-
+<div class="col-md-12">
 <ul class="pager">
-{% if polls[page-1].has_next %}<li class="previous"><a href="{{ url_for('index', page = polls[page-1].next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
-{% if polls[page-1].has_prev %}<li class="next"><a href="{{ url_for('index', page = poll[page-1].prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
+{% if polls.has_next %}<li class="previous"><a href="{{ url_for('results', page = polls.next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
+{% if polls.has_prev %}<li class="next"><a href="{{ url_for('results', page = polls.prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
 </ul>
+</div>
 <div class="pop-bg">
 	&nbsp;
 </div>
