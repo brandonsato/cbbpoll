@@ -267,7 +267,9 @@ def polls(s, w):
 @app.route('/results/<int:page>')
 def results(page=1):
     polls = completed_polls().paginate(page, 1, False)
-    poll = polls.items[0]
+    poll = None
+    if polls.items:
+        poll = polls.items[0]
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
