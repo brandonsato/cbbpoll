@@ -4,17 +4,19 @@
 {% block content %}
 <h1>Season summary for {{season-1}}-{{season-2000}}</h1>
 <hr>
-<table class="table table-condensed summary">
+<table class="summary table table-condensed table-bordered table-responsive" id="summary">
   <tr>
+    <th></th> 
 {%- for poll in polls -%}
-  <th> {{poll.week }}</th>
+<th> {{poll.week }}</th>
 {%- endfor -%}
 
 {%- for i in range(25) -%}
   <tr>
+    <td class="rank">{{i+1}}</td>
   {%- for poll in polls -%}
     {% set team = teams.get(results[poll.week][i][0]) %}
-    <td> <img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> {{ team.short_name }} </td>
+    <td data-png="{{team.png_name}}" class="team" title="{{team.full_name}}"><img src="{{team.png_url()}}" alt="{{team.full_name}} Logo" class="logo"></td>
   {%- endfor -%}
   </tr>
 {%- endfor -%}
@@ -26,21 +28,21 @@
 {% block scripts %}
 {{super()}}
 <script>
-$('table').on('mouseover', 'td', function() {
-    // Store the hovered cell's text in a variable
-    var textToMatch = $(this).text();
+$('#summary').on('mouseover', '.team', function() {
+    // Store the hovered cell's data in a variable
+    var dataToMatch = $(this).data("png");
     $(this).addClass('matching');
     // Loop through every `td`
-    $('td').each(function() {
-        var text = $(this).text();
-        if (textToMatch === text)
-            $(this).addClass('matching');
+    $('#summary .team').each(function() {
+        var data = $(this).data("png");
+        if (dataToMatch === data)
+            $(this).addClass('active');
     });
 });
 
 // Mouse out event handler to undo matching
-$('table').on('mouseout', 'td', function() {
-    $('.matching').removeClass('matching');
+$('#summary').on('mouseout', '.team', function() {
+    $('.active').removeClass('active');
 });
 </script>
 {% endblock %}

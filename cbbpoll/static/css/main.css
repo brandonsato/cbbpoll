@@ -73,10 +73,10 @@ ol.ballot > li:before,  ol.result > li:before {
     height: 23px;
     width: 23px;
 }
-td.matching {
-    background: #CCCCCC
+.summary {
+    width: auto;
 }
-.summary  {
-    width: 250px;
+.summary .logo {
+    height: 23px;
+    width: 23px;
 }
-
