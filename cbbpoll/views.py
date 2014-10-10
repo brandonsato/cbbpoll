@@ -265,13 +265,27 @@ def polls(s, w):
         provisional_ballots = provisional_ballots, users = User.query,
         teams = Team.query)
 
+@app.route('/poll/<int:s>')
+def season(s):
+    polls = Poll.query.filter_by(season=s).all()
+    results = {}
+    for poll in polls:
+        if poll.has_completed:
+            result = generate_results(poll)[0]
+            results[poll.week] = result
+    return render_template('season.html',
+        season=polls[0].season,
+        polls=polls,
+        results=results,
+        teams=Team.query)
+
 
 @app.route('/results')
 @app.route('/results/')
 @app.route('/results/<int:page>/')
 @app.route('/results/<int:page>')
 def results(page=1):
-    polls = completed_polls().paginate(page, 1, False);
+    polls = completed_polls().paginate(page, 1, False)
     poll = polls.items[0]
     if not poll:
         flash('No such poll', 'warning')

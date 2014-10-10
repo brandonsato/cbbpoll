@@ -3,7 +3,7 @@ body{
 }
 
 ol.ballot, ol.result {
-    list-style-type: none;    
+    list-style-type: none;
     list-style-type: decimal !ie; /*IE 7- hack*/
     margin: 0;
     margin-left: 3em;
@@ -72,5 +72,11 @@ ol.ballot > li:before,  ol.result > li:before {
 .dropdown-logo {
     height: 23px;
     width: 23px;
+}
+td.matching {
+    background: #CCCCCC
+}
+.summary  {
+    width: 250px;
 }
 
