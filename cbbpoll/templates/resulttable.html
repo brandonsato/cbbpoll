@@ -43,8 +43,7 @@
 			{% endif %}({{result[1][0]}})
 	{%- else -%}, {% if team.short_name %}{{ team.short_name }}
 			{% else %}{{ team.full_name }}
-			{% endif %}({{result[1][0]}})
-	{%- endif -%}
+			{% endif %}({{result[1][0]}}){%- endif -%}
 	{% endfor %}
 	{%- if results|length > 25 -%}
 </div></div>
