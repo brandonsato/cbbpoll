@@ -1,50 +1,44 @@
 {% if poll %}
-<div class="col-md-8">
-<table class="results table table-striped">
-	<tr>
-		<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
-	</tr>
-	{% set prev_score = -1 %}
-	{% set prev_onevotes = -1 %}
-	{% for result in results %}
-	{% set team = teams.get(result[0]) %}
-	{%- if loop.index < 26 -%}
-	<tr>
-		<td>
-			{% if result[1][0] == prev_score and result[1][1] == prev_onevotes %}
-				{% set rank = prev_rank %}
-			{% else %}
-				{% set rank = loop.index %}
-			{% endif %}
-			{% set prev_rank = rank %}
-			{% set prev_score = result[1][0] %}
-			{% set prev_onevotes = result[1][1] %}
-			{{rank}}
-		</td>
-		<td>
-			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo">
-			{% if team.short_name %}{{ team.short_name }}
-			{% else %}{{ team.full_name }}
-			{% endif %}
-		</td>
-		<td>
-			{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}
-		</td>
-	</tr>
-	{%- if loop.index == 25 -%}
-</table>
-	{%- endif -%}
-	{%- elif loop.index == 26 -%}
+	<div class="col-md-8">
+	<table class="results table table-striped">
+		<tr>
+			<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
+		</tr>
+		{%- set prev_score = -1 -%}
+		{%- set prev_onevotes = -1 -%}
+		{%- for result in results -%}
+		{%- set team = teams.get(result[0]) %}
+		{%- if loop.index < 26 %}
+		<tr>
+			<td>
+				{%- if result[1][0] == prev_score and result[1][1] == prev_onevotes -%}
+					{%- set rank = prev_rank -%}
+				{%- else -%}
+					{%- set rank = loop.index -%}
+				{%- endif -%}
+				{%- set prev_rank = rank -%}
+				{%- set prev_score = result[1][0] -%}
+				{%- set prev_onevotes = result[1][1] -%}
+				{{rank}}</td>
+			<td><img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> 
+				{%- if team.short_name -%}{{ team.short_name }}
+				{%- else -%}{{ team.full_name }}
+				{%- endif -%}
+			</td>
+			<td>{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}</td>
+		</tr>
+		{%- if loop.index == 25 %}
+	</table>
+		{%- endif -%}
+		{%- elif loop.index == 26 %}
 	<div class='panel panel-default'>
 		<div class='panel-body'>
-			<strong>Others Receiving Votes:</strong>
-			{% if team.short_name %}{{ team.short_name }}
-			{% else %}{{ team.full_name }}
-			{%- endif -%}({{result[1][0]}})
-	{%- else -%}, {% if team.short_name %}{{ team.short_name }}{% else %}{{ team.full_name }}{% endif %}({{result[1][0]}}){%- endif -%}
-	{% endfor %}
-	{%- if results|length > 25 -%}
-</div></div>
-{% endif %}
+			<strong>Others Receiving Votes:</strong> {{ team.short_name }}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
+		{%- endif -%}
+		{%- endfor -%}
+		{%- if results|length > 25 %}
+		</div>
+	</div>
+{%- endif %}
 </div>
-{% endif %}
+{%- endif -%}

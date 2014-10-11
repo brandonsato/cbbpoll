@@ -7,7 +7,7 @@
 <hr>
 {% include 'resulttable.html' %}
 
-<div>
+<div class="col-md-4">
   <h5>Official Ballots</h5>
   {% for ballot in official_ballots %}
   {%- if loop.index != 1 %}, {% endif %}
@@ -21,7 +21,7 @@
   {% endfor %}
   {% endif %}
 </div>
-<div class="col-md-12">
+<div class="col-md-8">
 <ul class="pager">
 {% if polls.has_next %}<li class="previous"><a href="{{ url_for('results', page = polls.next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
 {% if polls.has_prev %}<li class="next"><a href="{{ url_for('results', page = polls.prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
@@ -36,8 +36,8 @@
     <textarea readonly name="reddit-table" id="reddit-table">
 Rank||Team|Score(First Place Votes)
 :--:|:--:|:---|:---
-{%- set prev_score = -1 -%}
-{%- for result in results %}
+{% set prev_score = -1 -%}
+{%- for result in results -%}
   {% set team = teams.get(result[0]) %}
     {%- if loop.index < 26 -%}
       {%- if result[1][0] == prev_score -%}
@@ -47,8 +47,8 @@ Rank||Team|Score(First Place Votes)
       {%- endif -%}
     {%- set prev_rank = rank -%}
     {%- set prev_score = result[1][0] -%}
-#{{rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{ result[1][0]}}{%- if result[1][1] -%}({{result[1][1]}}){%-endif-%}
-{% elif loop.index == 26 %}
+#{{rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{ result[1][0]}}{%- if result[1][1] -%}({{result[1][1]}}){%-endif %}
+{% elif loop.index == 26 -%}
 Others Receiving Votes: {{team.short_name}}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
 {%- endif -%}
 {% endfor %}

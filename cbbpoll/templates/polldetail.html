@@ -35,7 +35,7 @@ Others Receiving Votes: {{team.short_name}}({{result[1][0]}}){%- else -%}, {{ te
   <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
 </div>
 
-<div>
+<div class="col-md-4">
   <h5>Official Ballots</h5>
   {% for ballot in official_ballots %}
   {%- if loop.index != 1 %}, {% endif %}
