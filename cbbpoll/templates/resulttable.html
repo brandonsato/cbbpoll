@@ -22,7 +22,7 @@
 			{{rank}}
 		</td>
 		<td>
-			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> 
+			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo">
 			{% if team.short_name %}{{ team.short_name }}
 			{% else %}{{ team.full_name }}
 			{% endif %}
@@ -37,7 +37,14 @@
 	{%- elif loop.index == 26 -%}
 	<div class='panel panel-default'>
 		<div class='panel-body'>
-			<strong>Others Receiving Votes:</strong> {{ team.short_name }}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
+			<strong>Others Receiving Votes:</strong>
+			{% if team.short_name %}{{ team.short_name }}
+			{% else %}{{ team.full_name }}
+			{% endif %}({{result[1][0]}})
+	{%- else -%}
+			, {% if team.short_name %}{{ team.short_name }}
+			{% else %}{{ team.full_name }}
+			{% endif %}({{result[1][0]}})
 	{%- endif -%}
 	{% endfor %}
 	{%- if results|length > 25 -%}
