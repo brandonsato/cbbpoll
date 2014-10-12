@@ -17,19 +17,5 @@
 {% if poll %}
 <h2> Latest Poll Results </h2>
 {% include 'resulttable.html' %}
-<div>
-  <h5>Official Ballots</h5>
-  {% for ballot in official_ballots %}
-  {%- if loop.index != 1 %}, {% endif %}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {%- endfor %}
-  {%if provisional_ballots%}
-  <h5>Provisional Ballots</h5>
-  {% for ballot in provisional_ballots %}
-  {%- if loop.index != 1 -%}, {%- endif -%}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {% endfor %}
-  {% endif %}
-</div>
 {% endif %}
 {% endblock %}

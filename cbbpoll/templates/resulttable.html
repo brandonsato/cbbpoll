@@ -1,5 +1,5 @@
 {% if poll %}
-	<div class="col-md-8">
+	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
 	<table class="results table table-striped">
 		<tr>
 			<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
@@ -8,6 +8,7 @@
 		{%- set prev_onevotes = -1 -%}
 		{%- for result in results -%}
 		{%- set team = teams.get(result[0]) %}
+		{%- if team.short_name %}{% set name = team.short_name %}{% else %}{% set name = team.full_name %}{% endif -%}
 		{%- if loop.index < 26 %}
 		<tr>
 			<td>
@@ -20,11 +21,7 @@
 				{%- set prev_score = result[1][0] -%}
 				{%- set prev_onevotes = result[1][1] -%}
 				{{rank}}</td>
-			<td><img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> 
-				{%- if team.short_name -%}{{ team.short_name }}
-				{%- else -%}{{ team.full_name }}
-				{%- endif -%}
-			</td>
+			<td><img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> {{name}}</td>
 			<td>{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}</td>
 		</tr>
 		{%- if loop.index == 25 %}
@@ -33,12 +30,26 @@
 		{%- elif loop.index == 26 %}
 	<div class='panel panel-default'>
 		<div class='panel-body'>
-			<strong>Others Receiving Votes:</strong> {{ team.short_name }}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
+			<strong>Others Receiving Votes:</strong> {{ name }}({{result[1][0]}}){%- else -%}, {{ name }}({{result[1][0]}})
 		{%- endif -%}
 		{%- endfor -%}
 		{%- if results|length > 25 %}
 		</div>
 	</div>
 {%- endif %}
+</div>
+<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+  <h5>Official Ballots</h5>
+  {% for ballot in official_ballots %}
+  {%- if loop.index != 1 %}, {% endif %}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {%- endfor %}
+  {%if provisional_ballots%}
+  <h5>Provisional Ballots</h5>
+  {% for ballot in provisional_ballots %}
+  {%- if loop.index != 1 -%}, {%- endif -%}
+  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  {% endfor %}
+  {% endif %}
 </div>
 {%- endif -%}

@@ -1,9 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>{{ballot}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></h1>
-<hr>
+<div class="row">
+  <div class="col-lg-12">
+<h1>{{ballot}}</h1>
+</div>
+<div class="col-lg-12"><button data-toggle="modal" data-target=".reddit-table-modal" class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></div>
+</div>
+
 {% if not ballot.fullpoll.has_completed %}<div class="alert alert-info" role="alert">This Poll is still active. {%if ballot.pollster == g.user %} <a href="{{url_for('submitballot')}}" class='alert-link'>Edit your ballot</a>{% endif %}</div>{% endif %}
 {% if ballot.is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> This is a provisional ballot. It does not count towards this poll's results.</div>{% endif %}
+<div class="col-md-12">
 <table class="ballot-view table table-striped">
 	<tr>
 		<th>Rank</th><th>Team</th><th>Reason</th>
@@ -22,36 +28,35 @@
 	</tr>
 	{% endfor %}
 </table>
-<div class="pop">
-  <span>✖</span>
-  <h3>Reddit Formatted Table</h3>
-    <textarea readonly name="reddit-table" id="reddit-table">
+</div>
+<div class="modal fade reddit-table-modal" tabindex="-1" role="dialog" aria-labelledby="redditTableModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <h4 class='modal-title'>Reddit Formatted Table</h4>
+</div>
+<div class="modal-body">
+<textarea readonly name="reddit-table" id="reddit-table" class="form-control" rows='6'>
 Rank||Team|Reason
 :--:|:--:|:---|:---
 {% set prev_score = -1 -%}
 {%- for vote in votes -%}
 {%- set team = teams.get(vote.team) -%}
 #{{vote.rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{vote.reason}}
-{% endfor %}
+{% endfor -%}
  </textarea>
-   <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
-
 </div>
+<div class="modal-footer">
+  <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
+</div>
+</div>
+</div>
+</div>
+
 {% endblock %}
 {% block scripts %} 
 {{super()}}
-<script>
- $(document).ready(function () {
-     $(".reddit-table").click(function () {
-         $(".pop, .pop-bg").fadeIn(100);
-         positionPopup();
-     });
-
-     $(".pop > span, .pop-bg").click(function () {
-         $(".pop, .pop-bg").fadeOut(100);
-     });
- });
-</script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
 <script>
 var clientTarget = new ZeroClipboard( $("#copy-button"), {

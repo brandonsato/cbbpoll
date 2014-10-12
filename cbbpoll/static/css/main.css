@@ -30,42 +30,6 @@ ol.ballot > li:before,  ol.result > li:before {
     content: counter(li-counter);
     counter-increment: li-counter;
 }
-.pop {
-    display: none;
-    position: fixed;
-    top: 75px;
-    right: 25px;
-    width: 275px;
-    height: 200px;
-    background: #ffffff;
-    outline: 10px solid rgba(0, 0, 0, 0.2);
-}
-.pop-bg {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-.pop > span {
-    cursor: pointer;
-    position: absolute;
-    top: -16px;
-    right: -16px;
-    -webkit-border-radius: 100px;
-    -moz-border-radius: 100px;
-    border-radius: 100px;
-    background: #444;
-    color: #ffffff;
-    padding: 6px 0px 0px 9px;
-    width: 30px;
-    height: 30px;
-}
-.pop > textarea {
-    width: 270px;
-    height: 100px;
-}
 .results, .ballot-view{
     font-size: 1.2em;
 }

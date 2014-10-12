@@ -1,0 +1,36 @@
+<div class="modal fade reddit-table-modal" tabindex="-1" role="dialog" aria-labelledby="redditTableModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+  <h4 class='modal-title'>Reddit Formatted Table</h4>
+</div>
+<div class="modal-body">
+<textarea readonly name="reddit-table" id="reddit-table" class="form-control" rows='6'>
+Rank||Team|Score(First Place Votes)
+:--:|:--:|:---|:---
+{% set prev_score = -1 -%}
+{%- for result in results -%}
+  {% set team = teams.get(result[0]) %}
+  {%- if team.short_name %}{% set name = team.short_name %}{% else %}{% set name = team.full_name %}{% endif -%}
+    {%- if loop.index < 26 -%}
+      {%- if result[1][0] == prev_score -%}
+        {%- set rank = prev_rank -%}
+      {%- else -%}
+        {%- set rank = loop.index -%}
+      {%- endif -%}
+    {%- set prev_rank = rank -%}
+    {%- set prev_score = result[1][0] -%}
+#{{rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{{name}}|{{ result[1][0]}}{%- if result[1][1] -%}({{result[1][1]}}){%-endif %}
+{% elif loop.index == 26 %}
+Others Receiving Votes: {{name}}({{result[1][0]}}){%- else -%}, {{name}}({{result[1][0]}})
+{%- endif -%}
+{% endfor %}
+  </textarea>
+</div>
+<div class="modal-footer">
+  <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
+</div>
+</div>
+</div>
+</div>
