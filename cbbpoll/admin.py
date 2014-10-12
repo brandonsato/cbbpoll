@@ -97,7 +97,7 @@ class PollAdmin(AdminModelView):
 class VoteAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
-    column_list = ['id', 'ballot_id', 'rank', 'team', 'reason']
+    column_list = ['id', 'ballot_id', 'rank', 'team_id', 'reason']
     form_overrides = dict(team_id=Select2Field)
     form_args = dict(
         team_id=dict(choices = teamChoices(),

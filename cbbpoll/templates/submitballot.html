@@ -82,7 +82,7 @@
                     return a.text.toLowerCase().indexOf(query.term.toLowerCase()) - b.text.toLowerCase().indexOf(query.term.toLowerCase());
                 })
             }
-            return results.sort();
+            return results;
         }
 
         $('select').select2({

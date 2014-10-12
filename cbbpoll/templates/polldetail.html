@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
   <div class="col-md-8">
-<h1>Results for Week {{week}} of {{season-1}}-{{season-2000}}</h1>
+<h1>Results for {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %} of {{season-1}}-{{season-2000}}</h1>
 </div>
 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><button data-toggle="modal" data-target=".reddit-table-modal" class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></div>
 </div>
