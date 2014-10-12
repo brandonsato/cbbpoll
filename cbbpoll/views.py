@@ -4,7 +4,10 @@ from cbbpoll import app, db, lm, r, bot, admin, message
 from forms import EditProfileForm, PollBallotForm
 from models import User, Poll, Team, Ballot, Vote
 from datetime import datetime
+from pytz import utc, timezone
 from botactions import update_flair
+
+eastern_tz = timezone('US/Eastern')
 
 def user_by_nickname(name):
     return User.query.filter_by(nickname = name).first()
@@ -43,7 +46,6 @@ def generate_results(poll, use_provisionals=False):
 def before_request():
     g.user = current_user
 
-
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -62,9 +64,10 @@ def index():
     user = g.user
     poll = completed_polls().first()
     if poll:
+        closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
         (results, official_ballots, provisional_ballots) = generate_results(poll)
     else:
-        results = official_ballots = provisional_ballots = None
+        results = official_ballots = provisional_ballots, closes_eastern = None
     return render_template('index.html',
         title = 'Home',
         results = results,
@@ -73,7 +76,9 @@ def index():
         official_ballots = official_ballots,
         provisional_ballots = provisional_ballots,
         users = User.query,
-        teams=Team.query)
+        teams=Team.query,
+        closes_eastern = closes_eastern
+        )
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
 def authorized():
@@ -214,6 +219,7 @@ def submitballot():
     teams = Team.query.all()
     pollster = current_user.is_pollster
     editing = bool(ballot)
+    closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if ballot:
         vote_dicts = [{} for i in range(25)]
         for vote in ballot.votes:
@@ -243,7 +249,7 @@ def submitballot():
         return redirect(url_for('index'))
     return render_template('submitballot.html',
       teams=teams, form=form, poll=poll,
-      is_provisional = not pollster, editing = editing)
+      is_provisional = not pollster, editing = editing, closes_eastern = closes_eastern)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def polls(s, w):
@@ -254,11 +260,11 @@ def polls(s, w):
     elif not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed!', 'warning')
     (results, official_ballots, provisional_ballots) = generate_results(poll)
-
+    closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
-        teams = Team.query)
+        teams = Team.query, closes_eastern = closes_eastern)
 
 
 @app.route('/results')
@@ -270,18 +276,19 @@ def results(page=1):
     poll = None
     if polls.items:
         poll = polls.items[0]
+        closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll:
         flash('No such poll', 'warning')
         return redirect(url_for('index'))
     elif not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ str(closes_eastern), 'warning')
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots) = generate_results(poll)
 
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
-        users = User.query, teams=Team.query)
+        users = User.query, teams=Team.query, closes_eastern = closes_eastern)
 
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
@@ -291,8 +298,9 @@ def ballot(ballot_id):
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
+    closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ str(poll.closeTime), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ str(closes_eastern), 'warning')
         return redirect(url_for('index'))
     votes = []
     for vote in ballot.votes:
