@@ -259,7 +259,7 @@ def polls(s, w):
         return redirect(url_for('index'))
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %w, %Y at %X'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots) = generate_results(poll)
     return render_template('polldetail.html',
@@ -282,7 +282,7 @@ def results(page=1):
         return redirect(url_for('index'))
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %w, %Y at %X'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots) = generate_results(poll)
 
@@ -301,7 +301,7 @@ def ballot(ballot_id):
     poll = Poll.query.get(ballot.poll_id)
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %w, %Y at %X'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
     votes = []
     for vote in ballot.votes:
