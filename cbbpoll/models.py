@@ -1,9 +1,16 @@
 from datetime import datetime, timedelta
 from cbbpoll import db, app
+from cbbpoll.message import send_reddit_pm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy.ext.hybrid import hybrid_property
+from flask.ext.sqlalchemy import models_committed
 from flask.ext.login import AnonymousUserMixin
 
+def on_models_committed(sender, changes):
+    for obj, change in changes:
+        if change == 'insert' and hasattr(obj, '__commit_insert__'):
+            obj.__commit_insert__()
+models_committed.connect(on_models_committed, sender=app)
 
 class User(db.Model):
     __tablename__ = 'user'
@@ -139,13 +146,16 @@ class Team(db.Model):
         return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
 
     def __repr__(self):
-        return '<Team %r>' % (self.short_name)
+        if self.short_name:
+            return '<Team %r>' % (self.short_name)
+        else:
+            return '<Team %r>' % (self.full_name)
 
     def __str__(self):
-        s = self.full_name
         if self.short_name:
-            s = "".join([self.short_name, " (", s, ")"])
-        return s
+            return'%s (%s)' % (self.full_name, self.short_name)
+        else:
+            return self.full_name
 
 class Ballot(db.Model):
     __tablename__ = 'ballot'
@@ -189,4 +199,13 @@ class VoterEvent(db.Model):
 
     def __repr__(self):
         return '<VoterEvent %r>' % (self.id)
+
+    def __commit_insert__(self):
+        if self.is_voter:
+            subj = 'You have been approved for voting on the /r/CollegeBasketball Poll'
+            template = 'pm_pollster_granted'
+        else:
+            subj = 'Your voting privilege has been revoked from the /r/CollegeBasketball Poll'
+            template = 'pm_pollster_revoked'
+        send_reddit_pm(self.user.nickname, subj, template, user=self.user)
 
