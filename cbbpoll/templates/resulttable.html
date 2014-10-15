@@ -46,8 +46,7 @@
   {%if provisional_ballots%}
   <h5>Provisional Ballots</h5>
   {% for ballot in provisional_ballots %}
-  {%- if loop.index != 1 -%}, {%- endif -%}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
+  <span class='ballot-list-item'><a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).name_with_flair(23)|safe}}</a>{%- if provisional_ballots|length > loop.index %}, {% endif %}</span>
   {% endfor %}
   {% endif %}
 </div>
