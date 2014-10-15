@@ -253,6 +253,7 @@ def submitballot():
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def polls(s, w):
+    prov = request.args.get('prov', False)
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first()
     if not poll:
         flash('No such poll', 'warning')
@@ -261,7 +262,7 @@ def polls(s, w):
     if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
-    (results, official_ballots, provisional_ballots) = generate_results(poll)
+    (results, official_ballots, provisional_ballots) = generate_results(poll, prov)
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
@@ -273,6 +274,7 @@ def polls(s, w):
 @app.route('/results/<int:page>/')
 @app.route('/results/<int:page>')
 def results(page=1):
+    prov = request.args.get('prov', False)
     polls = completed_polls().paginate(page, 1, False)
     poll = None
     if polls.items:
@@ -284,7 +286,7 @@ def results(page=1):
     if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
-    (results, official_ballots, provisional_ballots) = generate_results(poll)
+    (results, official_ballots, provisional_ballots) = generate_results(poll, prov)
 
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
