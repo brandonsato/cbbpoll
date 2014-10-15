@@ -2,8 +2,7 @@
 {% block content %}
 <div class="row">
   <div class="col-md-9">
-<h2>{% if ballot.pollster.flair -%} <img src='{{ballot.pollster.team.png_url(40)}}' alt='{{ballot.pollster.team.name}} Logo'>
-{%-endif -%}<a href="{{url_for('user', nickname=ballot.pollster.nickname)}}">{{ballot.pollster.nickname}}</a>'s Ballot for {{ballot.fullpoll}}</h2>
+<h2><a href="{{url_for('user', nickname=ballot.pollster.nickname)}}">{{ballot.pollster.name_with_flair(40)|safe}}</a>'s Ballot for {{ballot.fullpoll}}</h2>
 
 </div>
 <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3"><button data-toggle="modal" data-target=".reddit-table-modal" class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></div>
@@ -22,7 +21,7 @@
 			{{vote.rank}}
 		</td>
 		<td>
-			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> {% if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}
+			{{team.logo_html()|safe}} {% if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}
 		</td>
 		<td>
 			{{ vote.reason }}

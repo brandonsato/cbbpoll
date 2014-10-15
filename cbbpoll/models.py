@@ -1,3 +1,4 @@
+from flask import url_for
 from datetime import datetime, timedelta
 from cbbpoll import db, app
 from cbbpoll.message import send_reddit_pm
@@ -92,8 +93,16 @@ class User(db.Model):
         db.session.commit()
         return True
 
+    def name_with_flair(self, size=30):
+        if not self.flair:
+            return str(self.nickname)
+        return "%s%s" % (self.team.logo_html(size), self.nickname)
+
     def __repr__(self):
         return '<User %r>' % (self.nickname)
+
+    def __str__(self):
+        return str(self.nickname)
 
 class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
@@ -144,6 +153,12 @@ class Team(db.Model):
 
     def png_url(self, size=30):
         return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
+
+    def logo_html(self, size=30):
+        if size == 30 or size == 23:
+            return "<span class=logo%s><img src='%s' class='logo%s-%s' alt='%s Logo'></span>" % (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
+        else:
+            return "<img src='%s' alt='%s Logo'>" % (self.png_url(size), self.full_name) 
 
     def __repr__(self):
         if self.short_name:

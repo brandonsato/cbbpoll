@@ -34,7 +34,7 @@
     <select class="team form-control" id="{{vote.team.id}}" name="{{vote.team.id}}">
     {% for subvote in vote.team -%}
     {% if subvote.data != '__None' -%}
-    {% set item = subvote(**{'data-logo': subvote.label.text.png_url()}) -%}
+    {% set item = subvote(**{'data-logo': subvote.label.text.png_name}) -%}
     {% else -%}
     {% set item = subvote -%}
     {% endif -%}
@@ -69,7 +69,8 @@
             if(item.id=='__None') {
                 return item.text;
               }
-            return '<img class="dropdown-logo" src="' + $(item.element).data('logo')+'"> '+item.text;
+            var logo_name = $(item.element).data('logo')
+            return '<span class="logo23"><img class="logo23-'+logo_name+'" src="{{url_for('static', filename='img/logos_23.png')}}"></span> '+item.text;
         }
 
         function formatSelection(item) {

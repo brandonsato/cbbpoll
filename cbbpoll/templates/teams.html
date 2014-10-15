@@ -15,7 +15,7 @@
 {% for team in teams %}
 	<tr>
 		<td>{{team.full_name}}</td>
-		<td><img src="{{team.png_url()}}"></td>
+		<td>{{team.logo_html(23)|safe}}</td>
 		<td>{{team.nickname}}</td>
 		<td>{{team.conference}}</td>
 		<td>{{team.short_name}}</td>

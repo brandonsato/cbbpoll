@@ -37,4 +37,8 @@ ol.ballot > li:before,  ol.result > li:before {
     height: 23px;
     width: 23px;
 }
+.ballot-list-item .others-receiving-item{
+    display: inline-block;
+}
+
 
