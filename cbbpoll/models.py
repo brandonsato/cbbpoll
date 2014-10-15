@@ -129,7 +129,10 @@ class Poll(db.Model):
         return '<Poll Week %r of %r>' % (self.week, self.season)
 
     def __str__(self):
-        return 'Poll for Week %r of %r-%r' % (int(self.week), int(self.season-1), int(self.season-2000))
+        if self.week:
+            return 'Poll for Week %r of %r-%r' % (int(self.week), int(self.season-1), int(self.season-2000))
+        else:
+            return 'Poll for Preseason of %r-%r' % (int(self.season-1), int(self.season-2000))
 
 class Team(db.Model):
     __tablename__ = 'team'
