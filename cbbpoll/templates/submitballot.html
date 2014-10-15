@@ -4,7 +4,7 @@
 <h1>{%if editing %}Edit{% else %}Submit a{% endif %} Ballot for {{poll.season-1}}-{{poll.season-2000}}
     {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %}
 </h1>
-<h6>Poll Closes on {{closes_eastern.strftime('%A, %B %d, %Y at %X')}}</h6>
+<h6>Poll Closes on {{closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</h6>
 {% if is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> You are not an approved voter. You may submit a provisional ballot, but it will not count towards this poll's results.</div>{% endif %}
 {% if form.votes.errors %}
 {% for error in form.votes.errors %}

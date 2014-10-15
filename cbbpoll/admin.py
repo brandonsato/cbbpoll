@@ -30,12 +30,12 @@ def teamChoices():
 class AdminModelView(sqla.ModelView):
     form_base_class = flask_wtf__Form
     def is_accessible(self):
-        return not current_user.is_anonymous() and current_user.is_admin()
+        return current_user.is_admin()
 
 class MyAdminIndexView(admin.AdminIndexView):
     @expose('/')
     def index(self):
-        if current_user.is_anonymous() or not current_user.is_admin():
+        if not current_user.is_admin():
             return redirect(url_for('index'))
         return super(MyAdminIndexView, self).index()
 
@@ -45,7 +45,7 @@ class UserAdmin(AdminModelView):
     form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'emailReminders', 'pmReminders']
     column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_pollster', 'team', 'team.conference']
     column_searchable_list = ('nickname', 'email')
-    column_filters = ('team.conference', 'role')
+    column_filters = ('team.full_name', 'team.conference')
     form_overrides = dict(role=Select2Field)
     form_args = dict(
      #Pass the choices to the `SelectField`
@@ -107,8 +107,8 @@ class VoteAdmin(AdminModelView):
 
 class BallotAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['user_id', 'poll_id']
-    column_list = ['id', 'user_id', 'poll_id', 'updated', 'votes', 'is_provisional']
+    form_columns = ['user_id','pollster', 'poll_id']
+    column_list = ['id', 'pollster.nickname', 'poll_id', 'updated', 'votes', 'is_provisional']
 
 class VoterEventAdmin(AdminModelView):
     column_display_pk = True
