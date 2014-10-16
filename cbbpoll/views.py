@@ -312,3 +312,6 @@ def ballot(ballot_id):
     return render_template('ballot.html', ballot=ballot, votes=votes,
         teams=Team.query)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')

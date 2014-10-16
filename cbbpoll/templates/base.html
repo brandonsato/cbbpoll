@@ -4,7 +4,8 @@
 {% set navigation_bar = [
     (url_for('index'), 'index', 'Home'),
     (url_for('teams'), 'teams', 'Teams'),
-    (url_for('results'), 'results', 'Results')
+    (url_for('results'), 'results', 'Results'),
+    (url_for('about'), 'about', 'About')
 ] -%}
 {% set active_page = active_page|default('') -%}
 {% block head %}
