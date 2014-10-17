@@ -171,7 +171,7 @@ class Team(db.Model):
 
     def __str__(self):
         if self.short_name:
-            return'%s (%s)' % (self.full_name, self.short_name)
+            return'%s (%s)' % (self.short_name, self.full_name)
         else:
             return self.full_name
 
