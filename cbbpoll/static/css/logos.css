@@ -2,11 +2,13 @@
     position: absolute;
     width: 551px;
     height: 551px;
+    max-width: none;
 }
 .logo30 img{
     position: absolute;
     width: 760px;
     height: 760px;
+    max-width: none;
 }
 .logo23 {
     position: relative;
