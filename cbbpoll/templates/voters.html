@@ -4,7 +4,7 @@
 <h2>Voters</h2>
         {% set prev_conf = -1 %}
         <div class="row">
-        {%- for row in pollsters|sort(attribute='conference') -%}
+        {%- for row in voters|sort(attribute='conference') -%}
         {%- if prev_conf != row.conference -%}
         	{%- if loop.index != 1 -%}
         	</div>
