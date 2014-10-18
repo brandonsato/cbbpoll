@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% set active_page = "pollsters" %}
+{% set active_page = "voters" %}
 {% block content %}
-<h2>Pollsters</h2>
+<h2>Voters</h2>
         {% set prev_conf = -1 %}
         <div class="row">
         {%- for row in pollsters|sort(attribute='conference') -%}
@@ -16,6 +16,6 @@
       {%- endfor -%}
     </div>
 {% endblock %}
-{% block scripts %} 
+{% block scripts %}
 {{super()}}
 {% endblock %}

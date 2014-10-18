@@ -316,8 +316,8 @@ def ballot(ballot_id):
 def about():
     return render_template('about.html')
 
-@app.route('/pollsters')
-def pollsters():
+@app.route('/voters')
+def voters():
     users = User.query
-    pollsters = users.filter(User.is_pollster==True)
-    return render_template('pollsters.html', users = users, pollsters=pollsters)
+    voters = users.filter(User.is_pollster==True)
+    return render_template('voters.html', users = users, voters=voters)
