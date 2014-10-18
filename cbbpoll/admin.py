@@ -71,6 +71,7 @@ class UserAdmin(AdminModelView):
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
+    page_size = 100
     form_columns = ['full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
     column_list = ['id', 'full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
     column_searchable_list = ('full_name', 'short_name', 'nickname', 'conference')
@@ -116,6 +117,30 @@ class VoterEventAdmin(AdminModelView):
     column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
     column_default_sort = ('timestamp', True)
 
+class PollsterAdmin(AdminModelView):
+    list_template = 'admin/pollster_manage.html'
+    can_delete = False
+    page_size = 500
+    column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_pollster', 'team', 'team.conference']
+    column_searchable_list = ('nickname', 'email')
+    column_filters = ('team.full_name', 'team.conference')
+
+    @action('promote', 'Make Pollster', 'Are you sure you want to grant voter status to the selected users?')
+    def action_promote(self, ids):
+        for Id in ids:
+            user = User.query.get(Id)
+            user.is_pollster = True
+            db.session.add(user)
+            db.session.commit()
+
+    @action('demote', 'Revoke Pollster Status', 'Are you sure you want to revoke voter status from the selected users?')
+    def action_demote(self, ids):
+        for Id in ids:
+            user = User.query.get(Id)
+            user.is_pollster = False
+            db.session.add(user)
+            db.session.commit()
+
 
 # Create admin
 admin = admin.Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
@@ -125,3 +150,4 @@ admin.add_view(PollAdmin(Poll, db.session))
 admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
 admin.add_view(VoterEventAdmin(VoterEvent, db.session))
+admin.add_view(PollsterAdmin(User, db.session, name='Pollster Manager', endpoint='pollsters'))

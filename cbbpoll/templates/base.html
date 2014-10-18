@@ -2,19 +2,19 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/fixes.html" as fixes %}
 {% set navigation_bar = [
-    (url_for('index'), 'index', 'Home'),
-    (url_for('teams'), 'teams', 'Teams'),
     (url_for('results'), 'results', 'Results'),
+    (url_for('pollsters'), 'pollsters', 'Pollsters'),
+    (url_for('teams'), 'teams', 'Teams'),
     (url_for('about'), 'about', 'About')
 ] -%}
 {% set active_page = active_page|default('') -%}
 {% block head %}
 {% block styles %}
 {{super()}}
-      <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
-      <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
-      <link rel="stylesheet" href="{{url_for('static', filename='css/select2-bootstrap.css')}}">
-      <link rel="stylesheet" href="{{url_for('static', filename='css/logos.css')}}">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.css">
+<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/select2-bootstrap.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/logos.css')}}">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 {% endblock %}

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% set active_page = "pollsters" %}
+{% block content %}
+<h2>Pollsters</h2>
+        {% set prev_conf = -1 %}
+        <div class="row">
+        {%- for row in pollsters|sort(attribute='conference') -%}
+        {%- if prev_conf != row.conference -%}
+        	{%- if loop.index != 1 -%}
+        	</div>
+        	{%- endif -%}
+        <div class="col-md-3"><h4>{{row.conference}}</h4>
+        {%- endif -%}
+        {%- set prev_conf = row.conference -%}
+        <p><a href="{{url_for('user', nickname=row.nickname)}}">{{ row.name_with_flair(23)|safe }}</a></p>
+      {%- endfor -%}
+    </div>
+{% endblock %}
+{% block scripts %} 
+{{super()}}
+{% endblock %}

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from cbbpoll import db, app
 from cbbpoll.message import send_reddit_pm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from sqlalchemy import select, desc
 from sqlalchemy.ext.hybrid import hybrid_property
 from flask.ext.sqlalchemy import models_committed
 from flask.ext.login import AnonymousUserMixin
@@ -28,15 +29,7 @@ class User(db.Model):
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
-    voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic')
-
-    @hybrid_property
-    def remind_viaEmail(self):
-        return self.emailConfirmed & self.emailReminders
-
-    @hybrid_property
-    def remind_viaRedditPM(self):
-        return (self.role == 'p') | (self.role =='a')
+    voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic', order_by='desc(VoterEvent.timestamp)')
 
     def is_authenticated(self):
         return True
@@ -51,10 +44,32 @@ class User(db.Model):
         return self.role == 'a'
 
     @property
+    def conference(self):
+        if self.team:
+            return self.team.conference
+        return None
+
+    @hybrid_property
+    def remind_viaEmail(self):
+        return self.emailConfirmed & self.emailReminders
+
+    @hybrid_property
+    def remind_viaRedditPM(self):
+        return (self.role == 'p') | (self.role =='a')
+
+    @hybrid_property
     def is_pollster(self):
         #latestEvent = VoterEvent.query.filter_by(user=self).order_by(VoterEvent.timestamp.desc()).first()
         #return latestEvent and latestEvent.is_voter
         return self.was_pollster_at(datetime.utcnow())
+
+    @is_pollster.expression
+    def is_pollster(cls):
+        return select([VoterEvent.is_voter]).\
+        where(VoterEvent.user_id == cls.id).\
+        order_by(desc("timestamp")).\
+        limit(1).as_scalar()
+
     @is_pollster.setter
     def is_pollster(self, value):
         event = VoterEvent(timestamp = datetime.utcnow() - timedelta(seconds = 1), user_id = self.id, is_voter = value)
@@ -115,7 +130,7 @@ class Poll(db.Model):
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'joined', cascade="all, delete-orphan",
+    ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
 
     @hybrid_property
@@ -181,7 +196,7 @@ class Ballot(db.Model):
     updated = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
-    votes = db.relationship('Vote', backref = 'fullballot', lazy = 'joined', cascade="all, delete-orphan",
+    votes = db.relationship('Vote', backref = 'fullballot', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
 
     @property
