@@ -7,7 +7,7 @@ from sqlalchemy import and_, or_
 
 # These are meant to be run hourly, more frequently than that will result in multiple reminders being sent
 
-ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots')
+ReminderCommand = Manager(usage='Send reminders for voters to submit ballots')
 
 def generate_reminders():
     (poll_type, subject, template, email_list, pm_list) = (None, None, None, [], [])

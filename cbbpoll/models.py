@@ -27,7 +27,7 @@ class User(db.Model):
     emailReminders = db.Column(db.Boolean, default=False)
     pmReminders = db.Column(db.Boolean, default=False)
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
-    ballots = db.relationship('Ballot', backref = 'pollster', lazy = 'dynamic', cascade="all, delete-orphan",
+    ballots = db.relationship('Ballot', backref = 'voter', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
     voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic', order_by='desc(VoterEvent.timestamp)')
 
@@ -58,26 +58,26 @@ class User(db.Model):
         return (self.role == 'p') | (self.role =='a')
 
     @hybrid_property
-    def is_pollster(self):
+    def is_voter(self):
         #latestEvent = VoterEvent.query.filter_by(user=self).order_by(VoterEvent.timestamp.desc()).first()
         #return latestEvent and latestEvent.is_voter
-        return self.was_pollster_at(datetime.utcnow())
+        return self.was_voter_at(datetime.utcnow())
 
-    @is_pollster.expression
-    def is_pollster(cls):
+    @is_voter.expression
+    def is_voter(cls):
         return select([VoterEvent.is_voter]).\
         where(VoterEvent.user_id == cls.id).\
         order_by(desc("timestamp")).\
         limit(1).as_scalar()
 
-    @is_pollster.setter
-    def is_pollster(self, value):
+    @is_voter.setter
+    def is_voter(self, value):
         event = VoterEvent(timestamp = datetime.utcnow() - timedelta(seconds = 1), user_id = self.id, is_voter = value)
         db.session.add(event)
         db.session.commit()
 
     @hybrid_method
-    def was_pollster_at(self, timestamp):
+    def was_voter_at(self, timestamp):
         mostRecent = VoterEvent.query.filter_by(user=self) \
             .group_by(VoterEvent.timestamp) \
             .having(VoterEvent.timestamp < timestamp) \
@@ -85,8 +85,8 @@ class User(db.Model):
             .first()
         return mostRecent and mostRecent.is_voter
 
-    @was_pollster_at.expression
-    def was_pollster_at(cls, timestamp):
+    @was_voter_at.expression
+    def was_voter_at(cls, timestamp):
         return select([VoterEvent.is_voter]).\
         where(VoterEvent.user_id == cls.id).\
         where(VoterEvent.timestamp < timestamp).\
@@ -210,7 +210,7 @@ class Ballot(db.Model):
 
     @property
     def is_provisional(self):
-        return not self.pollster.was_pollster_at(self.fullpoll.closeTime)
+        return not self.voter.was_voter_at(self.fullpoll.closeTime)
     @is_provisional.setter
     def is_provisional(self, value):
         raise AttributeError('is_provisional is not a settable field')
@@ -219,7 +219,7 @@ class Ballot(db.Model):
         return '<Ballot %r>' % (self.id)
 
     def __str__(self):
-        return "%s's Ballot for Week %s of %s-%s" % (self.pollster.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
+        return "%s's Ballot for Week %s of %s-%s" % (self.voter.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
 
 class Vote(db.Model):
     __tablename__ = 'vote'
@@ -245,9 +245,9 @@ class VoterEvent(db.Model):
     def __commit_insert__(self):
         if self.is_voter:
             subj = 'You have been approved for voting on the /r/CollegeBasketball Poll'
-            template = 'pm_pollster_granted'
+            template = 'pm_voter_granted'
         else:
             subj = 'Your voting privilege has been revoked from the /r/CollegeBasketball Poll'
-            template = 'pm_pollster_revoked'
+            template = 'pm_voter_revoked'
         send_reddit_pm(self.user.nickname, subj, template, user=self.user)
 

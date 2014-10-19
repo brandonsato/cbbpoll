@@ -43,7 +43,7 @@ class MyAdminIndexView(admin.AdminIndexView):
 class UserAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'emailReminders', 'pmReminders']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_pollster', 'team', 'team.conference']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team', 'team.conference']
     column_searchable_list = ('nickname', 'email')
     column_filters = ('team.full_name', 'team.conference')
     form_overrides = dict(role=Select2Field)
@@ -53,19 +53,19 @@ class UserAdmin(AdminModelView):
         choices=[('u', 'user'), ('a', 'admin')]
         ))
 
-    @action('promote', 'Make Pollster', 'Are you sure you want to grant voter status to the selected users?')
+    @action('promote', 'Make Voter', 'Are you sure you want to grant voter status to the selected users?')
     def action_promote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
-            user.is_pollster = True
+            user.is_voter = True
             db.session.add(user)
             db.session.commit()
 
-    @action('demote', 'Revoke Pollster Status', 'Are you sure you want to revoke voter status from the selected users?')
+    @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
     def action_demote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
-            user.is_pollster = False
+            user.is_voter = False
             db.session.add(user)
             db.session.commit()
 
@@ -108,8 +108,8 @@ class VoteAdmin(AdminModelView):
 
 class BallotAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['user_id','pollster', 'poll_id']
-    column_list = ['id', 'pollster.nickname', 'poll_id', 'updated', 'is_provisional']
+    form_columns = ['user_id','voter', 'poll_id']
+    column_list = ['id', 'voter.nickname', 'poll_id', 'updated', 'is_provisional']
 
 class VoterEventAdmin(AdminModelView):
     column_display_pk = True
@@ -117,27 +117,27 @@ class VoterEventAdmin(AdminModelView):
     column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
     column_default_sort = ('timestamp', True)
 
-class PollsterAdmin(AdminModelView):
-    list_template = 'admin/pollster_manage.html'
+class VoterAdmin(AdminModelView):
+    list_template = 'admin/voter_manage.html'
     can_delete = False
     page_size = 500
-    column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_pollster', 'team', 'team.conference']
+    column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team', 'team.conference']
     column_searchable_list = ('nickname', 'email')
     column_filters = ('team.full_name', 'team.conference')
 
-    @action('promote', 'Make Pollster', 'Are you sure you want to grant voter status to the selected users?')
+    @action('promote', 'Make Voter', 'Are you sure you want to grant voter status to the selected users?')
     def action_promote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
-            user.is_pollster = True
+            user.is_voter = True
             db.session.add(user)
             db.session.commit()
 
-    @action('demote', 'Revoke Pollster Status', 'Are you sure you want to revoke voter status from the selected users?')
+    @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
     def action_demote(self, ids):
         for Id in ids:
             user = User.query.get(Id)
-            user.is_pollster = False
+            user.is_voter = False
             db.session.add(user)
             db.session.commit()
 
@@ -150,4 +150,4 @@ admin.add_view(PollAdmin(Poll, db.session))
 admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
 admin.add_view(VoterEventAdmin(VoterEvent, db.session))
-admin.add_view(PollsterAdmin(User, db.session, name='Pollster Manager', endpoint='pollsters'))
+admin.add_view(VoterAdmin(User, db.session, name='Voter Manager', endpoint='voters'))

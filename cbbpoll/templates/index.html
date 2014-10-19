@@ -4,7 +4,7 @@
 {% if not g.user.is_authenticated() %}
 <div class="jumbotron">
   <h1>Welcome!</h1>
-  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Pollsters are not being added at this time, but feel free to login or create an account with the big button below.</p>
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Voters are not being added at this time, but feel free to login or create an account with the big button below.</p>
   <p><a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
 </div>
 {% elif not poll %}

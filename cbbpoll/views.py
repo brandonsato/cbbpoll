@@ -19,7 +19,7 @@ def open_polls():
     return Poll.query.filter(Poll.is_open == True)
 
 def generate_results(poll, use_provisionals=False):
-    nonvoters = User.query.filter(User.was_pollster_at(poll.closeTime)).all()
+    nonvoters = User.query.filter(User.was_voter_at(poll.closeTime)).all()
     results_dict = {}
     official_ballots = []
     provisional_ballots = []
@@ -28,8 +28,8 @@ def generate_results(poll, use_provisionals=False):
             provisional_ballots.append(ballot)
         else:
             official_ballots.append(ballot)
-            if ballot.pollster in nonvoters:
-                nonvoters.remove(ballot.pollster)
+            if ballot.voter in nonvoters:
+                nonvoters.remove(ballot.voter)
     counted_ballots = list(official_ballots)
     if use_provisionals:
         counted_ballots.extend(provisional_ballots)
@@ -222,7 +222,7 @@ def submitballot():
         return redirect(url_for('index'))
     ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
     teams = Team.query.all()
-    pollster = current_user.is_pollster
+    voter = current_user.is_voter
     editing = bool(ballot)
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if ballot:
@@ -254,7 +254,7 @@ def submitballot():
         return redirect(url_for('index'))
     return render_template('submitballot.html',
       teams=teams, form=form, poll=poll,
-      is_provisional = not pollster, editing = editing, closes_eastern = closes_eastern)
+      is_provisional = not voter, editing = editing, closes_eastern = closes_eastern)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def polls(s, w):
@@ -325,5 +325,5 @@ def about():
 @app.route('/voters')
 def voters():
     users = User.query
-    voters = users.filter(User.is_pollster==True)
+    voters = users.filter(User.is_voter==True)
     return render_template('voters.html', users = users, voters=voters)
