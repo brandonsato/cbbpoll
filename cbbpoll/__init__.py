@@ -28,7 +28,7 @@ migrate = Migrate(app, db)
 if not app.debug:
     import logging
     from logging.handlers import RotatingFileHandler
-    file_handler = RotatingFileHandler("logfile.txt", maxBytes = 1024*1024)
+    file_handler = RotatingFileHandler(app.config['LOGFILE'], maxBytes = 1024*1024)
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 

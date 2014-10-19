@@ -18,6 +18,8 @@ SQLALCHEMY_DATABASE_URI = 'mysql://username:password@mysql.server/dbname'
 SQLALCHEMY_POOL_RECYCLE = 499
 SQLALCHEMY_POOL_TIMEOUT = 20
 
+LOGFILE = 'logfile.txt'
+
 # email server
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 465
