@@ -5,5 +5,5 @@ The /r/CollegeBasketball User {{poll}} is open for ballot submission! Follow the
 {{ url_for('submitballot', _external = True) }}
 
 Thanks!
-
-Note: this is a bot, PMs are not monitored. For help please contact /u/Concision or /u/whatnamesarenttaken
+*****
+^(Note: This is a bot, PMs are not monitored. For help please contact /u/Concision or /u/whatnamesarenttaken)
