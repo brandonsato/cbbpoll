@@ -16,7 +16,9 @@
 {% endif %}
 {% if poll %}
 <h2> Latest Poll Results </h2>
-<h6>Close{%if poll.has_completed%}d{%else%}s{%endif%} on {{closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</h6>
+<div class="row">
+<div class="h6 col-xs-8 col-md-5">Closed on {{closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</div><div class="h6 col-xs-4 col-md-3 text-right"><a href="{{url_for("polls", s=poll.season|int, w= poll.week|int)}}">Permalink to these Results</a></div>
+</div>
 {% include 'resulttable.html' %}
 {% endif %}
 {% endblock %}

@@ -266,7 +266,7 @@ def polls(s, w):
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
-        teams = Team.query, closes_eastern = closes_eastern)
+        teams = Team.query, closes_eastern = closes_eastern, prov=prov)
 
 
 @app.route('/results')
@@ -291,7 +291,7 @@ def results(page=1):
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
-        users = User.query, teams=Team.query, closes_eastern = closes_eastern)
+        users = User.query, teams=Team.query, closes_eastern = closes_eastern, prov=prov)
 
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
