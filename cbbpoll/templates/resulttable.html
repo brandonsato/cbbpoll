@@ -1,8 +1,9 @@
 {% if poll %}
 	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+		<div class="table-responsive">
 	<table class="results table table-striped">
 		<tr>
-			<th>Rank</th><th>Team</th><th>Score(First Place Votes)</th>
+			<th>Rank</th><th>Team (First Place Votes)</th><th>Score</th>
 		</tr>
 		{%- set prev_score = -1 -%}
 		{%- set prev_onevotes = -1 -%}
@@ -21,11 +22,12 @@
 				{%- set prev_score = result[1][0] -%}
 				{%- set prev_onevotes = result[1][1] -%}
 				{{rank}}</td>
-			<td>{{team.logo_html()|safe}} {{name}}</td>
-			<td>{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}</td>
+			<td>{{team.logo_html()|safe}} {{name}}{% if result[1][1] %}({{result[1][1]}}){%endif%}</td>
+			<td>{{ result[1][0]}}</td>
 		</tr>
 		{%- if loop.index == 25 %}
 	</table>
+</div>
 		{%- endif -%}
 		{%- elif loop.index == 26 %}
 	<div class='panel panel-default'>

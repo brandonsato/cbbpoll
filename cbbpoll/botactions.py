@@ -17,7 +17,6 @@ def update_flair(user):
             if team_object:
                 #don't need to modify flair that already matches
                 if user.flair != team_object.id:
-                    print 'new flair!'
                     user.flair = team_object.id
                     db.session.add(user)
                     db.session.commit()

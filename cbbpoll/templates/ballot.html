@@ -13,6 +13,7 @@
 {% if not ballot.fullpoll.has_completed %}<div class="alert alert-info" role="alert">This Poll is still active. {%if ballot.voter == g.user %} <a href="{{url_for('submitballot')}}" class='alert-link'>Edit your ballot</a>{% endif %}</div>{% endif %}
 {% if ballot.is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> This is a provisional ballot. It does not count towards this poll's results.</div>{% endif %}
 <div class="col-md-12">
+<div class="table-responsive">
 <table class="ballot-view table table-striped">
 	<tr>
 		<th>Rank</th><th>Team</th><th>Reason</th>
@@ -31,6 +32,7 @@
 	</tr>
 	{% endfor %}
 </table>
+</div>
 </div>
 <div class="modal fade reddit-table-modal" tabindex="-1" role="dialog" aria-labelledby="redditTableModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
