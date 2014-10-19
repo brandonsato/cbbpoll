@@ -5,5 +5,5 @@ config.py
 TODO
 *.pyc
 *.swp
-
+logfile.txt
 *.out
