@@ -66,11 +66,13 @@ def internal_error(error):
 def index():
     user = g.user
     poll = completed_polls().first()
+    open_poll = open_polls().first()
+    results = official_ballots = provisional_ballots = closed_eastern = closes_eastern = None
     if poll:
-        closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
+        closed_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
         (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll)
-    else:
-        results = official_ballots = provisional_ballots, closes_eastern = None
+    if open_poll:
+        closes_eastern = open_poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     return render_template('index.html',
         title = 'Home',
         results = results,
@@ -80,8 +82,10 @@ def index():
         provisional_ballots = provisional_ballots,
         users = User.query,
         teams=Team.query,
-        closes_eastern = closes_eastern,
-        nonvoters=nonvoters
+        closed_eastern = closed_eastern,
+        nonvoters=nonvoters,
+        open_poll = open_poll,
+        closes_eastern = closes_eastern
         )
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])

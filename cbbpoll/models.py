@@ -43,6 +43,9 @@ class User(db.Model):
     def is_admin(self):
         return self.role == 'a'
 
+    def submitted_ballot_to(self, poll_id):
+        return self.ballots.filter_by(poll_id = poll_id).first()
+
     @property
     def conference(self):
         if self.team:
