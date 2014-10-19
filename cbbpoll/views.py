@@ -19,6 +19,7 @@ def open_polls():
     return Poll.query.filter(Poll.is_open == True)
 
 def generate_results(poll, use_provisionals=False):
+    nonvoters = User.query.filter(User.was_pollster_at(poll.closeTime)).all()
     results_dict = {}
     official_ballots = []
     provisional_ballots = []
@@ -27,6 +28,8 @@ def generate_results(poll, use_provisionals=False):
             provisional_ballots.append(ballot)
         else:
             official_ballots.append(ballot)
+            if ballot.pollster in nonvoters:
+                nonvoters.remove(ballot.pollster)
     counted_ballots = list(official_ballots)
     if use_provisionals:
         counted_ballots.extend(provisional_ballots)
@@ -39,7 +42,7 @@ def generate_results(poll, use_provisionals=False):
             if vote.rank == 1:
                 results_dict[vote.team_id][1] += 1
     results = sorted(results_dict.items(), key = lambda (k,v): (v[0],v[1]), reverse=True)
-    return (results, official_ballots, provisional_ballots)
+    return (results, official_ballots, provisional_ballots, nonvoters)
 
 
 @app.before_request
@@ -65,7 +68,7 @@ def index():
     poll = completed_polls().first()
     if poll:
         closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
-        (results, official_ballots, provisional_ballots) = generate_results(poll)
+        (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll)
     else:
         results = official_ballots = provisional_ballots, closes_eastern = None
     return render_template('index.html',
@@ -77,7 +80,8 @@ def index():
         provisional_ballots = provisional_ballots,
         users = User.query,
         teams=Team.query,
-        closes_eastern = closes_eastern
+        closes_eastern = closes_eastern,
+        nonvoters=nonvoters
         )
 
 @app.route('/authorize_callback', methods = ['GET', 'POST'])
@@ -129,6 +133,7 @@ def login():
 
 
 @app.route('/user/<nickname>')
+@app.route('/user/<nickname>/')
 @app.route('/user/<nickname>/<int:page>')
 @app.route('/user/<nickname>/<int:page>/')
 def user(nickname, page=1):
@@ -262,11 +267,11 @@ def polls(s, w):
     if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
-    (results, official_ballots, provisional_ballots) = generate_results(poll, prov)
+    (results, official_ballots, provisional_ballots,nonvoters) = generate_results(poll, prov)
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
-        teams = Team.query, closes_eastern = closes_eastern, prov=prov)
+        teams = Team.query, closes_eastern = closes_eastern, prov=prov, nonvoters=nonvoters)
 
 
 @app.route('/results')
@@ -286,12 +291,12 @@ def results(page=1):
     if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
-    (results, official_ballots, provisional_ballots) = generate_results(poll, prov)
+    (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll, prov)
 
     return render_template('results.html',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
-        users = User.query, teams=Team.query, closes_eastern = closes_eastern, prov=prov)
+        users = User.query, teams=Team.query, closes_eastern = closes_eastern, prov=prov, nonvoters=nonvoters)
 
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')

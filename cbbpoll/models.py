@@ -4,7 +4,7 @@ from cbbpoll import db, app
 from cbbpoll.message import send_reddit_pm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy import select, desc
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from flask.ext.sqlalchemy import models_committed
 from flask.ext.login import AnonymousUserMixin
 
@@ -76,6 +76,7 @@ class User(db.Model):
         db.session.add(event)
         db.session.commit()
 
+    @hybrid_method
     def was_pollster_at(self, timestamp):
         mostRecent = VoterEvent.query.filter_by(user=self) \
             .group_by(VoterEvent.timestamp) \
@@ -83,6 +84,14 @@ class User(db.Model):
             .order_by(VoterEvent.timestamp.desc()) \
             .first()
         return mostRecent and mostRecent.is_voter
+
+    @was_pollster_at.expression
+    def was_pollster_at(cls, timestamp):
+        return select([VoterEvent.is_voter]).\
+        where(VoterEvent.user_id == cls.id).\
+        where(VoterEvent.timestamp < timestamp).\
+        order_by(desc("timestamp")).\
+        limit(1).as_scalar()
 
     def get_id(self):
         return unicode(self.id)

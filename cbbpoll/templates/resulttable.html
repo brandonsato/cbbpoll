@@ -49,5 +49,11 @@
   <span class='ballot-list-item'><a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).name_with_flair(23)|safe}}</a>{%- if provisional_ballots|length > loop.index %}, {% endif %}</span>
   {% endfor %}
   {% endif %}
+  {%if nonvoters %}
+  <h5>Voters Failing to Submit Ballots</h5>
+  {% for voter in nonvoters %}
+  <a href="{{url_for('user', nickname=voter.nickname)}}"><span class='ballot-list-item'>{{voter.name_with_flair(23)|safe}}</a>{%- if nonvoters|length > loop.index %}, {% endif %}</span>
+  {% endfor %}
+  {% endif %}
 </div>
 {%- endif -%}
