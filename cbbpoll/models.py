@@ -202,7 +202,7 @@ class Team(db.Model):
 class Ballot(db.Model):
     __tablename__ = 'ballot'
     id = db.Column(db.Integer, primary_key = True)
-    updated = db.Column(db.DateTime)
+    updated = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'dynamic', cascade="all, delete-orphan",

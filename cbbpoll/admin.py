@@ -79,7 +79,7 @@ class TeamAdmin(AdminModelView):
 class PollAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots']
-    column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'ballots']
+    column_list = ['id', 'season', 'week', 'openTime', 'closeTime']
 
     @action('close', 'Close Poll', 'This will snap the poll at the current time.  Continue?')
     def action_close(self, id):
@@ -109,7 +109,7 @@ class VoteAdmin(AdminModelView):
 class BallotAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['user_id','pollster', 'poll_id']
-    column_list = ['id', 'pollster.nickname', 'poll_id', 'updated', 'votes', 'is_provisional']
+    column_list = ['id', 'pollster.nickname', 'poll_id', 'updated', 'is_provisional']
 
 class VoterEventAdmin(AdminModelView):
     column_display_pk = True
