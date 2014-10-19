@@ -40,6 +40,9 @@ class PollBallotForm(Form):
             except AttributeError:
                 # AttributeError ie, no team chosen. 
                 # Allow DataRequired() validator to catch and display error.
-                raise ValidationError()
-        if len(seen_twice) > 0:
-            raise ValidationError('Each team may only appear once per ballot')
+                pass
+        if seen_twice:
+            teams = []
+            for id in seen_twice:
+                teams.append(str(Team.query.get(id))+ " appears more than once")
+            raise ValidationError(", ".join(teams))
