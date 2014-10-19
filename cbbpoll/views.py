@@ -307,6 +307,7 @@ def ballot(ballot_id):
         return redirect(url_for('index'))
     poll = Poll.query.get(ballot.poll_id)
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
+    updated_eastern = ballot.updated.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
@@ -315,7 +316,7 @@ def ballot(ballot_id):
         votes.append({'rank':vote.rank, 'team':vote.team_id, 'reason':vote.reason})
     votes.sort(key=lambda vote: vote['rank'])
     return render_template('ballot.html', ballot=ballot, votes=votes,
-        teams=Team.query)
+        teams=Team.query, updated_eastern = updated_eastern)
 
 @app.route('/about')
 def about():
