@@ -67,7 +67,7 @@ def index():
     user = g.user
     poll = completed_polls().first()
     open_poll = open_polls().first()
-    results = official_ballots = provisional_ballots = closed_eastern = closes_eastern = None
+    results = official_ballots = provisional_ballots = nonvoters = closed_eastern = closes_eastern = None
     if poll:
         closed_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
         (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll)
