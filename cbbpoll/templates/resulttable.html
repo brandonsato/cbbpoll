@@ -38,6 +38,8 @@
 		{%- if results|length > 25 %}
 		</div>
 	</div>
+		{% elif results|length < 25 %}
+	</table></div>
 {%- endif %}
 </div>
 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="page-header">
+<span class="h1">{{user.name_with_flair(40)|safe}}{%if user.is_voter%} <span id="voter-icon" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="Approved Voter"></span>{%endif%}</span>{%- if user.id == g.user.id %}<a class="pull-right btn btn-default" href="{{url_for('edit')}}">Edit Profile</a>{% endif %}
 
-<h1>{{user.name_with_flair(40)|safe}}</h1>
-
-{%- if user.id == g.user.id %}<p><a href="{{url_for('edit')}}">Edit Your Profile</a></p>{% endif %}
-<hr>
+<p class='h5'><a href="//reddit.com/user/{{user.nickname}}">User Profile on Reddit</a></p>
+</div>
 <h4>Submitted Ballots</h4>
 {% if ballots.items %}
 <div class="list-group">
@@ -19,4 +19,10 @@ No ballots submitted
 {% if ballots.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.next_num) }}">&larr; Older</a></li>{% endif %}
 {% if ballots.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.prev_num) }}">Newer &rarr;</a></li>{% endif %}
 </ul>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script>
+$('#voter-icon').tooltip()
+</script>
 {% endblock %}
