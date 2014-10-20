@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 
 
 from cbbpoll import app, db
-from models import User, Team, Ballot, Poll, Vote, VoterEvent
+from models import User, Team, Ballot, Poll, Vote, VoterEvent, VoterApplication, ConsumptionTag
 
 def teamChoices():
     try:
@@ -141,6 +141,15 @@ class VoterAdmin(AdminModelView):
             db.session.add(user)
             db.session.commit()
 
+class VoterApplicationAdmin(AdminModelView):
+    column_display_pk = True
+    column_list = ['id', 'user_id', 'user.nickname', 'primary_team', 'other_teams', 'consumption_tags']
+
+class ConsumptionTagAdmin(AdminModelView):
+    column_display_pk = True
+    form_columns = ['id', 'text']
+    column_list = ['id', 'text']
+
 
 # Create admin
 admin = admin.Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
@@ -151,3 +160,6 @@ admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
 admin.add_view(VoterEventAdmin(VoterEvent, db.session))
 admin.add_view(VoterAdmin(User, db.session, name='Voter Manager', endpoint='voters'))
+admin.add_view(VoterApplicationAdmin(VoterApplication, db.session))
+admin.add_view(ConsumptionTagAdmin(ConsumptionTag, db.session))
+

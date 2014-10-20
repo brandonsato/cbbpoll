@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Apply to be a Voter</h1>
+<div class="col-md-7">
+{{ wtf.form_errors(form) }}
+{{wtf.quick_form(form)}}
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script>
+$("#primary_team_id").select2({
+    placeholder: "Select Teams"
+});
+$("#other_teams").select2({
+    placeholder: "Select Teams"
+});
+         $(function(){
+
+        function format(item) {
+            if(item.id=='__None') {
+                return item.text;
+              }
+            var logo_name = $(item.element).data('logo')
+            return '<span class="logo23"><img class="logo23-'+logo_name+'" src="{{url_for('static', filename='img/logos_23.png')}}"></span> '+item.text;
+        }
+
+        function formatSelection(item) {
+          // return selection template
+          return '<b>' + item.text + '</b>';
+        }
+
+        function sort(results, container, query) {
+            if(query.term) {
+                return results.sort(function(a, b) {
+                    return a.text.toLowerCase().indexOf(query.term.toLowerCase()) - b.text.toLowerCase().indexOf(query.term.toLowerCase());
+                })
+            }
+            return results;
+        }
+
+        $('select').select2({
+          // Specify format function for dropdown item
+          //formatResult: format,
+          // Specify format function for selected item
+          //formatSelection: format,
+          // Specify sort function
+          sortResults: sort
+        });
+      });
+</script>
+{% endblock %}

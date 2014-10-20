@@ -1,10 +1,10 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, FieldList, FormField, BooleanField
+from wtforms import TextField, SubmitField, FieldList, FormField, BooleanField, TextAreaField, widgets
 from flask.ext.admin.form.fields import Select2Field
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import Email, Optional, DataRequired, Length, ValidationError
+from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
+from wtforms.validators import Email, Required, Optional, DataRequired, Length, ValidationError, AnyOf
 from cbbpoll import app
-from models import Team
+from models import Team, ConsumptionTag
 
 def allTeams():
     return Team.query
@@ -12,6 +12,29 @@ def allTeams():
 class LoginForm(Form):
     submit = SubmitField('Login/Sign Up via Reddit')
 
+class ListCheckboxWidget(widgets.ListWidget):
+  def __call__(self, field, **kwargs):
+    kwargs.setdefault('id', field.id)
+
+    html = ["\n"]
+
+    for subfield in field:
+      html.append(u'<label class="checkbox">%s%s</label>\n' % (subfield(), subfield.label.text))
+
+    return widgets.HTMLString(u''.join(html))
+
+class QueryMultiCheckboxField(QuerySelectMultipleField):
+  widget = ListCheckboxWidget()
+  option_widget = widgets.CheckboxInput()
+
+  def iter_choices(self):
+    for pk, obj in self._get_object_list():
+      if hasattr(obj, self.id):
+        selected = getattr(obj, self.id)
+      else:
+        selected = obj in self.data
+
+      yield (pk, self.get_label(obj), selected)
 
 class EditProfileForm(Form):
     email = TextField('Email', validators = [Email(), Optional(), Length(max=120) ])
@@ -46,3 +69,13 @@ class PollBallotForm(Form):
             for id in seen_twice:
                 teams.append(str(Team.query.get(id))+ " appears more than once")
             raise ValidationError(", ".join(teams))
+
+class VoterApplicationForm(Form):
+    will_participate = BooleanField('I understand that there is a participation requirement to this poll. If I fail to submit multiple ballots, I understand that I may lose voting privilege', validators=[DataRequired(message="You must agree!")])
+    primary_team_id = QuerySelectField('Which team do you Primarily support?', query_factory=allTeams, allow_blank=True, blank_text='Select a Team', 
+        validators=[Required(), DataRequired(message="You must select a team.")])
+    other_teams = QuerySelectMultipleField('Which other teams, if any, do you support?', query_factory=allTeams, allow_blank=True, blank_text='Select Teams')
+    consumption_tags = QueryMultiCheckboxField('In which of the following ways do you inform you opinion of basketball teams? (select all that apply)', query_factory=lambda: ConsumptionTag.query.all(), option_widget=widgets.CheckboxInput())
+    approach = TextAreaField('If selected, how would you approach filling out your ballot? What would lead you to decide to vote for one team over another?', [Required(), Length(max=1000)])
+    other_comments = TextAreaField('Anything other comments?', [Optional(), Length(max=1000)])
+    submit = SubmitField('Submit Application')

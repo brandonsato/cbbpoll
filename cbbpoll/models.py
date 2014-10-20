@@ -30,6 +30,7 @@ class User(db.Model):
     ballots = db.relationship('Ballot', backref = 'voter', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
     voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic', order_by='desc(VoterEvent.timestamp)')
+    voterApplication = db.relationship('VoterApplication', uselist=False, backref='user')
 
     def is_authenticated(self):
         return True
@@ -133,6 +134,10 @@ class User(db.Model):
 
 class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
+        return False
+
+    @property
+    def is_voter(self):
         return False
 
 class Poll(db.Model):
@@ -254,3 +259,37 @@ class VoterEvent(db.Model):
             template = 'pm_voter_revoked'
         send_reddit_pm(self.user.nickname, subj, template, user=self.user)
 
+other_teams_table = db.Table('other_teams',
+    db.Column('application_id', db.Integer, db.ForeignKey('voter_application.id')),
+    db.Column('team_id', db.Integer, db.ForeignKey('team.id')))
+
+application_tags_table = db.Table('application_tags',
+    db.Column('application_id', db.Integer, db.ForeignKey('voter_application.id')),
+    db.Column('tag_id', db.Integer, db.ForeignKey('consumption_tags.id')))
+
+class VoterApplication(db.Model):
+    __tablename__ = 'voter_application'
+    id = db.Column(db.Integer, primary_key = True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    primary_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
+    primary_team = db.relationship('Team')
+    other_teams = db.relationship('Team', secondary=other_teams_table)
+    approach = db.Column(db.Text, nullable=False)
+    consumption_tags = db.relationship('ConsumptionTag', secondary=application_tags_table)
+    other_comments = db.Column(db.Text, nullable=True)
+    will_participate = db.Column(db.Boolean, nullable=False)
+    updated = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Application %r>' % self.user.nickname
+
+class ConsumptionTag(db.Model):
+    __tablename__ = 'consumption_tags'
+    id = db.Column(db.Integer, primary_key = True)
+    text = db.Column(db.String(160))
+
+    def __repr__(self):
+        return '<Tag %r>' % self.id
+
+    def __str__(self):
+        return self.text

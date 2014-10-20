@@ -1,8 +1,8 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r, bot, admin, message
-from forms import EditProfileForm, PollBallotForm
-from models import User, Poll, Team, Ballot, Vote
+from forms import EditProfileForm, PollBallotForm, VoterApplicationForm
+from models import User, Poll, Team, Ballot, Vote, VoterApplication
 from datetime import datetime
 from pytz import utc, timezone
 from botactions import update_flair
@@ -331,3 +331,31 @@ def voters():
     users = User.query
     voters = users.filter(User.is_voter==True)
     return render_template('voters.html', users = users, voters=voters)
+
+@app.route('/apply', methods = ['GET', 'POST'])
+@login_required
+def apply():
+    application = VoterApplication.query.filter_by(user_id=g.user.id).first()
+    if application:
+        flash("Application Already Submitted", 'info')
+        return redirect(url_for('index'))
+    form = VoterApplicationForm()
+    if form.validate_on_submit():
+        application=VoterApplication(
+        user_id = g.user.id,
+        primary_team_id = form.primary_team_id.data.id,
+        approach = form.approach.data,
+        other_comments = form.other_comments.data,
+        will_participate = form.will_participate.data,
+        updated = datetime.utcnow()
+        )
+        for team in form.data['other_teams']:
+            application.other_teams.append(team)
+        for tag in form.data['consumption_tags']:
+            application.consumption_tags.append(tag)
+        db.session.add(application)
+        db.session.commit()
+        flash('Application submitted successfully!','success')
+        return redirect(url_for('index'))
+    return render_template('apply.html', form = form)
+
