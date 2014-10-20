@@ -2,7 +2,7 @@
 {% block content %}
 <div class="row">
   <div class="col-md-9">
-<h2><a href="{{url_for('user', nickname=ballot.voter.nickname)}}">{{ballot.voter.name_with_flair(40)|safe}}</a>'s Ballot for <a href="{{url_for('polls', s=ballot.fullpoll.season, w=ballot.fullpoll.week)}}">Week {{ballot.fullpoll.week}} of {{ballot.fullpoll.season-1}}-{{ballot.fullpoll.season-2000}}</a></h2>
+<h2><a href="{{url_for('user', nickname=ballot.voter.nickname)}}">{{ballot.voter.name_with_flair(40)|safe}}</a>'s Ballot for <a href="{{url_for('polls', s=ballot.fullpoll.season, w=ballot.fullpoll.week)}}">{% if ballot.fullpoll.week == 0 %}Preseason{% else %}Week {{ballot.fullpoll.week}}{% endif %} of {{ballot.fullpoll.season-1}}-{{ballot.fullpoll.season-2000}}</a></h2>
 <div class="row">
 <div class="h6 col-xs-12">Submitted on {{updated_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</div>
 </div>
