@@ -48,19 +48,22 @@
 	  </ul>
 	  	<h5>Approach to Voting</h5>
 	  	<p>
-    {{application.approach}}
+    {{application.approach|nl2br}}
   </p>
   {% if application.other_comments %}
   <h5>Other Comments</h5>
   <p>
-    {{application.other_comments}}
+    {{application.other_comments|nl2br}}
   </p>
   {% endif %}
   </div>
 </div>
 
-</div></div>
+</div>
+{% elif g.user.id == user.id and not user.is_voter %}
+<a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
 {% endif %}
+</div>
 {% endblock %}
 {% block scripts %}
 {{super()}}

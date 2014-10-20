@@ -3,8 +3,26 @@
 {% block content %}
 <h1>Apply to be a Voter</h1>
 <div class="col-md-7">
-{{ wtf.form_errors(form) }}
-{{wtf.quick_form(form)}}
+<form class="form" method="post" role="form">
+  {{ form.hidden_tag() }}
+  {{ wtf.form_errors(form, hiddens="only") }}
+  {{ wtf.form_field(form.primary_team_id) }}
+  {{ wtf.form_field(form.other_teams) }}
+  {{ wtf.form_field(form.consumption_tags) }}
+  {{ wtf.form_field(form.approach) }}
+  {{ wtf.form_field(form.other_comments) }}
+<div class="form-group {%if form.will_participate.errors %} has-error{% endif %}">
+      <label class="checkbox" for="will_participate">
+        <input id="will_participate" name="will_participate" type="checkbox" value="y" {% if form.will_participate.data %}checked{% endif %}> {{form.will_participate.label.text}}
+      </label>
+  {%if form.will_participate.errors %}
+		{% for error in form.will_participate.errors %}
+        <p class="help-block">{{error}}</p>
+    {%- endfor %}
+  {%endif%}
+</div>
+	{{ wtf.form_field(form.submit) }}
+</form>
 </div>
 {% endblock %}
 {% block scripts %}

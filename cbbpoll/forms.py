@@ -19,7 +19,7 @@ class ListCheckboxWidget(widgets.ListWidget):
     html = ["\n"]
 
     for subfield in field:
-      html.append(u'<label class="checkbox">%s%s</label>\n' % (subfield(), subfield.label.text))
+      html.append(u'<div class="checkbox"><label>%s%s</label></div>\n' % (subfield(), subfield.label.text))
 
     return widgets.HTMLString(u''.join(html))
 
@@ -71,11 +71,15 @@ class PollBallotForm(Form):
             raise ValidationError(", ".join(teams))
 
 class VoterApplicationForm(Form):
-    will_participate = BooleanField('I understand that there is a participation requirement to this poll. If I fail to submit multiple ballots, I understand that I may lose voting privilege', validators=[DataRequired(message="You must agree!")])
-    primary_team_id = QuerySelectField('Which team do you Primarily support?', query_factory=allTeams, allow_blank=True, blank_text='Select a Team', 
-        validators=[Required(), DataRequired(message="You must select a team.")])
-    other_teams = QuerySelectMultipleField('Which other teams, if any, do you support?', query_factory=allTeams, allow_blank=True, blank_text='Select Teams')
+    primary_team_id = QuerySelectField('Which team do you Primarily support?', 
+        query_factory=allTeams, allow_blank=True, blank_text='Select a Team', 
+        validators=[DataRequired(message="You must select a team.")])
+    other_teams = QuerySelectMultipleField('Which other teams, if any, do you support?', 
+        query_factory=allTeams, allow_blank=True, blank_text='Select Teams')
     consumption_tags = QueryMultiCheckboxField('In which of the following ways do you inform you opinion of basketball teams? (select all that apply)', query_factory=lambda: ConsumptionTag.query.all(), option_widget=widgets.CheckboxInput())
     approach = TextAreaField('If selected, how would you approach filling out your ballot? What would lead you to decide to vote for one team over another?', [Required(), Length(max=1000)])
     other_comments = TextAreaField('Anything other comments?', [Optional(), Length(max=1000)])
+    will_participate = BooleanField('''I understand that there is a participation requirement to this poll. \
+        If I fail to submit ballots, I understand that I may lose voting privilege''',
+         validators=[DataRequired()])
     submit = SubmitField('Submit Application')
