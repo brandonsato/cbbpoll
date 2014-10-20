@@ -25,6 +25,13 @@ Bootstrap(app)
 lm.login_view = 'login'
 migrate = Migrate(app, db)
 
+if not app.debug:
+    import logging
+    from logging.handlers import RotatingFileHandler
+    file_handler = RotatingFileHandler(app.config['LOGFILE'], maxBytes = 1024*1024)
+    file_handler.setLevel(logging.WARNING)
+    app.logger.addHandler(file_handler)
+
 r = praw.Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
 r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'], app.config['REDDIT_CLIENT_SECRET'], app.config['REDDIT_REDIRECT_URI'])
 bot = praw.Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)

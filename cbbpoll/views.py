@@ -67,7 +67,7 @@ def index():
     user = g.user
     poll = completed_polls().first()
     open_poll = open_polls().first()
-    results = official_ballots = provisional_ballots = closed_eastern = closes_eastern = None
+    results = official_ballots = provisional_ballots = nonvoters = closed_eastern = closes_eastern = None
     if poll:
         closed_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
         (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll)
@@ -289,7 +289,10 @@ def results(page=1):
     if polls.items:
         poll = polls.items[0]
     if not poll:
-        flash('No such poll', 'warning')
+        if page == 1:
+            flash('No polls have been completed yet.  Check back soon!', 'info')
+        else:
+            flash(page + 'No such poll', 'warning')
         return redirect(url_for('index'))
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():

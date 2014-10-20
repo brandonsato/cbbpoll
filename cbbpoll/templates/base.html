@@ -19,13 +19,15 @@
 
 {% endblock %}
   {{fixes.ie8()}}
-{% endblock %}
-{% block title %}
-{% if title %}
+<title>
+{%- block title -%}
+{%- if title -%}
 {{title}} - /r/CollegeBasketball Poll
-{% else %}
+{%- else -%}
 /r/CollegeBasketball Poll
-{% endif %}
+{%- endif -%}
+{%- endblock -%}
+</title>
 {% endblock %}
 {% block body %}
 {% block navbar %}
@@ -74,18 +76,18 @@
       </div>
     </div>
 {% endblock %}
-<div class="container">
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
+  <div class="container">
     {% for category, message in messages %}
     <div class="alert alert-{{category}} alert-dismissible " role="alert">
   <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         {{ message }}
     </div>
     {% endfor %}
+  </div>
     {% endif %}
     {% endwith %}
-</div>
 <div class="container">
 {% block content %}
 {% endblock %}
