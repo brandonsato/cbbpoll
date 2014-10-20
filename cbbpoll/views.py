@@ -146,13 +146,14 @@ def user(nickname, page=1):
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     ballots = user.ballots.filter(Poll.has_completed == True)
+    application = VoterApplication.query.filter_by(user_id=user.id).first()
     if user == g.user or g.user.is_admin():
         pending_ballot = user.ballots.filter(Poll.has_completed == False).first()
         if pending_ballot:
             ballots = user.ballots
     ballots = ballots.join(Poll, Ballot.fullpoll).order_by(Poll.closeTime.desc())
     return render_template('user.html', ballots = ballots.paginate(page,10,False),
-        user = user)
+        user = user, application = application)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
 @login_required

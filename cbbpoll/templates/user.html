@@ -5,20 +5,62 @@
 
 <p class='h5'><a href="//reddit.com/user/{{user.nickname}}">User Profile on Reddit</a></p>
 </div>
-<h4>Submitted Ballots</h4>
+<div class="row">
+	<div class='col-md-7'>
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><h3 class='panel-title'>Submitted Ballots</h3></div>
 {% if ballots.items %}
+
 <div class="list-group">
 {% for ballot in ballots.items %}
 <a class="list-group-item{% if not ballot.fullpoll.has_completed %} list-group-item-info{% endif %}" href="{{url_for('ballot', ballot_id=ballot.id)}}"><strong>{{ballot}}</strong>{%if ballot.is_provisional %} (Provisional){%endif%}{% if not ballot.fullpoll.has_completed %} (Poll is Active){% endif %}</a>
 {% endfor %}
 </div>
 {% else %}
-No ballots submitted
+<div class="panel-body">
+ There doesn't seem to be anything here!
+</div>
 {% endif %}
+</div>
 <ul class="pager">
 {% if ballots.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.next_num) }}">&larr; Older</a></li>{% endif %}
 {% if ballots.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.prev_num) }}">Newer &rarr;</a></li>{% endif %}
 </ul>
+</div>
+{% if application and (user.id ==g.user.id or g.user.is_admin())%}
+<div class="col-md-5">
+	<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Application <small> Submitted {{application.updated}} UTC</small></h3>
+  </div>
+  <div class="panel-body">
+    {{application.primary_team.logo_html(80)|safe}}
+    {%- for team in application.other_teams -%}
+    {{team.logo_html(40)|safe}}
+    {%- endfor -%}
+    {%- if application.consumption_tags -%}
+    <ul>
+    {%- for tag in application.consumption_tags -%}
+    <li>{{tag.text}}</li>
+    {%- endfor -%}
+    {%- endif -%}
+	  </ul>
+	  	<h5>Approach to Voting</h5>
+	  	<p>
+    {{application.approach}}
+  </p>
+  {% if application.other_comments %}
+  <h5>Other Comments</h5>
+  <p>
+    {{application.other_comments}}
+  </p>
+  {% endif %}
+  </div>
+</div>
+
+</div></div>
+{% endif %}
 {% endblock %}
 {% block scripts %}
 {{super()}}
