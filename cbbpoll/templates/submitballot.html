@@ -21,10 +21,13 @@
 {{form.hidden_tag()}}
     <ol class="list-group ballot">
 {% for vote in form.votes %}
-    <li class="list-group-item{% if vote.team.errors %} list-group-item-danger{% endif %}">
-        {% if vote.team.errors %}
+    <li class="list-group-item{% if vote.team.errors or vote.reason.errors %} list-group-item-danger{% endif %}">
+        {% if vote.team.errors or vote.reason.errors %}
             <div class="container">
             {% for error in vote.team.errors %}
+            <div class="row">{{ error }}</div>
+            {% endfor %}
+            {% for error in vote.reason.errors %}
             <div class="row">{{ error }}</div>
             {% endfor %}
             </div>
@@ -46,7 +49,7 @@
             </div>
             <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
-    {{vote.reason(class_="form-control", placeholder="Explanation (optional)")}}
+    {{vote.reason(class_="form-control", maxlength=140, placeholder="Explanation (optional)")}}
             </div>
         </div>
     </li>

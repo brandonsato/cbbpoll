@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import TextField, SubmitField, FieldList, FormField, BooleanField, TextAreaField, widgets
+from wtforms import StringField, SubmitField, FieldList, FormField, BooleanField, TextAreaField, widgets
 from flask.ext.admin.form.fields import Select2Field
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import Email, Required, Optional, DataRequired, Length, ValidationError, AnyOf
@@ -37,7 +37,7 @@ class QueryMultiCheckboxField(QuerySelectMultipleField):
       yield (pk, self.get_label(obj), selected)
 
 class EditProfileForm(Form):
-    email = TextField('Email', validators = [Email(), Optional(), Length(max=120) ])
+    email = StringField('Email', validators = [Email(), Optional(), Length(max=120) ])
     emailReminders = BooleanField('Email Reminders')
     pmReminders = BooleanField('Reddit PM Reminders')
     submit = SubmitField('Save Changes')
@@ -45,7 +45,7 @@ class EditProfileForm(Form):
 class VoteForm(Form):
     team = QuerySelectField('Team', query_factory=allTeams, allow_blank=True, blank_text='Select a Team',
         validators=[DataRequired(message="You must select a team.")])
-    reason = TextField('Reason', validators=[Optional(), Length(max=140)])
+    reason = StringField('Reason', validators=[Optional(), Length(max=140)])
 
 class PollBallotForm(Form):
     votes = FieldList(FormField(VoteForm), min_entries=25, max_entries=25)
@@ -75,9 +75,9 @@ class VoterApplicationForm(Form):
         query_factory=allTeams, allow_blank=True, blank_text='Select a Team',
         validators=[DataRequired(message="You must select a team.")])
     other_teams = QuerySelectMultipleField('Which other teams, if any, do you support?',
-        query_factory=allTeams, allow_blank=True, blank_text='Select Teams')
+        query_factory=allTeams)
     consumption_tags = QueryMultiCheckboxField('In which of the following ways do you inform your opinion of basketball teams? (select all that apply)', query_factory=lambda: ConsumptionTag.query.all(), option_widget=widgets.CheckboxInput())
-    approach = TextAreaField('If selected, how would you approach filling out your ballot? What would lead you to decide to vote for one team over another?', [Required(), Length(max=1000)])
+    approach = TextAreaField('If selected, how would you approach filling out your ballot? What would lead you to decide to vote for one team over another?', [DataRequired(), Length(max=1000)])
     other_comments = TextAreaField('Anything else to say?', [Optional(), Length(max=1000)])
     will_participate = BooleanField('''I understand that there is a participation requirement to this poll. \
         If I fail to submit a ballot three times, I understand that I may lose voting privilege''',
