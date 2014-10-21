@@ -227,7 +227,10 @@ class Ballot(db.Model):
         return '<Ballot %r>' % (self.id)
 
     def __str__(self):
-        return "%s's Ballot for Week %s of %s-%s" % (self.voter.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
+        if self.fullpoll.week:
+            return "%s's Ballot for Week %s of %s-%s" % (self.voter.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
+        else:
+            return "%s's Ballot for Preseason of %s-%s" % (self.voter.nickname, int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
 
 class Vote(db.Model):
     __tablename__ = 'vote'
