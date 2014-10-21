@@ -11,6 +11,7 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from flask_wtf import Form as flask_wtf__Form
 from datetime import datetime, timedelta
+from botactions import update_flair
 
 
 from cbbpoll import app, db
@@ -42,8 +43,9 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 class UserAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'emailReminders', 'pmReminders']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team', 'team.conference']
+    form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'flair', 'emailReminders', 'pmReminders']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team.full_name', 'team.conference']
+    column_sortable_list = ('id', 'nickname', 'email','emailConfirmed', 'role', 'team.full_name', 'team.conference')
     column_searchable_list = ('nickname', 'email')
     column_filters = ('team.full_name', 'team.conference')
     form_overrides = dict(role=Select2Field)
@@ -68,6 +70,13 @@ class UserAdmin(AdminModelView):
             user.is_voter = False
             db.session.add(user)
             db.session.commit()
+
+    @action('update_flair', 'Update Flair', 'Update flair on the selected users? This may take some time and increase response time')
+    def action_update_flair(self, ids):
+        for Id in ids:
+            user = User.query.get(Id)
+            update_flair(user)
+
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
