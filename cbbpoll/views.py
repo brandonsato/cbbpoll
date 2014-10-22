@@ -269,7 +269,7 @@ def submitballot():
             db.session.add(voteModel)
         db.session.commit()
         flash('Ballot submitted.', 'success')
-        return redirect(url_for('index'))
+        return redirect(url_for('ballot', ballot_id=ballot.id))
     return render_template('submitballot.html',
       teams=teams, form=form, poll=poll,
       is_provisional = not voter, editing = editing, closes_eastern = closes_eastern)
