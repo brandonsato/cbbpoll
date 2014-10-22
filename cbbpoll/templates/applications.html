@@ -3,7 +3,11 @@
 <div id="applications">
 {% for application in applications %}
 <div class="application col-sm-6 col-lg-4">
+{% if application.user.ballots.first() %}
+{{ macros.application(application, application.user.nickname, [(application.user.ballots.first(), url_for('ballot', ballot_id=application.user.ballots.first().id))]) }}
+{% else %}
 {{ macros.application(application, application.user.nickname) }}
+{% endif %}
 </div>
 {% endfor %}
 </div>

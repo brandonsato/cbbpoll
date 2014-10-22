@@ -1,7 +1,7 @@
-{% macro application(app, app_title="Application") -%}
+{% macro application(app, nickname="", items_and_urls="") -%}
 	<div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{{app_title}} <small> Submitted {{app.updated}} UTC</small></h3>
+    <h3 class="panel-title">{% if nickname %}<a href="{{url_for('user', nickname=nickname)}}">{{nickname}}</a>{% else %}Application{% endif %}<small> {{app.updated}} UTC</small></h3>
   </div>
   <div class="panel-body">
     {{app.primary_team.logo_html(80)|safe}}
@@ -26,5 +26,14 @@
   </p>
   {% endif %}
   </div>
+  {% if items_and_urls %}
+  <div class="list-group">
+    {% for item in items_and_urls %}
+    <a href="{{item[1]}}" class="list-group-item list-group-item-info">
+  {{ item[0] }}
+</a>
+{% endfor %}
+</div>
+  {% endif %}
 </div>
 {%- endmacro %}
