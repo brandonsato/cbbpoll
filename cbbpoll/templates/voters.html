@@ -6,22 +6,22 @@
 </div>
 <div id="voters">
 {% set prev_conf = -1 %}
-{%- for row in voters|sort(attribute='conference') -%}
-    {%- if prev_conf != row.conference -%}
+{%- for voter in voters|sort(attribute='conference') -%}
+    {%- if prev_conf != voter.conference -%}
         {%- if loop.index != 1 -%}
 </div>
 </div>
 </div>
         {%- endif -%}
-<div class="conference col-md-3">
+<div class="conference col-xs-12 col-sm-4 col-md-3">
 <div class="panel panel-default">
 <div class="panel-heading">
-<h3 class="panel-title">{{row.conference}}</h3>
+<h3 class="panel-title">{{voter.conference}}</h3>
 </div>
 <div class="list-group">
     {%- endif -%}
-    {%- set prev_conf = row.conference -%}
-<a class="list-group-item" href="{{url_for('user', nickname=row.nickname)}}">{{ row.name_with_flair(23)|safe }}</a>
+    {%- set prev_conf = voter.conference -%}
+<a class="list-group-item" href="{{url_for('user', nickname=voter.nickname)}}">{{ voter.name_with_flair(23)|safe }}</a>
 {%- endfor -%}
 </div>
 {% endblock %}
