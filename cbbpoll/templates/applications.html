@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="applications">
+{% for application in applications %}
+<div class="application col-sm-6 col-lg-4">
+{{ macros.application(application, application.user.nickname) }}
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src='//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.5/masonry.pkgd.min.js'></script>
+<script>
+$('#applications').masonry({transitionDuration: 0});
+</script>
+{% endblock %}

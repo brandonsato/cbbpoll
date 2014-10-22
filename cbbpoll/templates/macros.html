@@ -1,0 +1,30 @@
+{% macro application(app, app_title="Application") -%}
+	<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{app_title}} <small> Submitted {{app.updated}} UTC</small></h3>
+  </div>
+  <div class="panel-body">
+    {{app.primary_team.logo_html(80)|safe}}
+    {%- for team in app.other_teams -%}
+    {{team.logo_html(40)|safe}}
+    {%- endfor -%}
+    {%- if app.consumption_tags -%}
+    <ul>
+    {%- for tag in app.consumption_tags -%}
+    <li>{{tag.text}}</li>
+    {%- endfor -%}
+    {%- endif -%}
+	  </ul>
+	  	<h5>Approach to Voting</h5>
+	  	<p>
+    {{app.approach|nl2br}}
+  </p>
+  {% if app.other_comments %}
+  <h5>Other Comments</h5>
+  <p>
+    {{app.other_comments|nl2br}}
+  </p>
+  {% endif %}
+  </div>
+</div>
+{%- endmacro %}

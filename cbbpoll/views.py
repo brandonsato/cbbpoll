@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, session, url_for, request, g
+from flask import render_template, flash, redirect, session, url_for, request, g, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, r, bot, admin, message
 from forms import EditProfileForm, PollBallotForm, VoterApplicationForm
@@ -65,6 +65,10 @@ def before_request():
 @lm.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+@app.errorhandler(403)
+def forbidden_error(error):
+    return render_template('403.html'), 403
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -376,3 +380,16 @@ def apply():
         return redirect(url_for('user', nickname=g.user.nickname))
     return render_template('apply.html', form = form)
 
+@app.route('/applications')
+def applications():
+    if not current_user.is_admin():
+        abort(403)
+    applications = VoterApplication.query.all()
+    return render_template('applications.html', applications = applications)
+
+@app.route('/users')
+def users():
+    if not current_user.is_admin():
+        abort(403)
+    users = User.query
+    return render_template('users.html', users = users)

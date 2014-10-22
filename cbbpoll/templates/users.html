@@ -1,13 +1,13 @@
 {% extends "base.html" %}
-{% set active_page = "voters" %}
+{% set active_page = "users" %}
 {% block content %}
 <div class="page-header">
-<h1>Current Voters by Conference</h1>
+<h1>All Users by Conference</h1>
 </div>
-<div id="voters">
+<div id="users">
 {% set prev_conf = -1 %}
-{%- for row in voters|sort(attribute='conference') -%}
-    {%- if prev_conf != row.conference -%}
+{%- for user in users|sort(attribute='conference') -%}
+    {%- if prev_conf != user.conference -%}
         {%- if loop.index != 1 -%}
 </div>
 </div>
@@ -16,12 +16,12 @@
 <div class="conference col-md-3">
 <div class="panel panel-default">
 <div class="panel-heading">
-<h3 class="panel-title">{{row.conference}}</h3>
+<h3 class="panel-title">{{user.conference}}</h3>
 </div>
 <div class="list-group">
     {%- endif -%}
-    {%- set prev_conf = row.conference -%}
-<a class="list-group-item" href="{{url_for('user', nickname=row.nickname)}}">{{ row.name_with_flair(23)|safe }}</a>
+    {%- set prev_conf = user.conference -%}
+<a class="list-group-item" href="{{url_for('user', nickname=user.nickname)}}">{{ user.name_with_flair(23)|safe }}</a>
 {%- endfor -%}
 </div>
 {% endblock %}
@@ -29,6 +29,6 @@
 {{super()}}
 <script src='//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.5/masonry.pkgd.min.js'></script>
 <script>
-$('#voters').masonry({transitionDuration: 0});
+$('#users').masonry({transitionDuration: 0});
 </script>
 {% endblock %}

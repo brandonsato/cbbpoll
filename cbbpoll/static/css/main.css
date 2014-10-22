@@ -40,5 +40,8 @@ ol.ballot > li:before,  ol.result > li:before {
 .ballot-list-item, .others-receiving-item{
     display: inline-block;
 }
+.application .panel-body {
+    overflow: hidden;
+}
 
 

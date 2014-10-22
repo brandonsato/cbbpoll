@@ -28,41 +28,14 @@
 {% if ballots.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.prev_num) }}">Newer &rarr;</a></li>{% endif %}
 </ul>
 </div>
-{% if application and (user.id ==g.user.id or g.user.is_admin())%}
 <div class="col-md-5">
-	<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Application <small> Submitted {{application.updated}} UTC</small></h3>
-  </div>
-  <div class="panel-body">
-    {{application.primary_team.logo_html(80)|safe}}
-    {%- for team in application.other_teams -%}
-    {{team.logo_html(40)|safe}}
-    {%- endfor -%}
-    {%- if application.consumption_tags -%}
-    <ul>
-    {%- for tag in application.consumption_tags -%}
-    <li>{{tag.text}}</li>
-    {%- endfor -%}
-    {%- endif -%}
-	  </ul>
-	  	<h5>Approach to Voting</h5>
-	  	<p>
-    {{application.approach|nl2br}}
-  </p>
-  {% if application.other_comments %}
-  <h5>Other Comments</h5>
-  <p>
-    {{application.other_comments|nl2br}}
-  </p>
-  {% endif %}
-  </div>
-</div>
-
-</div>
+{% if application and (user.id ==g.user.id or g.user.is_admin())%}
+{{ macros.application(application) }}
 {% elif g.user.id == user.id and not user.is_voter %}
 <a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
 {% endif %}
+</div>
+
 </div>
 {% endblock %}
 {% block scripts %}

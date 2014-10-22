@@ -1,6 +1,7 @@
 {% extends "bootstrap/base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "bootstrap/fixes.html" as fixes %}
+{% import "macros.html" as macros %}
 {% set navigation_bar = [
     (url_for('results'), 'results', 'Results'),
     (url_for('voters'), 'voters', 'Voters'),
@@ -106,4 +107,3 @@
 </script>
 {% endblock %}
 {% endblock %}
-
