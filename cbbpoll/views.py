@@ -333,7 +333,7 @@ def ballot(ballot_id):
     poll = Poll.query.get(ballot.poll_id)
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     updated_eastern = ballot.updated.replace(tzinfo=utc).astimezone(eastern_tz)
-    if not poll.has_completed and not current_user.is_admin():
+    if not poll.has_completed and not current_user.is_admin() and current_user != ballot.voter:
         flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
         return redirect(url_for('index'))
     votes = []
