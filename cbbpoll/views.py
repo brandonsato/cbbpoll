@@ -1,6 +1,7 @@
+from praw import Reddit
 from flask import render_template, flash, redirect, session, url_for, request, g, abort
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from cbbpoll import app, db, lm, r, bot, admin, message
+from cbbpoll import app, db, lm, admin, message, handler
 from forms import EditProfileForm, PollBallotForm, VoterApplicationForm
 from models import User, Poll, Team, Ballot, Vote, VoterApplication
 from datetime import datetime
@@ -111,6 +112,8 @@ def authorized():
     reddit_code = request.args.get('code', '')
     if not reddit_state or not reddit_code:
         return redirect(url_for('index'))
+    r = Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
+    r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'], app.config['REDDIT_CLIENT_SECRET'], app.config['REDDIT_REDIRECT_URI'])
     reddit_info = r.get_access_information(reddit_code)
     reddit_user = r.get_me()
     next_path = session['last_path']
@@ -149,6 +152,8 @@ def login():
     state = str(uuid1())
     session['oauth_state'] = state
     session['last_path'] = next
+    r = Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
+    r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'], app.config['REDDIT_CLIENT_SECRET'], app.config['REDDIT_REDIRECT_URI'])
     authorize_url = r.get_authorize_url(state,refreshable=True)
     return redirect(authorize_url)
 
