@@ -1,6 +1,6 @@
 from flask import render_template
 from flask.ext.script import Manager
-from cbbpoll import app, message, r
+from cbbpoll import app, message
 from models import User, Poll, Ballot
 from datetime import datetime, timedelta
 from sqlalchemy import and_, or_
