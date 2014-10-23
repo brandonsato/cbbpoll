@@ -43,11 +43,11 @@ class MyAdminIndexView(admin.AdminIndexView):
 
 class UserAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'flair', 'emailReminders', 'pmReminders']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'applicationFlag', 'team.full_name']
-    column_sortable_list = ('id', 'nickname', 'email','emailConfirmed', 'role', 'applicationFlag', 'team.full_name')
+    form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'flair_team', 'flair', 'emailReminders', 'pmReminders']
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'applicationFlag', 'flair_team.full_name']
+    column_sortable_list = ('id', 'nickname', 'email','emailConfirmed', 'role', 'applicationFlag', 'flair_team.full_name')
     column_searchable_list = ('nickname', 'email')
-    column_filters = ('team.full_name', 'team.conference', 'applicationFlag')
+    column_filters = ('flair_team.full_name', 'flair_team.conference', 'applicationFlag')
     form_overrides = dict(role=Select2Field)
     form_args = dict(
      #Pass the choices to the `SelectField`
@@ -141,29 +141,29 @@ class VoterEventAdmin(AdminModelView):
     column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
     column_default_sort = ('timestamp', True)
 
-class VoterAdmin(AdminModelView):
-    list_template = 'admin/voter_manage.html'
-    can_delete = False
-    page_size = 500
-    column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team', 'team.conference']
-    column_searchable_list = ('nickname', 'email')
-    column_filters = ('team.full_name', 'team.conference')
+# class VoterAdmin(AdminModelView):
+#     list_template = 'admin/voter_manage.html'
+#     can_delete = False
+#     page_size = 500
+#     column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'flair_team', 'flair_team.conference']
+#     column_searchable_list = ('nickname', 'email')
+#     column_filters = ('flair_team.full_name', 'flair_team.conference')
 
-    @action('promote', 'Make Voter', 'Are you sure you want to grant voter status to the selected users?')
-    def action_promote(self, ids):
-        for Id in ids:
-            user = User.query.get(Id)
-            user.is_voter = True
-            db.session.add(user)
-            db.session.commit()
+#     @action('promote', 'Make Voter', 'Are you sure you want to grant voter status to the selected users?')
+#     def action_promote(self, ids):
+#         for Id in ids:
+#             user = User.query.get(Id)
+#             user.is_voter = True
+#             db.session.add(user)
+#             db.session.commit()
 
-    @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
-    def action_demote(self, ids):
-        for Id in ids:
-            user = User.query.get(Id)
-            user.is_voter = False
-            db.session.add(user)
-            db.session.commit()
+#     @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
+#     def action_demote(self, ids):
+#         for Id in ids:
+#             user = User.query.get(Id)
+#             user.is_voter = False
+#             db.session.add(user)
+#             db.session.commit()
 
 class VoterApplicationAdmin(AdminModelView):
     column_display_pk = True
@@ -183,7 +183,7 @@ admin.add_view(PollAdmin(Poll, db.session))
 admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
 admin.add_view(VoterEventAdmin(VoterEvent, db.session))
-admin.add_view(VoterAdmin(User, db.session, name='Voter Manager', endpoint='voters'))
+#admin.add_view(VoterAdmin(User, db.session, name='Voter Manager', endpoint='voters'))
 admin.add_view(VoterApplicationAdmin(VoterApplication, db.session))
 admin.add_view(ConsumptionTagAdmin(ConsumptionTag, db.session))
 
