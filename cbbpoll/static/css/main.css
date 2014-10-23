@@ -38,10 +38,11 @@ ol.ballot > li:before,  ol.result > li:before {
     width: 23px;
 }
 .ballot-list-item, .others-receiving-item{
-    display: inline-block;
+    white-space: nowrap;
 }
 .application .panel-body {
     overflow: hidden;
 }
-
-
+.ballot-view .team-name, .results .team-name{
+    white-space: nowrap;
+}

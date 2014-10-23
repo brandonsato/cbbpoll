@@ -24,7 +24,7 @@
 			{{vote.rank}}
 		</td>
 		<td>
-			{{team.logo_html()|safe}} {% if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}
+			<span class="team-name">{{team.logo_html()|safe}} {% if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}</span>
 		</td>
 		<td>
 			{{ vote.reason }}
