@@ -1,7 +1,8 @@
 {% macro application(app, nickname="", items_and_urls="") -%}
 	<div class="panel panel-default">
   <div class="panel-heading">
-    <h3 class="panel-title">{% if nickname %}<a href="{{url_for('user', nickname=nickname)}}">{{nickname}}</a>{% else %}Application{% endif %}<small> {{app.updated}} UTC</small></h3>
+    <h3 class="panel-title">{% if nickname %}<a href="{{url_for('user', nickname=nickname)}}">{{nickname}}</a>{% else %}Application{% endif %}<small> {{app.updated}} UTC</small>{% if g.user.is_admin() %}
+ <span class="flag-button pull-right{% if app.user.applicationFlag %} text-primary{% endif %}" data-userid={{app.user.id}}><i class="glyphicon glyphicon-flag"></i></span>{% endif %}</h3>
   </div>
   <div class="panel-body">
     {{app.primary_team.logo_html(80)|safe}}

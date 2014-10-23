@@ -26,6 +26,7 @@ class User(db.Model):
     refreshAfter = db.Column(db.DateTime)
     emailReminders = db.Column(db.Boolean, default=False)
     pmReminders = db.Column(db.Boolean, default=False)
+    applicationFlag = db.Column(db.Boolean, default=False)
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
     ballots = db.relationship('Ballot', backref = 'voter', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)

@@ -23,4 +23,24 @@ $container.imagesLoaded( function() {
   $container.masonry(options);
 });
 </script>
+{% if g.user.is_admin() %}
+<script>
+  $(function() {
+    var flag_user = function(e) {
+      var flagButton = $(this)
+      $.getJSON('/_flag_user', {
+        id: $(this).data('userid'),
+      }, function(data) {
+        if (data.flagged){
+        $(flagButton).addClass('text-primary');
+      } else {
+        $(flagButton).removeClass('text-primary')
+      }
+      });
+      return false;
+    };
+    $('span.flag-button').bind('click', flag_user);
+  });
+</script>
+{% endif %}
 {% endblock %}

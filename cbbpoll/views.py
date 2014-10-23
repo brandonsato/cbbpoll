@@ -1,5 +1,5 @@
 from praw import Reddit
-from flask import render_template, flash, redirect, session, url_for, request, g, abort
+from flask import render_template, flash, redirect, session, url_for, request, g, abort, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from cbbpoll import app, db, lm, admin, message, handler
 from forms import EditProfileForm, PollBallotForm, VoterApplicationForm
@@ -398,3 +398,18 @@ def users():
         abort(403)
     users = User.query
     return render_template('users.html', users = users)
+
+@app.route('/_flag_user')
+def _flag_user():
+    if not current_user.is_admin():
+        abort(403)
+    id = request.args.get('id', False)
+    if id:
+        user=User.query.get(id)
+        if user:
+            flag = not user.applicationFlag
+            user.applicationFlag = flag
+            db.session.add(user)
+            db.session.commit()
+            return jsonify(flagged=flag)
+    return jsonify()

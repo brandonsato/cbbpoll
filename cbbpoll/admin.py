@@ -44,10 +44,10 @@ class MyAdminIndexView(admin.AdminIndexView):
 class UserAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['nickname', 'email', 'emailConfirmed', 'role', 'team', 'flair', 'emailReminders', 'pmReminders']
-    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'team.full_name', 'team.conference']
-    column_sortable_list = ('id', 'nickname', 'email','emailConfirmed', 'role', 'team.full_name', 'team.conference')
+    column_list = ['id', 'nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'applicationFlag', 'team.full_name']
+    column_sortable_list = ('id', 'nickname', 'email','emailConfirmed', 'role', 'applicationFlag', 'team.full_name')
     column_searchable_list = ('nickname', 'email')
-    column_filters = ('team.full_name', 'team.conference')
+    column_filters = ('team.full_name', 'team.conference', 'applicationFlag')
     form_overrides = dict(role=Select2Field)
     form_args = dict(
      #Pass the choices to the `SelectField`
@@ -61,7 +61,7 @@ class UserAdmin(AdminModelView):
             user = User.query.get(Id)
             user.is_voter = True
             db.session.add(user)
-            db.session.commit()
+        db.session.commit()
 
     @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
     def action_demote(self, ids):
@@ -69,7 +69,7 @@ class UserAdmin(AdminModelView):
             user = User.query.get(Id)
             user.is_voter = False
             db.session.add(user)
-            db.session.commit()
+        db.session.commit()
 
     @action('update_flair', 'Update Flair', 'Update flair on the selected users? This may take some time and increase response time')
     def action_update_flair(self, ids):
@@ -77,6 +77,21 @@ class UserAdmin(AdminModelView):
             user = User.query.get(Id)
             update_flair(user)
 
+    @action('voter_flag','Flag for Voting', 'Flag selected users for voting?')
+    def action_voter_flag(self, ids):
+        for Id in ids:
+            user = User.query.get(Id)
+            user.applicationFlag = True
+            db.session.add(user)
+        db.session.commit()
+
+    @action('voter_unflag','Unflag for Voting', 'Unflag selected users for voting?')
+    def action_voter_unflag(self, ids):
+        for Id in ids:
+            user = User.query.get(Id)
+            user.applicationFlag = False
+            db.session.add(user)
+        db.session.commit()
 
 class TeamAdmin(AdminModelView):
     column_display_pk = True
