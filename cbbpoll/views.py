@@ -397,7 +397,14 @@ def users():
     if not current_user.is_admin():
         abort(403)
     users = User.query
-    return render_template('users.html', users = users)
+    return render_template('users.html', title='All Users', users = users)
+
+@app.route('/whatif')
+def whatif():
+    if not current_user.is_admin():
+        abort(403)
+    users = User.query.filter((User.is_voter==True)| (User.applicationFlag==True))
+    return render_template('users.html', title='What if Voters', users = users)
 
 @app.route('/_flag_user')
 def _flag_user():
