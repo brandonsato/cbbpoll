@@ -46,3 +46,6 @@ ol.ballot > li:before,  ol.result > li:before {
 .ballot-view .team-name, .results .team-name{
     white-space: nowrap;
 }
+.flag-button {
+    cursor: pointer;
+}
