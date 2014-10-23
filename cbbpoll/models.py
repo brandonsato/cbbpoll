@@ -49,6 +49,14 @@ class User(db.Model):
         return self.ballots.filter_by(poll_id = poll_id).first()
 
     @property
+    def team(self):
+        if self.voterApplication:
+            return self.voterApplication.primary_team
+        elif self.flair_team:
+            return self.flair_team
+        return None
+
+    @property
     def conference(self):
         if self.team:
             return self.team.conference
@@ -123,9 +131,10 @@ class User(db.Model):
         return True
 
     def name_with_flair(self, size=30):
-        if not self.flair:
-            return str(self.nickname)
-        return "%s%s" % (self.team.logo_html(size), self.nickname)
+        team = self.team
+        if not team:
+            return str(self.nickname)            
+        return "%s%s" % (team.logo_html(size), self.nickname)
 
     def __repr__(self):
         return '<User %r>' % (self.nickname)
@@ -185,7 +194,7 @@ class Team(db.Model):
     nickname = db.Column(db.String(50))
     png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
-    fans = db.relationship('User', backref = 'team')
+    fans = db.relationship('User', backref = 'flair_team')
 
     def png_url(self, size=30):
         return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
