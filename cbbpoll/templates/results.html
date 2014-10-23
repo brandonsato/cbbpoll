@@ -3,7 +3,7 @@
 {% block content %}
 <div class="row">
   <div class="col-md-8">
-<h1>Results for {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %} of {{poll.season-1}}-{{poll.season-2000}}</h1>
+<h1>{% if prov %}Unofficial {% endif %}Results for {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %} of {{poll.season-1}}-{{poll.season-2000}}</h1>
 <div class="row">
 <div class="h6 col-xs-8">Closed on {{closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</div><div class="h6 col-xs-4 text-right"><a href="{% if prov %}{{url_for("polls", s=poll.season|int, w= poll.week|int, prov=prov)}}{% else %}{{url_for("polls", s=poll.season|int, w= poll.week|int)}}{% endif %}">Permalink to these Results</a></div>
 </div>
