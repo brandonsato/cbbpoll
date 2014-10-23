@@ -175,7 +175,7 @@ def user(nickname, page=1):
             ballots = user.ballots
     ballots = ballots.join(Poll, Ballot.fullpoll).order_by(Poll.closeTime.desc())
     return render_template('user.html', ballots = ballots.paginate(page,10,False),
-        user = user, application = application)
+        user = user, application = application, title=nickname)
 
 @app.route('/editprofile', methods = ['GET', 'POST'])
 @login_required
@@ -237,7 +237,7 @@ def retry_confirm():
 @app.route('/teams')
 def teams():
     teams = Team.query.all()
-    return render_template('teams.html',
+    return render_template('teams.html', title='Teams',
         teams=teams)
 
 @app.route('/submitballot', methods = ['GET', 'POST'])
@@ -280,7 +280,7 @@ def submitballot():
         flash('Ballot submitted.', 'success')
         return redirect(url_for('ballot', ballot_id=ballot.id))
     return render_template('submitballot.html',
-      teams=teams, form=form, poll=poll,
+      teams=teams, form=form, poll=poll, title='Submit Ballot',
       is_provisional = not voter, editing = editing, closes_eastern = closes_eastern)
 
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
@@ -323,7 +323,7 @@ def results(page=1):
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll, prov)
 
-    return render_template('results.html',
+    return render_template('results.html', title='Results',
         season=poll.season, week=poll.week, polls=polls, poll=poll,
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
         users = User.query, teams=Team.query, closes_eastern = closes_eastern, prov=prov, nonvoters=nonvoters)
@@ -350,13 +350,13 @@ def ballot(ballot_id):
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html', title='About')
 
 @app.route('/voters')
 def voters():
     users = User.query
     voters = users.filter(User.is_voter==True)
-    return render_template('voters.html', users = users, voters=voters)
+    return render_template('voters.html', title='Voters', users = users, voters=voters)
 
 @app.route('/apply', methods = ['GET', 'POST'])
 @login_required
@@ -383,14 +383,14 @@ def apply():
         db.session.commit()
         flash('Application submitted successfully!','success')
         return redirect(url_for('user', nickname=g.user.nickname))
-    return render_template('apply.html', form = form)
+    return render_template('apply.html', title='Submit Application', form = form)
 
 @app.route('/applications')
 def applications():
     if not current_user.is_admin():
         abort(403)
     applications = VoterApplication.query.all()
-    return render_template('applications.html', applications = applications)
+    return render_template('applications.html', title='Applications', applications = applications)
 
 @app.route('/users')
 def users():
