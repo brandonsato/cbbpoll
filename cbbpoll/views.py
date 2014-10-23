@@ -204,7 +204,7 @@ def edit():
             db.session.commit()
         message.send_email('Confirm Your Account', [provisionalEmail], 'confirmation',
             user=g.user, token=g.user.generate_confirmation_token(email=provisionalEmail))
-        flash('Please check your email for a confirmation message.', 'warning')
+        flash('A confirmation message has been sent to you. Please check your spam or junk folder.', 'warning')
         return redirect(url_for('edit'))
 
     form.email.data = g.user.email
@@ -231,7 +231,7 @@ def retry_confirm():
         return redirect(url_for('index'))
     token = current_user.generate_confirmation_token()
     message.send_email('Confirm Your Account', [current_user], 'confirmation', token=token)
-    flash('A new confirmation email has been sent to you.', 'info')
+    flash('A new confirmation email has been sent to you. Please check your spam or junk folder.', 'info')
     return redirect(url_for('index'))
 
 @app.route('/teams')
