@@ -4,6 +4,10 @@
 CSRF_ENABLED = True
 SECRET_KEY = 'Hard to guess!'
 
+# Debug allows arbitrary execution of code by people who can
+# access the site--for dev environments only.
+DEBUG = True
+
 REDDIT_CLIENT_ID = "From Reddit"
 REDDIT_CLIENT_SECRET = "Also from Reddit... DO NOT SHARE"
 REDDIT_REDIRECT_URI = "localhost:5000/authorize_callback"
