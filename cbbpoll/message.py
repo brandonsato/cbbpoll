@@ -5,11 +5,17 @@ from decorators import async
 
 @async
 def send_async_email(app, msg):
+    if app.config['DEBUG']:
+        print(msg)
+        return
     with app.app_context():
         mail.send(msg)
 
 @async
 def send_async_pm(recipient, subject, msg):
+    if app.config['DEBUG']:
+        print(recipient, subject, msg)
+        return
     with app.app_context():
         bot.send_message(recipient, subject, msg)
 
