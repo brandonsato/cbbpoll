@@ -6,7 +6,7 @@
     {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %}
 </h1>
 </div>
-<h6>Poll Closes on {{closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z')}}</h6>
+<h6>Poll Closes on {{timestamp(closes_eastern)}}</h6>
 {% if is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> You are not an approved voter. You may submit a provisional ballot, but it will not count towards this poll's results.</div>{% endif %}
 {% if form.votes.errors %}
 {% for error in form.votes.errors %}

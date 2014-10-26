@@ -37,4 +37,5 @@ bot.login(app.config['REDDIT_USERNAME'], app.config['REDDIT_PASSWORD'])
 
 from cbbpoll import views, models, admin
 lm.anonymous_user = models.AnonymousUser
+app.jinja_env.globals['timestamp'] = views.timestamp
 

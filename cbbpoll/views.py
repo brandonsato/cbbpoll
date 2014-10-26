@@ -58,6 +58,10 @@ def generate_results(poll, use_provisionals=False):
     results = sorted(results_dict.items(), key = lambda (k,v): (v[0],v[1]), reverse=True)
     return (results, official_ballots, provisional_ballots, nonvoters)
 
+def timestamp(datetime):
+    hour = 12 if datetime.hour % 12 == 0 else datetime.hour % 12
+    return '{dt:%A}, {dt:%B} {dt.day}, {dt:%Y} at {0}:{dt:%M}{dt:%p} {dt:%Z}'.format(hour, dt = datetime)
+
 
 @app.before_request
 def before_request():
@@ -292,7 +296,7 @@ def polls(s, w):
         return redirect(url_for('index'))
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ timestamp(closes_eastern), 'warning')
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots,nonvoters) = generate_results(poll, prov)
     return render_template('polldetail.html',
@@ -319,7 +323,7 @@ def results(page=1):
         return redirect(url_for('index'))
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin():
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ timestamp(closes_eastern), 'warning')
         return redirect(url_for('index'))
     (results, official_ballots, provisional_ballots, nonvoters) = generate_results(poll, prov)
 
@@ -339,7 +343,7 @@ def ballot(ballot_id):
     closes_eastern = poll.closeTime.replace(tzinfo=utc).astimezone(eastern_tz)
     updated_eastern = ballot.updated.replace(tzinfo=utc).astimezone(eastern_tz)
     if not poll.has_completed and not current_user.is_admin() and current_user != ballot.voter:
-        flash('Poll has not yet completed. Please wait until '+ closes_eastern.strftime('%A, %B %-d, %Y at %-I:%M%p %Z'), 'warning')
+        flash('Poll has not yet completed. Please wait until '+ timestamp(closes_eastern), 'warning')
         return redirect(url_for('index'))
     votes = []
     for vote in ballot.votes:
