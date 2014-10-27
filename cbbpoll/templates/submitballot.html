@@ -66,9 +66,19 @@
 {% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script src="/static/js/bootstrap-maxlength.js"></script>
 <script>
         $(document).ready(function() { $("select.team").select2(); });
          $(function(){
+        var i;
+
+        for (i = 0; i < 25; i = i + 1) {
+          $('input#votes-' + i + '-reason').maxlength({
+            threshold: 40,
+            showCharsTyped: false,
+            placement: 'right'
+          });
+        }
 
         function format(item) {
             if(item.id=='__None') {
