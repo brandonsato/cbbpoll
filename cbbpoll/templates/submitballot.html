@@ -70,13 +70,11 @@
         $(document).ready(function() { $("select.team").select2(); });
          $(function(){
 
-        $('input[type=text]').each(function () {
-          $(this).maxlength({
+        $('input[type=text]').maxlength({
             threshold: 40,
             showCharsTyped: false,
             placement: 'right'
           });
-        });
 
         function format(item) {
             if(item.id=='__None') {
