@@ -5,7 +5,9 @@
   <div class="col-md-8">
 <h1>{% if prov %}Unofficial {% endif %}Results for {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %} of {{season-1}}-{{season-2000}}</h1>
 <div class="row">
-<div class="h6 col-xs-8">Close{%if poll.has_completed%}d{%else%}s{%endif%} on {{timestamp(closes_eastern)}}</div><div class="h6 col-xs-4 text-right"><a href="{% if prov %}{{url_for("polls", s=poll.season|int, w= poll.week|int, prov=prov)}}{% else %}{{url_for("polls", s=poll.season|int, w= poll.week|int)}}{% endif %}">Permalink to these Results</a></div>
+<div class="h6 col-xs-8">Close{%if poll.has_completed%}d{%else%}s{%endif%} on {{timestamp(closes_eastern)}}</div><div class="h6 col-xs-4 text-right"><a href="{% if prov %}{{url_for("polls", s=poll.season|int, w= poll.week|int, prov=prov)}}{% else %}{{url_for("polls", s=poll.season|int, w= poll.week|int)}}{% endif %}">Permalink to these Results</a>
+{% if poll.redditUrl %}<p><a href="{{ poll.redditUrl }}">Discuss this on reddit</a></p>{% endif %}
+</div>
 </div>
 </div>
 <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><button data-toggle="modal" data-target=".reddit-table-modal" class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></div>
@@ -13,7 +15,7 @@
 {% include 'resulttable.html' %}
 {% include 'reddit_results_popup.html' %}
 {% endblock %}
-{% block scripts %} 
+{% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
 <script>

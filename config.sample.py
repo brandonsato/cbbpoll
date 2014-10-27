@@ -15,6 +15,7 @@ REDDIT_USER_AGENT = '/r/CollegeBasketball User Poll'
 
 REDDIT_USERNAME = 'bot_name'
 REDDIT_PASSWORD = 'bot_password'
+REDDIT_SUB      = 'subreddit_name'
 
 SQLALCHEMY_DATABASE_URI = 'mysql://username:password@mysql.server/dbname'
 
