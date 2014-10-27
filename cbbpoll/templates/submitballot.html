@@ -17,7 +17,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-<form method="post" name="ballot" role="form">
+<form method="post" name="ballot" id="ballot-submission" role="form">
 {{form.hidden_tag()}}
     <ol class="list-group ballot">
 {% for vote in form.votes %}
@@ -49,7 +49,7 @@
             </div>
             <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
-    {{vote.reason(class_="form-control", maxlength=140, placeholder="Explanation (optional)")}}
+    {{vote.reason(class_="form-control reason", maxlength=140, placeholder="Explanation (optional)")}}
             </div>
         </div>
     </li>
@@ -67,13 +67,13 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script src="/static/js/bootstrap-maxlength.min.js"></script>
 <script>
-        $(document).ready(function() { $("select.team").select2(); });
+        $(document).ready(function() { $("#ballot-submission").find("select.team").select2(); });
          $(function(){
 
-        $('input[type=text]').maxlength({
+        $("#ballot-submission").find("input.reason").maxlength({
             threshold: 40,
             showCharsTyped: false,
-            placement: 'right'
+            placement: 'bottom'
           });
 
         function format(item) {
