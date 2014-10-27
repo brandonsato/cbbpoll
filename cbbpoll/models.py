@@ -201,7 +201,7 @@ class Team(db.Model):
 
     def logo_html(self, size=30):
         if size == 30 or size == 23:
-            return "<span class=logo%s><img src='%s' class='logo%s-%s' alt='%s Logo'></span>" % (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
+            return "<span class=logo%s><img src='%s' class='logo%s-%s' alt=\"%s Logo\"></span>" % (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
         else:
             return "<img src='%s' alt='%s Logo'>" % (self.png_url(size), self.full_name) 
 
