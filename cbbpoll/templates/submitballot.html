@@ -69,15 +69,14 @@
 <script>
         $(document).ready(function() { $("select.team").select2(); });
          $(function(){
-        var i;
 
-        for (i = 0; i < 25; i = i + 1) {
-          $('input#votes-' + i + '-reason').maxlength({
+        $('input[type=text]').each(function () {
+          $(this).maxlength({
             threshold: 40,
             showCharsTyped: false,
             placement: 'right'
           });
-        }
+        });
 
         function format(item) {
             if(item.id=='__None') {
