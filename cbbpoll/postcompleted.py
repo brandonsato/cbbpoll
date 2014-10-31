@@ -1,4 +1,4 @@
-from flask import render_template, url_for
+from flask import render_template
 from flask.ext.script import Manager
 from cbbpoll import app, bot, db
 from models import Poll, Team
@@ -20,12 +20,7 @@ def announcement_title(poll):
 
 def post_poll(poll):
     results = generate_results(poll)[0]
-    text = render_template('reddit_results_text.html', results=results, teams=Team.query)
-
-    # Dirty line to format a markdown hyperlink
-    text = text + '\n\nIndividual ballot information can be found at [' + \
-        url_for('polls', _external=True, s=poll.season, w=poll.week) + \
-        '](' + url_for('polls', _external=True, s=poll.season, w=poll.week) + ')'
+    text = render_template('reddit_results_post.md', results=results, teams=Team.query, poll=poll)
 
     with app.app_context():
         submission = bot.submit(app.config['REDDIT_SUB'], announcement_title(poll), text=text, save=True)
