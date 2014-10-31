@@ -22,14 +22,13 @@ def post_poll(poll):
     results = generate_results(poll)[0]
     text = render_template('reddit_results_post.md', results=results, teams=Team.query, poll=poll)
 
-    with app.app_context():
-        submission = bot.submit(app.config['REDDIT_SUB'], announcement_title(poll), text=text, save=True)
-        submission.distinguish(as_made_by='mod')
-        submission.sticky()
-        submission.approve()
-        poll.redditUrl = submission.url
-        db.session.add(poll)
-        db.session.commit()
+    submission = bot.submit(app.config['REDDIT_SUB'], announcement_title(poll), text=text, save=True)
+    submission.distinguish(as_made_by='mod')
+    submission.sticky()
+    submission.approve()
+    poll.redditUrl = submission.url
+    db.session.add(poll)
+    db.session.commit()
 
 # At some point might want to use this file to send out PMs/emails announcing results
 # to interested users.
