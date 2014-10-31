@@ -133,7 +133,7 @@ class User(db.Model):
     def name_with_flair(self, size=30):
         team = self.team
         if not team:
-            return str(self.nickname)            
+            return str(self.nickname)
         return "%s%s" % (team.logo_html(size), self.nickname)
 
     def __repr__(self):
@@ -159,6 +159,7 @@ class Poll(db.Model):
     closeTime = db.Column(db.DateTime)
     ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
+    redditUrl = db.Column(db.String(2083))
 
     @hybrid_property
     def is_open(self):
@@ -203,7 +204,7 @@ class Team(db.Model):
         if size == 30 or size == 23:
             return "<span class=logo%s><img src='%s' class='logo%s-%s' alt=\"%s Logo\"></span>" % (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
         else:
-            return "<img src='%s' alt='%s Logo'>" % (self.png_url(size), self.full_name) 
+            return "<img src='%s' alt='%s Logo'>" % (self.png_url(size), self.full_name)
 
     def __repr__(self):
         if self.short_name:
