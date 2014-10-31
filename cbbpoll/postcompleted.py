@@ -15,7 +15,7 @@ def unposted_polls():
     return polls
 
 def announcement_title(poll):
-    week = "Week " + poll.week if poll.week > 0 else "Preseason"
+    week = "Week " + str(poll.week) if poll.week > 0 else "Preseason"
     return "User Poll: " + week
 
 def post_poll(poll):
