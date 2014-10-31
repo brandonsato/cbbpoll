@@ -13,7 +13,7 @@ DEBUG = True
 
 REDDIT_CLIENT_ID = "From Reddit"
 REDDIT_CLIENT_SECRET = "Also from Reddit... DO NOT SHARE"
-REDDIT_REDIRECT_URI = "localhost:5000/authorize_callback"
+REDDIT_REDIRECT_URI = "http://localhost:5000/authorize_callback"
 REDDIT_USER_AGENT = '/r/CollegeBasketball User Poll'
 
 REDDIT_USERNAME = 'bot_name'
