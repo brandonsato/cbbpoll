@@ -49,3 +49,7 @@ ol.ballot > li:before,  ol.result > li:before {
 .flag-button {
     cursor: pointer;
 }
+.sortable-placeholder::before {
+  /* Hide the number on the awkward placeholder element. */
+  content: "" !important;
+}

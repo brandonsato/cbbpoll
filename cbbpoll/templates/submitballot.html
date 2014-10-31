@@ -21,7 +21,7 @@
 {{form.hidden_tag()}}
     <ol class="list-group ballot">
 {% for vote in form.votes %}
-    <li class="list-group-item{% if vote.team.errors or vote.reason.errors %} list-group-item-danger{% endif %}">
+    <li id="option-{{loop.index0}}" class="list-group-item{% if vote.team.errors or vote.reason.errors %} list-group-item-danger{% endif %}">
         {% if vote.team.errors or vote.reason.errors %}
             <div class="container">
             {% for error in vote.team.errors %}
@@ -66,9 +66,40 @@
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script src="/static/js/bootstrap-maxlength.min.js"></script>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
 <script>
         $(document).ready(function() { $("#ballot-submission").find("select.team").select2(); });
          $(function(){
+
+        // jQuery plugin: UI becomes drag/droppable.
+        var sortableListEl = $('ol.list-group');
+        sortableListEl.sortable({
+          'axis': 'y',
+          'placeholder': 'sortable-placeholder',
+          'stop': function(event, ui) {
+            /**
+             * Approach:
+             * Cancel the _actual_ sort from completing, since this would destroy the
+             * ordering of all of the inputs, and not really be useful besides messing up
+             * the page. Intead, figure out where the dragged item should have landed
+             * and move all of the items from there.
+             */
+            var sortedOrders = sortableListEl.sortable('toArray').map(function(htmlIdName) {
+              return parseInt(htmlIdName.substring('option-'.length), 10);
+            });
+            var orderedValues = Array(25);
+            for (var i = 0; i < 25; i++) {
+              orderedValues[i] = $('#votes-' + i + '-team').select2("val");
+            }
+
+            sortableListEl.sortable('cancel');
+
+            sortedOrders.forEach(function(oldPosition, newPosition) {
+              var newSelectEl = $('#votes-' + newPosition + '-team');
+              newSelectEl.select2("val", orderedValues[oldPosition]);
+            });
+          },
+        });
 
         $("#ballot-submission").find("input.reason").maxlength({
             threshold: 40,
