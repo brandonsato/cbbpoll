@@ -8,6 +8,9 @@ SECRET_KEY = 'Hard to guess!'
 # access the site--for dev environments only.
 DEBUG = True
 
+# domain goes here, uncomment for remote deployment
+#SERVER_NAME = 'example.com'
+
 REDDIT_CLIENT_ID = "From Reddit"
 REDDIT_CLIENT_SECRET = "Also from Reddit... DO NOT SHARE"
 REDDIT_REDIRECT_URI = "localhost:5000/authorize_callback"
