@@ -68,7 +68,7 @@ class User(db.Model):
 
     @hybrid_property
     def remind_viaRedditPM(self):
-        return (self.role == 'p') | (self.role =='a')
+        return (self.is_voter == True) | (self.role =='a') | (self.pmReminders == True)
 
     @hybrid_property
     def is_voter(self):
