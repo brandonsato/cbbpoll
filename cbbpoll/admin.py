@@ -102,8 +102,8 @@ class TeamAdmin(AdminModelView):
 
 class PollAdmin(AdminModelView):
     column_display_pk = True
-    form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots']
-    column_list = ['id', 'season', 'week', 'openTime', 'closeTime']
+    form_columns = ['season', 'week', 'openTime', 'closeTime', 'ballots', 'redditUrl']
+    column_list = ['id', 'season', 'week', 'openTime', 'closeTime', 'redditUrl']
 
     @action('close', 'Close Poll', 'This will snap the poll at the current time.  Continue?')
     def action_close(self, id):
