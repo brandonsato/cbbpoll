@@ -66,7 +66,7 @@
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
 <script src="/static/js/bootstrap-maxlength.min.js"></script>
-<script src="//code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 <script>
         $(document).ready(function() { $("#ballot-submission").find("select.team").select2(); });
          $(function(){
@@ -76,6 +76,13 @@
         sortableListEl.sortable({
           'axis': 'y',
           'placeholder': 'sortable-placeholder',
+          'start': function(event, ui) {
+            // Placeholder element's default size is the matching element's height, whereas
+            // outerHeight is more visually appropriate.
+            ui.placeholder.outerHeight(ui.item.outerHeight());
+            // Place extra class on item for cursor change
+            ui.item.addClass('ui-sortable-handle-moving');
+          },
           'stop': function(event, ui) {
             /**
              * Approach:
@@ -88,8 +95,10 @@
               return parseInt(htmlIdName.substring('option-'.length), 10);
             });
             var orderedValues = Array(25);
+            var orderedReasons = Array(25);
             for (var i = 0; i < 25; i++) {
               orderedValues[i] = $('#votes-' + i + '-team').select2("val");
+              orderedReasons[i] = $('#votes-' + i + '-reason').val();
             }
 
             sortableListEl.sortable('cancel');
@@ -97,7 +106,10 @@
             sortedOrders.forEach(function(oldPosition, newPosition) {
               var newSelectEl = $('#votes-' + newPosition + '-team');
               newSelectEl.select2("val", orderedValues[oldPosition]);
+              $('#votes-' + newPosition + '-reason').val(orderedReasons[oldPosition]);
             });
+
+            ui.item.removeClass('ui-sortable-handle-moving');
           },
         });
 
