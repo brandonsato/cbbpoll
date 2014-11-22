@@ -49,3 +49,16 @@ ol.ballot > li:before,  ol.result > li:before {
 .flag-button {
     cursor: pointer;
 }
+.ui-sortable-handle {
+    cursor: url(//ssl.gstatic.com/ui/v1/icons/mail/images/2/openhand.cur) 7 5, default;
+}
+.ui-sortable-handle-moving {
+    cursor: url(//ssl.gstatic.com/ui/v1/icons/mail/images/2/closedhand.cur) 7 5, default;
+}
+.sortable-placeholder::before {
+    visibility: hidden;
+}
+.sortable-placeholder {
+    border: 5px dashed #339 !important;
+    counter-increment: li-counter -1;
+}
