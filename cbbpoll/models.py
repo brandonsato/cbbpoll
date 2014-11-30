@@ -175,7 +175,7 @@ class Poll(db.Model):
 
     @hybrid_property
     def closing_soon(self):
-        return (self.closeTime < datetime.utcnow() + timedelta(hours=12)) & (self.closeTime > datetime.utcnow() + timedelta(hours=11))
+        return (self.closeTime < datetime.utcnow() + timedelta(hours=16)) & (self.closeTime > datetime.utcnow() + timedelta(hours=15))
 
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)
