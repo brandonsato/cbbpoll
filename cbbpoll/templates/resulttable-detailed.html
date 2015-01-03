@@ -1,0 +1,37 @@
+{% if poll %}
+<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+  <div class="table-responsive">
+    <table class="results table table-striped" style="white-space: nowrap;">
+      <tr>
+        <th>User</th>
+        {% for n in range(25) %}
+          <th>{{ loop.index }}</th>
+        {% endfor %}
+        <th>
+      </tr>
+
+      <tr><th colspan="26">Official Ballots</th></tr>
+      {%- for ballot in official_ballots -%}
+      <tr>
+        <td>{{ users.get(ballot.user_id).name_with_flair(23)|safe }}</td>
+        {%- for vote in ballot.votes -%}
+          <td>{{ teams.get(vote.team_id).logo_html(23)|safe }}</td>
+        {%- endfor -%}
+      </tr>
+      {% endfor %}
+
+      <tr><th colspan="26">Provisional Ballots</th></tr>
+      {%- for ballot in provisional_ballots -%}
+      <tr>
+        <td>{{ users.get(ballot.user_id).name_with_flair(23)|safe }}</td>
+        {%- for vote in ballot.votes -%}
+          <td>{{ teams.get(vote.team_id).logo_html(23)|safe }}</td>
+        {%- endfor -%}
+      </tr>
+      {% endfor %}
+
+
+    </table>
+  </div>
+</div>
+{% endif %}
