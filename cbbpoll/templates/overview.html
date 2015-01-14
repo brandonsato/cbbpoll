@@ -1,0 +1,18 @@
+{# View all the polls from a given season in a grid.
+ # Inputs:
+ # - season: current season year.
+ # - polls_results: list of (poll, results) tuples with completed polls and
+ #                  ranked results.
+ #}
+
+{% extends "base.html" %}
+{% set active_page = "results" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h1>Results for {{season-1}}-{{season-2000}} Season</h1>
+  </div>
+</div>
+
+{% include 'overviewtable.html' %}
+{% endblock %}

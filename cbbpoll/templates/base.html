@@ -3,10 +3,13 @@
 {% import "bootstrap/fixes.html" as fixes %}
 {% import "macros.html" as macros %}
 {% set navigation_bar = [
-    (url_for('results'), 'results', 'Results'),
-    (url_for('voters'), 'voters', 'Voters'),
-    (url_for('teams'), 'teams', 'Teams'),
-    (url_for('about'), 'about', 'About')
+    ('results', 'Results', [
+      ('Current Week', url_for('results')),
+      ('Season', url_for('results_overview')),
+    ]),
+    ('voters', 'Voters', url_for('voters')),
+    ('teams', 'Teams', url_for('teams')),
+    ('about', 'About', url_for('about'))
 ] -%}
 {% set active_page = active_page|default('') -%}
 {% block head %}
@@ -45,9 +48,21 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            {% for href, id, caption in navigation_bar %}
-            <li{% if id == active_page %} class="active"{% endif %}>
-            <a href="{{ href|e }}">{{ caption|e }}</a></li>
+            {% for id, caption, urls in navigation_bar %}
+              {% if urls is string %}
+                <li{% if id == active_page %} class="active"{% endif %}>
+                <a href="{{ urls|e }}">{{ caption|e }}</a></li>
+              {% else %}
+                <li{% if id == active_page %} class="active"{% endif %} class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                      aria-expended="false">{{ caption|e }}</a>
+                  <ul class="dropdown-menu" role="menu">
+                    {% for caption, url in urls %}
+                      <li><a href="{{ url|e }}">{{ caption|e }}</a></li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% endif %}
             {% endfor %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
