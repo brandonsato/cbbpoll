@@ -290,6 +290,7 @@ def submitballot():
 @app.route('/poll/<int:s>/<int:w>', methods = ['GET', 'POST'])
 def polls(s, w):
     prov = request.args.get('prov', False)
+    detailed = request.args.get('detailed', False)
     poll = Poll.query.filter_by(season=s).filter_by(week=w).first()
     if not poll:
         flash('No such poll', 'warning')
@@ -302,7 +303,8 @@ def polls(s, w):
     return render_template('polldetail.html',
         season=s, week=w, poll=poll, results=results, official_ballots = official_ballots,
         provisional_ballots = provisional_ballots, users = User.query,
-        teams = Team.query, closes_eastern = closes_eastern, prov=prov, nonvoters=nonvoters)
+        teams = Team.query, closes_eastern = closes_eastern, prov=prov,
+        detailed=detailed, nonvoters=nonvoters)
 
 
 @app.route('/results')
