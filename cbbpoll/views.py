@@ -334,6 +334,30 @@ def results(page=1):
         official_ballots = official_ballots, provisional_ballots = provisional_ballots, page=page, results=results,
         users = User.query, teams=Team.query, closes_eastern = closes_eastern, prov=prov, nonvoters=nonvoters)
 
+@app.route('/overview', methods = ['GET'])
+@app.route('/overview/', methods = ['GET'])
+@app.route('/overview/<int:s>', methods = ['GET'])
+@app.route('/overview/<int:s>/', methods = ['GET'])
+def results_overview(s=0):
+    # If season isn't provided, try to grab the first completed poll.
+    if not s:
+        first_poll = completed_polls().first()
+        if not first_poll:
+            flash('No polls have been completed yet.', 'info')
+            return redirect(url_for('index'))
+        s = first_poll.season
+
+    polls_results = []
+    # Grab all polls for the given season, in order
+    polls = Poll.query.filter_by(season=s).order_by(Poll.week.asc())
+    for poll in polls:
+        polls_results.append((
+            poll,
+            generate_results(poll)))
+
+    return render_template('overview.html', season = s, polls_results = polls_results,
+        teams = Team.query)
+
 @app.route('/ballot/<int:ballot_id>/')
 @app.route('/ballot/<int:ballot_id>')
 def ballot(ballot_id):
