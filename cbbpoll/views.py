@@ -264,6 +264,13 @@ def submitballot():
             vote_dicts[vote_index]['reason'] = vote.reason
         data_in = {'votes': vote_dicts}
         form = PollBallotForm(data = data_in)
+    elif app.config['DEBUG']:
+        vote_dicts = [{} for i in range(25)]
+        for i in range(25):
+            vote_dicts[i]['team'] = Team.query.get(i * 4 + 1)
+            vote_dicts[i]['reason'] = Team.query.get(i * 4 + 1).full_name
+        data_in = {'votes': vote_dicts}
+        form = PollBallotForm(data = data_in)
     else:
         form = PollBallotForm()
 
