@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from cbbpoll import db, app
 from cbbpoll.message import send_reddit_pm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from flask.ext.sqlalchemy import models_committed
 from flask.ext.login import AnonymousUserMixin
@@ -150,6 +150,8 @@ class AnonymousUser(AnonymousUserMixin):
     def is_voter(self):
         return False
 
+    ballots = None
+
 class Poll(db.Model):
     __tablename__ = 'poll'
     id = db.Column(db.Integer, primary_key = True)
@@ -226,6 +228,9 @@ class Ballot(db.Model):
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
+    __table_args__ = (
+        UniqueConstraint('user_id', 'poll_id'),
+        {})
 
     @property
     def is_provisional(self):
