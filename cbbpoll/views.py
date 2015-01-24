@@ -356,7 +356,8 @@ def results_overview(s=0):
 
     polls_results = []
     # Grab all polls for the given season, in order
-    polls = Poll.query.filter_by(season=s).order_by(Poll.week.asc())
+    polls = (Poll.query.filter(Poll.season == s, Poll.has_completed == True).
+        order_by(Poll.week.asc()))
     for poll in polls:
         polls_results.append((
             poll,
