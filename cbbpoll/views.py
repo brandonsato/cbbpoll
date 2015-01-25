@@ -9,6 +9,7 @@ from pytz import utc, timezone
 from botactions import update_flair
 import re
 from jinja2 import evalcontextfilter, Markup, escape
+from sqlalchemy.exc import IntegrityError
 
 eastern_tz = timezone('US/Eastern')
 
@@ -282,8 +283,26 @@ def submitballot():
         else:
             ballot = Ballot(updated = datetime.utcnow(), poll_id = poll.id, user_id = g.user.id)
         db.session.add(ballot)
-        # must commit to get ballot id
-        db.session.commit()
+
+        # must commit here to get ballot id for the Vote objects.
+        #
+        # there is a race condition here with the check to see if a ballot exists earlier in this function.
+        # the database maintains the invariant of one ballot per (user, poll) pair, so this commit may fail.
+        # if it does, it's probably alright, as it means we came here with no ballot existing, but now one exists.
+        # so send them to their most recent ballot.
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
+            if ballot:
+                return redirect(url_for('ballot', ballot_id=ballot.id))
+            else:
+                flash('Something went wrong... check your ballot.', 'warning')
+                return redirect(url_for('index'))
+
+
         for voteRank, vote in enumerate(form.votes):
             voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data)
             db.session.add(voteModel)
@@ -366,10 +385,16 @@ def results_overview(s=0):
     return render_template('overview.html', season = s, polls_results = polls_results,
         teams = Team.query)
 
-@app.route('/ballot/<int:ballot_id>/')
-@app.route('/ballot/<int:ballot_id>')
-def ballot(ballot_id):
-    ballot = Ballot.query.get(ballot_id)
+@app.route('/ballot', methods = ['GET'])
+@app.route('/ballot/<int:ballot_id>/', methods = ['GET'])
+@app.route('/ballot/<int:ballot_id>', methods = ['GET'])
+def ballot(ballot_id = 0):
+    # If no ballot is provided, try to grab the user's most recent ballot.
+    if not ballot_id and g.user.ballots is not None:
+        ballot = g.user.ballots.order_by(Ballot.id.desc()).first()
+        return redirect(url_for('ballot', ballot_id=ballot.id))
+    else:
+        ballot = Ballot.query.get(ballot_id)
     if not ballot:
         flash('No such ballot', 'warning')
         return redirect(url_for('index'))
