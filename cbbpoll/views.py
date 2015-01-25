@@ -302,7 +302,6 @@ def submitballot():
                 flash('Something went wrong... check your ballot.', 'warning')
                 return redirect(url_for('index'))
 
-
         for voteRank, vote in enumerate(form.votes):
             voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data)
             db.session.add(voteModel)
