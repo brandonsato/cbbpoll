@@ -229,7 +229,7 @@ class Ballot(db.Model):
     votes = db.relationship('Vote', backref = 'fullballot', lazy = 'dynamic', cascade="all, delete-orphan",
                     passive_deletes=True)
     __table_args__ = (
-        UniqueConstraint('user_id', 'poll_id'),
+        UniqueConstraint('user_id', 'poll_id', name='oneballot'),
         {})
 
     @property
