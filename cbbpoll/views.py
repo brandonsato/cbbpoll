@@ -295,7 +295,13 @@ def submitballot():
             db.session.commit()
         except IntegrityError:
             db.session.rollback()
-            return redirect(url_for('ballot'))
+            ballot = Ballot.query.filter_by(poll_id = poll.id).filter_by(user_id = g.user.id).first()
+            if ballot:
+                return redirect(url_for('ballot', ballot_id=ballot.id))
+            else:
+                flash('Something went wrong... check your ballot.', 'warning')
+                return redirect(url_for('index'))
+
 
         for voteRank, vote in enumerate(form.votes):
             voteModel = Vote(ballot_id=ballot.id, team_id = vote.team.data.id, rank = (voteRank+1), reason = vote.reason.data)
