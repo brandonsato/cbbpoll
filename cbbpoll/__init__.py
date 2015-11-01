@@ -33,7 +33,7 @@ if not app.debug:
     app.logger.addHandler(file_handler)
 
 bot = praw.Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
-bot.login(app.config['REDDIT_USERNAME'], app.config['REDDIT_PASSWORD'])
+bot.login(app.config['REDDIT_USERNAME'], app.config['REDDIT_PASSWORD'], disable_warning=True)
 
 from cbbpoll import views, models, admin
 lm.anonymous_user = models.AnonymousUser
