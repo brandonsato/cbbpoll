@@ -1,13 +1,13 @@
 from flask import render_template
 from flask.ext.script import Manager
-from cbbpoll import app, message, r
+from cbbpoll import app, message
 from models import User, Poll, Ballot
 from datetime import datetime, timedelta
 from sqlalchemy import and_, or_
 
 # These are meant to be run hourly, more frequently than that will result in multiple reminders being sent
 
-ReminderCommand = Manager(usage='Send reminders for pollsters to submit ballots')
+ReminderCommand = Manager(usage='Send reminders for voters to submit ballots')
 
 def generate_reminders():
     (poll_type, subject, template, email_list, pm_list) = (None, None, None, [], [])

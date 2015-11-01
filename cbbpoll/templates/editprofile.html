@@ -19,11 +19,11 @@
 <span class="glyphicon glyphicon-ok has-success form-control-feedback"></span>
 {%-endif-%}
 {{ wtf.form_field(form.emailReminders) }}
-{% if user.is_pollster() %}
+{% if user.is_voter %}
 <div class="checkbox disabled">
   <label>
     <input type="checkbox" value="" disabled checked>
-    All pollsters get Reddit PM Reminders
+    All voters get Reddit PM Reminders
   </label>
 </div>
 {% else %}

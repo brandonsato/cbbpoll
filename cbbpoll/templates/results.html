@@ -1,77 +1,28 @@
 {% extends "base.html" %}
 {% set active_page = "results" %}
-
 {% block content %}
-<h1>Results for Week {{polls[page-1].week}} of {{polls[page-1].season-1}}-{{polls[page-1].season-2000}}<button class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button>
-</h1>
-<hr>
+<div class="row">
+  <div class="col-md-8">
+<h1>{% if prov %}Unofficial {% endif %}Results for {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %} of {{poll.season-1}}-{{poll.season-2000}}</h1>
+<div class="row">
+<div class="h6 col-xs-8">Closed on {{timestamp(closes_eastern)}}</div><div class="h6 col-xs-4 text-right"><a href="{% if prov %}{{url_for("polls", s=poll.season|int, w= poll.week|int, prov=prov)}}{% else %}{{url_for("polls", s=poll.season|int, w= poll.week|int)}}{% endif %}">Permalink to these Results</a>
+{% if poll.redditUrl %}<p><a href="{{ poll.redditUrl }}">Discuss this on reddit</a></p>{% endif %}
+</div>
+</div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><button data-toggle="modal" data-target=".reddit-table-modal" class="reddit-table btn btn-info pull-right">Get Reddit Formatted Table</button></div>
+</div>
 {% include 'resulttable.html' %}
-
-<div>
-  <h5>Official Ballots</h5>
-  {% for ballot in official_ballots %}
-  {%- if loop.index != 1 %}, {% endif %}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {%- endfor %}
-  {%if provisional_ballots%}
-  <h5>Provisional Ballots</h5>
-  {% for ballot in provisional_ballots %}
-  {%- if loop.index != 1 -%}, {%- endif -%}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {% endfor %}
-  {% endif %}
-</div>
-
+{% include 'reddit_results_popup.html' %}
+<div class="col-md-8">
 <ul class="pager">
-{% if polls[page-1].has_next %}<li class="previous"><a href="{{ url_for('index', page = polls[page-1].next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
-{% if polls[page-1].has_prev %}<li class="next"><a href="{{ url_for('index', page = poll[page-1].prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
+{% if polls.has_next %}<li class="previous"><a href="{{ url_for('results', page = polls.next_num) }}">&larr; Older</a></li>{% else %}{% endif %}
+{% if polls.has_prev %}<li class="next"><a href="{{ url_for('results', page = polls.prev_num) }}">Newer &rarr;</a></li>{% else %}{% endif %}
 </ul>
-<div class="pop-bg">
-	&nbsp;
 </div>
-<div class="pop">
-  <span>✖</span>
-  <h3>Reddit Formatted Table</h3>
-    <textarea readonly name="reddit-table" id="reddit-table">
-Rank||Team|Score(First Place Votes)
-:--:|:--:|:---|:---
-{%- set prev_score = -1 -%}
-{%- for result in results %}
-  {% set team = teams.get(result[0]) %}
-    {%- if loop.index < 26 -%}
-      {%- if result[1][0] == prev_score -%}
-        {%- set rank = prev_rank -%}
-      {%- else -%}
-        {%- set rank = loop.index -%}
-      {%- endif -%}
-    {%- set prev_rank = rank -%}
-    {%- set prev_score = result[1][0] -%}
-#{{rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{%-if team.short_name-%}{{team.short_name}}{%-else-%}{{team.full_name}}{%-endif-%}|{{ result[1][0]}}{%- if result[1][1] -%}({{result[1][1]}}){%-endif-%}
-{% elif loop.index == 26 %}
-Others Receiving Votes: {{team.short_name}}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
-{%- endif -%}
-{% endfor %}
-  </textarea>
-    <button id="copy-button" data-clipboard-target="reddit-table" class="btn btn-primary">Click To Copy</button>
-
-</div>
-
-
 {% endblock %}
-{% block scripts %} 
+{% block scripts %}
 {{super()}}
-<script>
- $(document).ready(function () {
-     $(".reddit-table").click(function () {
-         $(".pop, .pop-bg").fadeIn(100);
-         positionPopup();
-     });
-
-     $(".pop > span, .pop-bg").click(function () {
-         $(".pop, .pop-bg").fadeOut(100);
-     });
- });
-</script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/zeroclipboard/2.1.6/ZeroClipboard.min.js"></script>
 <script>
 var clientTarget = new ZeroClipboard( $("#copy-button"), {

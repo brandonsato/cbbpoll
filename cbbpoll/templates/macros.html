@@ -1,0 +1,40 @@
+{% macro application(app, nickname="", items_and_urls="") -%}
+	<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">{% if nickname %}<a href="{{url_for('user', nickname=nickname)}}">{{nickname}}</a>{% else %}Application{% endif %}<small> {{app.updated}} UTC</small>{% if g.user.is_admin() %}
+ <span class="flag-button pull-right{% if app.user.applicationFlag %} text-primary{% endif %}" data-userid={{app.user.id}}><i class="glyphicon glyphicon-flag"></i></span>{% endif %}</h3>
+  </div>
+  <div class="panel-body">
+    {{app.primary_team.logo_html(80)|safe}}
+    {%- for team in app.other_teams -%}
+    {{team.logo_html(40)|safe}}
+    {%- endfor -%}
+    {%- if app.consumption_tags -%}
+    <ul>
+    {%- for tag in app.consumption_tags -%}
+    <li>{{tag.text}}</li>
+    {%- endfor -%}
+    {%- endif -%}
+	  </ul>
+	  	<h5>Approach to Voting</h5>
+	  	<p>
+    {{app.approach|nl2br}}
+  </p>
+  {% if app.other_comments %}
+  <h5>Other Comments</h5>
+  <p>
+    {{app.other_comments|nl2br}}
+  </p>
+  {% endif %}
+  </div>
+  {% if items_and_urls %}
+  <div class="list-group">
+    {% for item in items_and_urls %}
+    <a href="{{item[1]}}" class="list-group-item list-group-item-info">
+  {{ item[0] }}
+</a>
+{% endfor %}
+</div>
+  {% endif %}
+</div>
+{%- endmacro %}

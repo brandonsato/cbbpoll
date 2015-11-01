@@ -1,0 +1,70 @@
+{# Shows a set of polls in a grid, weeks on the x-axis, ranks on the y-axis.
+ # Inputs:
+ # - polls_results: list of (poll, results) tuples with completed polls and
+ #                  ranked results.
+ #}
+
+<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+  <table
+      id="overview-table"
+      {# Results table should grow with weeks, not start at 100% #}
+      style="width:auto;"
+      class="results table table-striped table-responsive table-condensed">
+    <tr>
+      <th></th>
+      {% for (poll, _) in polls_results -%}
+      <th style="text-align:center;">
+        <a href="{{ url_for('polls', s=season, w=poll.week) }}">
+          {%- if poll.week == 0 -%}
+          Pre
+          {%- else -%}
+          {{ poll.week }}
+          {%- endif -%}
+        </a>
+      </th>
+      {%- endfor %}
+    </tr>
+
+    {% for zero_based_rank in range(25) %}
+      <tr>
+        <th>{{ zero_based_rank + 1 }}</th>
+
+        {% for (_, results) in polls_results -%}
+          {%- if results[0][zero_based_rank] is defined -%}
+            {%- set team = teams.get(results[0][zero_based_rank][0]) -%}
+            <td data-teamid="{{team.id}}">
+              <span class="team-name">{{team.logo_html(size = 23)|safe}}</span>
+            </td>
+          {% else %}
+            <td></td>
+          {%- endif -%}
+        {%- endfor %}
+        
+        </th>
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+
+<script type="text/javascript">
+window.addEventListener('load', function() {
+  $('#overview-table').delegate('td', 'mouseover mouseout', (function() {
+    var currentHoveredTeamId = 0;
+    var kHighlightCssClass = 'success';
+    return function(e) {
+      if (currentHoveredTeamId) {
+        $('#overview-table td[data-teamid=' + currentHoveredTeamId + ']').
+            removeClass(kHighlightCssClass);
+        currentHoveredTeamId = 0;
+      }
+
+      // Only mouseover sets new hover.
+      if (e.type == 'mouseover') {
+        currentHoveredTeamId = $(this).data('teamid');
+        $('#overview-table td[data-teamid=' + currentHoveredTeamId + ']').
+            addClass(kHighlightCssClass);
+      }
+    };
+  })());
+});
+</script>

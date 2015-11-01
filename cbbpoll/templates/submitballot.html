@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% set active_page = "submitballot" %}
 {% block content %}
+<div class="page-header">
 <h1>{%if editing %}Edit{% else %}Submit a{% endif %} Ballot for {{poll.season-1}}-{{poll.season-2000}}
     {% if poll.week == 0 %} Preseason {% else %} Week {{poll.week}} {% endif %}
 </h1>
+</div>
+<h6>Poll Closes on {{timestamp(closes_eastern)}}</h6>
 {% if is_provisional %}<div class="alert alert-info" role="alert"><strong>FYI:</strong> You are not an approved voter. You may submit a provisional ballot, but it will not count towards this poll's results.</div>{% endif %}
 {% if form.votes.errors %}
 {% for error in form.votes.errors %}
@@ -14,14 +17,17 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-<form method="post" name="ballot" role="form">
+<form method="post" name="ballot" id="ballot-submission" role="form">
 {{form.hidden_tag()}}
     <ol class="list-group ballot">
 {% for vote in form.votes %}
-    <li class="list-group-item{% if vote.team.errors %} list-group-item-danger{% endif %}">
-        {% if vote.team.errors %}
+    <li id="option-{{loop.index0}}" class="list-group-item{% if vote.team.errors or vote.reason.errors %} list-group-item-danger{% endif %}">
+        {% if vote.team.errors or vote.reason.errors %}
             <div class="container">
             {% for error in vote.team.errors %}
+            <div class="row">{{ error }}</div>
+            {% endfor %}
+            {% for error in vote.reason.errors %}
             <div class="row">{{ error }}</div>
             {% endfor %}
             </div>
@@ -33,7 +39,7 @@
     <select class="team form-control" id="{{vote.team.id}}" name="{{vote.team.id}}">
     {% for subvote in vote.team -%}
     {% if subvote.data != '__None' -%}
-    {% set item = subvote(**{'data-logo': subvote.label.text.png_url()}) -%}
+    {% set item = subvote(**{'data-logo': subvote.label.text.png_name}) -%}
     {% else -%}
     {% set item = subvote -%}
     {% endif -%}
@@ -43,7 +49,7 @@
             </div>
             <div class="col-md-6">
     {{vote.reason.label(class_="sr-only") }}
-    {{vote.reason(class_="form-control", placeholder="Explanation (optional)")}}
+    {{vote.reason(class_="form-control reason", maxlength=140, placeholder="Explanation (optional)")}}
             </div>
         </div>
     </li>
@@ -54,21 +60,71 @@
 <div class="col-md-12">{{form.submit(class_="btn btn-primary btn-lg pull-right")}}</div>
 </div>
 </form>
-</div>
 {% endblock %}
 
 {% block scripts %}
 {{super()}}
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.5.0/select2.min.js"></script>
+<script src="/static/js/bootstrap-maxlength.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 <script>
-        $(document).ready(function() { $("select.team").select2(); });
+        $(document).ready(function() { $("#ballot-submission").find("select.team").select2(); });
          $(function(){
+
+        // jQuery plugin: UI becomes drag/droppable.
+        var sortableListEl = $('ol.list-group');
+        sortableListEl.sortable({
+          'axis': 'y',
+          'placeholder': 'sortable-placeholder',
+          'start': function(event, ui) {
+            // Placeholder element's default size is the matching element's height, whereas
+            // outerHeight is more visually appropriate.
+            ui.placeholder.outerHeight(ui.item.outerHeight());
+            // Place extra class on item for cursor change
+            ui.item.addClass('ui-sortable-handle-moving');
+          },
+          'stop': function(event, ui) {
+            /**
+             * Approach:
+             * Cancel the _actual_ sort from completing, since this would destroy the
+             * ordering of all of the inputs, and not really be useful besides messing up
+             * the page. Intead, figure out where the dragged item should have landed
+             * and move all of the items from there.
+             */
+            var sortedOrders = sortableListEl.sortable('toArray').map(function(htmlIdName) {
+              return parseInt(htmlIdName.substring('option-'.length), 10);
+            });
+            var orderedValues = Array(25);
+            var orderedReasons = Array(25);
+            for (var i = 0; i < 25; i++) {
+              orderedValues[i] = $('#votes-' + i + '-team').select2("val");
+              orderedReasons[i] = $('#votes-' + i + '-reason').val();
+            }
+
+            sortableListEl.sortable('cancel');
+
+            sortedOrders.forEach(function(oldPosition, newPosition) {
+              var newSelectEl = $('#votes-' + newPosition + '-team');
+              newSelectEl.select2("val", orderedValues[oldPosition]);
+              $('#votes-' + newPosition + '-reason').val(orderedReasons[oldPosition]);
+            });
+
+            ui.item.removeClass('ui-sortable-handle-moving');
+          },
+        });
+
+        $("#ballot-submission").find("input.reason").maxlength({
+            threshold: 40,
+            showCharsTyped: false,
+            placement: 'bottom'
+          });
 
         function format(item) {
             if(item.id=='__None') {
                 return item.text;
               }
-            return '<img class="dropdown-logo" src="' + $(item.element).data('logo')+'"> '+item.text;
+            var logo_name = $(item.element).data('logo')
+            return '<span class="logo23"><img class="logo23-'+logo_name+'" src="{{url_for('static', filename='img/logos_23.png')}}"></span> '+item.text;
         }
 
         function formatSelection(item) {
@@ -82,6 +138,7 @@
                     return a.text.toLowerCase().indexOf(query.term.toLowerCase()) - b.text.toLowerCase().indexOf(query.term.toLowerCase());
                 })
             }
+            return results;
         }
 
         $('select').select2({

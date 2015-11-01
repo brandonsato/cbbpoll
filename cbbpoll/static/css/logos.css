@@ -1,0 +1,2840 @@
+.logo23 img{
+    position: absolute;
+    width: 551px;
+    height: 551px;
+    max-width: none;
+}
+.logo30 img{
+    position: absolute;
+    width: 760px;
+    height: 760px;
+    max-width: none;
+}
+.logo23 {
+    position: relative;
+    width: 23px;
+    height: 23px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 2px;
+}
+.logo30 {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    margin-right: 2px;
+}
+.logo23-abichr {
+    left: -3px;
+    top: -3px;
+}
+.logo23-af {
+    left: -32px;
+    top: -3px;
+}
+.logo23-akron {
+    left: -61px;
+    top: -3px;
+}
+.logo23-ala {
+    left: -90px;
+    top: -3px;
+}
+.logo23-alaa\&m {
+    left: -119px;
+    top: -3px;
+}
+.logo23-albany {
+    left: -148px;
+    top: -3px;
+}
+.logo23-alc {
+    left: -177px;
+    top: -3px;
+}
+.logo23-alst {
+    left: -206px;
+    top: -3px;
+}
+.logo23-amer {
+    left: -235px;
+    top: -3px;
+}
+.logo23-app {
+    left: -264px;
+    top: -3px;
+}
+.logo23-apsu {
+    left: -293px;
+    top: -3px;
+}
+.logo23-ari {
+    left: -322px;
+    top: -3px;
+    right: 322px;
+    bottom: 3px;
+}
+.logo23-arist {
+    left: -351px;
+    top: -3px;
+}
+.logo23-ark {
+    left: -380px;
+    top: -3px;
+}
+.logo23-ark-lr {
+    left: -409px;
+    top: -3px;
+}
+.logo23-ark-pb {
+    left: -438px;
+    top: -3px;
+}
+.logo23-arkst {
+    left: -467px;
+    top: -3px;
+}
+.logo23-army {
+    left: -496px;
+    top: -3px;
+}
+.logo23-auburn {
+    left: -3px;
+    top: -32px;
+}
+.logo23-b-c {
+    left: -32px;
+    top: -32px;
+}
+.logo23-ballst {
+    left: -61px;
+    top: -32px;
+}
+.logo23-baylor {
+    left: -90px;
+    top: -32px;
+}
+.logo23-bc {
+    left: -119px;
+    top: -32px;
+}
+.logo23-belmnt {
+    left: -148px;
+    top: -32px;
+}
+.logo23-bgsu {
+    left: -177px;
+    top: -32px;
+}
+.logo23-bing {
+    left: -206px;
+    top: -32px;
+}
+.logo23-boise {
+    left: -235px;
+    top: -32px;
+}
+.logo23-brad {
+    left: -264px;
+    top: -32px;
+}
+.logo23-brown {
+    left: -293px;
+    top: -32px;
+}
+.logo23-bryant {
+    left: -322px;
+    top: -32px;
+}
+.logo23-bu {
+    left: -351px;
+    top: -32px;
+}
+.logo23-buck {
+    left: -380px;
+    top: -32px;
+}
+.logo23-buff {
+    left: -409px;
+    top: -32px;
+}
+.logo23-butler {
+    left: -438px;
+    top: -32px;
+}
+.logo23-byu {
+    left: -467px;
+    top: -32px;
+}
+.logo23-cal {
+    left: -496px;
+    top: -32px;
+}
+.logo23-calply {
+    left: -3px;
+    top: -61px;
+}
+.logo23-calrv {
+    left: -32px;
+    top: -61px;
+}
+.logo23-camp {
+    left: -61px;
+    top: -61px;
+}
+.logo23-can {
+    left: -90px;
+    top: -61px;
+}
+.logo23-cenark {
+    left: -119px;
+    top: -61px;
+}
+.logo23-centct {
+    left: -148px;
+    top: -61px;
+}
+.logo23-centmi {
+    left: -177px;
+    top: -61px;
+}
+.logo23-char {
+    left: -206px;
+    top: -61px;
+}
+.logo23-chat {
+    left: -235px;
+    top: -61px;
+}
+.logo23-chist {
+    left: -264px;
+    top: -61px;
+}
+.logo23-chrstn {
+    left: -293px;
+    top: -61px;
+}
+.logo23-chsou {
+    left: -322px;
+    top: -61px;
+}
+.logo23-cin {
+    left: -351px;
+    top: -61px;
+}
+.logo23-cit {
+    left: -380px;
+    top: -61px;
+}
+.logo23-clem {
+    left: -409px;
+    top: -61px;
+}
+.logo23-clest {
+    left: -438px;
+    top: -61px;
+}
+.logo23-coastc {
+    left: -467px;
+    top: -61px;
+}
+.logo23-colg {
+    left: -496px;
+    top: -61px;
+}
+.logo23-colo {
+    left: -3px;
+    top: -90px;
+}
+.logo23-colost {
+    left: -32px;
+    top: -90px;
+}
+.logo23-colum {
+    left: -61px;
+    top: -90px;
+}
+.logo23-coppin {
+    left: -90px;
+    top: -90px;
+}
+.logo23-cor {
+    left: -119px;
+    top: -90px;
+}
+.logo23-cre {
+    left: -148px;
+    top: -90px;
+}
+.logo23-cs-bk {
+    left: -177px;
+    top: -90px;
+}
+.logo23-cs-nr {
+    left: -206px;
+    top: -90px;
+}
+.logo23-csf {
+    left: -235px;
+    top: -90px;
+}
+.logo23-dart {
+    left: -264px;
+    top: -90px;
+}
+.logo23-dav {
+    left: -293px;
+    top: -90px;
+}
+.logo23-dayton {
+    left: -322px;
+    top: -90px;
+}
+.logo23-del {
+    left: -351px;
+    top: -90px;
+}
+.logo23-delst {
+    left: -380px;
+    top: -90px;
+}
+.logo23-denver {
+    left: -409px;
+    top: -90px;
+}
+.logo23-depaul {
+    left: -438px;
+    top: -90px;
+}
+.logo23-det {
+    left: -467px;
+    top: -90px;
+}
+.logo23-drake {
+    left: -496px;
+    top: -90px;
+}
+.logo23-drexel {
+    left: -3px;
+    top: -119px;
+}
+.logo23-duke {
+    left: -32px;
+    top: -119px;
+}
+.logo23-duq {
+    left: -61px;
+    top: -119px;
+}
+.logo23-eastil {
+    left: -90px;
+    top: -119px;
+}
+.logo23-eastky {
+    left: -119px;
+    top: -119px;
+}
+.logo23-eastmi {
+    left: -148px;
+    top: -119px;
+}
+.logo23-easttn {
+    left: -177px;
+    top: -119px;
+}
+.logo23-eastwa {
+    left: -206px;
+    top: -119px;
+}
+.logo23-ecu {
+    left: -235px;
+    top: -119px;
+}
+.logo23-elon {
+    left: -264px;
+    top: -119px;
+}
+.logo23-evan {
+    left: -293px;
+    top: -119px;
+}
+.logo23-fair {
+    left: -322px;
+    top: -119px;
+}
+.logo23-fdu {
+    left: -351px;
+    top: -119px;
+}
+.logo23-fiu {
+    left: -380px;
+    top: -119px;
+}
+.logo23-fla {
+    left: -409px;
+    top: -119px;
+}
+.logo23-flaa\&m {
+    left: -438px;
+    top: -119px;
+}
+.logo23-flaatl {
+    left: -467px;
+    top: -119px;
+}
+.logo23-flagc {
+    left: -496px;
+    top: -119px;
+}
+.logo23-flast {
+    left: -3px;
+    top: -148px;
+}
+.logo23-ford {
+    left: -32px;
+    top: -148px;
+}
+.logo23-fres {
+    left: -61px;
+    top: -148px;
+}
+.logo23-furman {
+    left: -90px;
+    top: -148px;
+}
+.logo23-g-webb {
+    left: -119px;
+    top: -148px;
+}
+.logo23-gaso {
+    left: -148px;
+    top: -148px;
+}
+.logo23-gast {
+    left: -177px;
+    top: -148px;
+}
+.logo23-gatech {
+    left: -206px;
+    top: -148px;
+}
+.logo23-gb {
+    left: -235px;
+    top: -148px;
+}
+.logo23-gmason {
+    left: -264px;
+    top: -148px;
+}
+.logo23-gonz {
+    left: -293px;
+    top: -148px;
+}
+.logo23-gracan {
+    left: -322px;
+    top: -148px;
+}
+.logo23-gram {
+    left: -351px;
+    top: -148px;
+}
+.logo23-gtown {
+    left: -380px;
+    top: -148px;
+}
+.logo23-gw {
+    left: -409px;
+    top: -148px;
+}
+.logo23-hamp {
+    left: -438px;
+    top: -148px;
+}
+.logo23-hart {
+    left: -467px;
+    top: -148px;
+}
+.logo23-harv {
+    left: -496px;
+    top: -148px;
+}
+.logo23-hawaii {
+    left: -3px;
+    top: -177px;
+}
+.logo23-highpt {
+    left: -32px;
+    top: -177px;
+}
+.logo23-hof {
+    left: -61px;
+    top: -177px;
+}
+.logo23-holycr {
+    left: -90px;
+    top: -177px;
+}
+.logo23-hou {
+    left: -119px;
+    top: -177px;
+}
+.logo23-houbap {
+    left: -148px;
+    top: -177px;
+}
+.logo23-howard {
+    left: -177px;
+    top: -177px;
+}
+.logo23-iast {
+    left: -206px;
+    top: -177px;
+}
+.logo23-idaho {
+    left: -235px;
+    top: -177px;
+}
+.logo23-idast {
+    left: -264px;
+    top: -177px;
+}
+.logo23-ill {
+    left: -293px;
+    top: -177px;
+}
+.logo23-illst {
+    left: -322px;
+    top: -177px;
+}
+.logo23-incwor {
+    left: -351px;
+    top: -177px;
+}
+.logo23-ind {
+    left: -380px;
+    top: -177px;
+}
+.logo23-inst {
+    left: -409px;
+    top: -177px;
+}
+.logo23-iona {
+    left: -438px;
+    top: -177px;
+}
+.logo23-iowa {
+    left: -467px;
+    top: -177px;
+}
+.logo23-ipfw {
+    left: -496px;
+    top: -177px;
+}
+.logo23-iupui {
+    left: -3px;
+    top: -206px;
+}
+.logo23-jac {
+    left: -32px;
+    top: -206px;
+}
+.logo23-jacst {
+    left: -61px;
+    top: -206px;
+}
+.logo23-jkst {
+    left: -90px;
+    top: -206px;
+}
+.logo23-jmu {
+    left: -119px;
+    top: -206px;
+}
+.logo23-kansas {
+    left: -148px;
+    top: -206px;
+}
+.logo23-kanst {
+    left: -177px;
+    top: -206px;
+}
+.logo23-kentst {
+    left: -206px;
+    top: -206px;
+}
+.logo23-ksawst {
+    left: -235px;
+    top: -206px;
+}
+.logo23-kty {
+    left: -264px;
+    top: -206px;
+}
+.logo23-laf {
+    left: -293px;
+    top: -206px;
+}
+.logo23-lamar {
+    left: -322px;
+    top: -206px;
+}
+.logo23-lasal {
+    left: -351px;
+    top: -206px;
+}
+.logo23-latech {
+    left: -380px;
+    top: -206px;
+}
+.logo23-lehigh {
+    left: -409px;
+    top: -206px;
+}
+.logo23-lgbch {
+    left: -438px;
+    top: -206px;
+}
+.logo23-lib {
+    left: -467px;
+    top: -206px;
+}
+.logo23-lips {
+    left: -496px;
+    top: -206px;
+}
+.logo23-liu {
+    left: -3px;
+    top: -235px;
+}
+.logo23-lngwd {
+    left: -32px;
+    top: -235px;
+}
+.logo23-lou {
+    left: -61px;
+    top: -235px;
+}
+.logo23-louis {
+    left: -90px;
+    top: -235px;
+}
+.logo23-lsu {
+    left: -119px;
+    top: -235px;
+}
+.logo23-ly-il {
+    left: -148px;
+    top: -235px;
+}
+.logo23-ly-md {
+    left: -177px;
+    top: -235px;
+}
+.logo23-lymnt {
+    left: -206px;
+    top: -235px;
+}
+.logo23-ma-low {
+    left: -235px;
+    top: -235px;
+}
+.logo23-maine {
+    left: -264px;
+    top: -235px;
+}
+.logo23-manhat {
+    left: -293px;
+    top: -235px;
+}
+.logo23-marist {
+    left: -322px;
+    top: -235px;
+}
+.logo23-marq {
+    left: -351px;
+    top: -235px;
+}
+.logo23-marsh {
+    left: -380px;
+    top: -235px;
+}
+.logo23-mcne {
+    left: -409px;
+    top: -235px;
+}
+.logo23-md {
+    left: -438px;
+    top: -235px;
+}
+.logo23-md-es {
+    left: -467px;
+    top: -235px;
+}
+.logo23-mem {
+    left: -496px;
+    top: -235px;
+}
+.logo23-mercer {
+    left: -3px;
+    top: -264px;
+}
+.logo23-mia-fl {
+    left: -32px;
+    top: -264px;
+}
+.logo23-mia-o {
+    left: -61px;
+    top: -264px;
+}
+.logo23-mich {
+    left: -90px;
+    top: -264px;
+}
+.logo23-middtn {
+    left: -119px;
+    top: -264px;
+}
+.logo23-minn {
+    left: -148px;
+    top: -264px;
+}
+.logo23-miss {
+    left: -177px;
+    top: -264px;
+}
+.logo23-missou {
+    left: -206px;
+    top: -264px;
+}
+.logo23-missst {
+    left: -235px;
+    top: -264px;
+}
+.logo23-monm {
+    left: -264px;
+    top: -264px;
+}
+.logo23-mont {
+    left: -293px;
+    top: -264px;
+}
+.logo23-montst {
+    left: -322px;
+    top: -264px;
+}
+.logo23-mor {
+    left: -351px;
+    top: -264px;
+}
+.logo23-morgan {
+    left: -380px;
+    top: -264px;
+}
+.logo23-mostu {
+    left: -409px;
+    top: -264px;
+}
+.logo23-msm {
+    left: -438px;
+    top: -264px;
+}
+.logo23-msu {
+    left: -467px;
+    top: -264px;
+}
+.logo23-msvl {
+    left: -496px;
+    top: -264px;
+}
+.logo23-murray {
+    left: -3px;
+    top: -293px;
+}
+.logo23-navy {
+    left: -32px;
+    top: -293px;
+}
+.logo23-nc-ash {
+    left: -61px;
+    top: -293px;
+}
+.logo23-nc-gre {
+    left: -90px;
+    top: -293px;
+}
+.logo23-nc-wil {
+    left: -119px;
+    top: -293px;
+}
+.logo23-nca\&t {
+    left: -148px;
+    top: -293px;
+}
+.logo23-nccent {
+    left: -177px;
+    top: -293px;
+}
+.logo23-ncsu {
+    left: -206px;
+    top: -293px;
+}
+.logo23-nd {
+    left: -235px;
+    top: -293px;
+}
+.logo23-ndakst {
+    left: -264px;
+    top: -293px;
+}
+.logo23-ne {
+    left: -293px;
+    top: -293px;
+}
+.logo23-neb {
+    left: -322px;
+    top: -293px;
+}
+.logo23-neoma {
+    left: -351px;
+    top: -293px;
+}
+.logo23-nevada {
+    left: -380px;
+    top: -293px;
+}
+.logo23-nia {
+    left: -409px;
+    top: -293px;
+}
+.logo23-nich {
+    left: -438px;
+    top: -293px;
+}
+.logo23-niu {
+    left: -467px;
+    top: -293px;
+}
+.logo23-njit {
+    left: -496px;
+    top: -293px;
+}
+.logo23-nm {
+    left: -3px;
+    top: -322px;
+}
+.logo23-nmst {
+    left: -32px;
+    top: -322px;
+}
+.logo23-noari {
+    left: -61px;
+    top: -322px;
+}
+.logo23-nocol {
+    left: -90px;
+    top: -322px;
+}
+.logo23-nofla {
+    left: -119px;
+    top: -322px;
+}
+.logo23-noia {
+    left: -148px;
+    top: -322px;
+}
+.logo23-nor {
+    left: -177px;
+    top: -322px;
+}
+.logo23-nordak {
+    left: -206px;
+    top: -322px;
+}
+.logo23-nortky {
+    left: -235px;
+    top: -322px;
+}
+.logo23-nortx {
+    left: -264px;
+    top: -322px;
+}
+.logo23-nw {
+    left: -293px;
+    top: -322px;
+}
+.logo23-nwst {
+    left: -322px;
+    top: -322px;
+}
+.logo23-oak {
+    left: -351px;
+    top: -322px;
+}
+.logo23-odu {
+    left: -380px;
+    top: -322px;
+}
+.logo23-ohio {
+    left: -409px;
+    top: -322px;
+}
+.logo23-ohiost {
+    left: -438px;
+    top: -322px;
+}
+.logo23-okla {
+    left: -467px;
+    top: -322px;
+}
+.logo23-okst {
+    left: -496px;
+    top: -322px;
+}
+.logo23-oregon {
+    left: -3px;
+    top: -351px;
+}
+.logo23-orest {
+    left: -32px;
+    top: -351px;
+}
+.logo23-orrob {
+    left: -61px;
+    top: -351px;
+}
+.logo23-pac {
+    left: -90px;
+    top: -351px;
+}
+.logo23-penn {
+    left: -119px;
+    top: -351px;
+}
+.logo23-pepper {
+    left: -148px;
+    top: -351px;
+}
+.logo23-pitt {
+    left: -177px;
+    top: -351px;
+}
+.logo23-por {
+    left: -206px;
+    top: -351px;
+}
+.logo23-porst {
+    left: -235px;
+    top: -351px;
+}
+.logo23-presby {
+    left: -264px;
+    top: -351px;
+}
+.logo23-prince {
+    left: -293px;
+    top: -351px;
+}
+.logo23-prov {
+    left: -322px;
+    top: -351px;
+}
+.logo23-psu {
+    left: -351px;
+    top: -351px;
+}
+.logo23-purdue {
+    left: -380px;
+    top: -351px;
+}
+.logo23-pva\&m {
+    left: -409px;
+    top: -351px;
+}
+.logo23-quinni {
+    left: -438px;
+    top: -351px;
+}
+.logo23-rad {
+    left: -467px;
+    top: -351px;
+}
+.logo23-rice {
+    left: -496px;
+    top: -351px;
+}
+.logo23-rich {
+    left: -3px;
+    top: -380px;
+}
+.logo23-rider {
+    left: -32px;
+    top: -380px;
+}
+.logo23-rmor {
+    left: -61px;
+    top: -380px;
+}
+.logo23-rut {
+    left: -90px;
+    top: -380px;
+}
+.logo23-sac {
+    left: -119px;
+    top: -380px;
+}
+.logo23-sam {
+    left: -148px;
+    top: -380px;
+}
+.logo23-samhou {
+    left: -177px;
+    top: -380px;
+}
+.logo23-sanfr {
+    left: -206px;
+    top: -380px;
+}
+.logo23-santac {
+    left: -235px;
+    top: -380px;
+}
+.logo23-savan {
+    left: -264px;
+    top: -380px;
+}
+.logo23-sc {
+    left: -293px;
+    top: -380px;
+}
+.logo23-sc-ups {
+    left: -322px;
+    top: -380px;
+}
+.logo23-scst {
+    left: -351px;
+    top: -380px;
+}
+.logo23-sd {
+    left: -380px;
+    top: -380px;
+}
+.logo23-sdakst {
+    left: -409px;
+    top: -380px;
+}
+.logo23-sdsu {
+    left: -438px;
+    top: -380px;
+}
+.logo23-seattl {
+    left: -467px;
+    top: -380px;
+}
+.logo23-sela {
+    left: -496px;
+    top: -380px;
+}
+.logo23-semo {
+    left: -3px;
+    top: -409px;
+}
+.logo23-setonh {
+    left: -32px;
+    top: -409px;
+}
+.logo23-sfa {
+    left: -61px;
+    top: -409px;
+}
+.logo23-sheart {
+    left: -90px;
+    top: -409px;
+}
+.logo23-siena {
+    left: -119px;
+    top: -409px;
+}
+.logo23-siu {
+    left: -148px;
+    top: -409px;
+}
+.logo23-siue {
+    left: -177px;
+    top: -409px;
+}
+.logo23-sjsu {
+    left: -206px;
+    top: -409px;
+}
+.logo23-smu {
+    left: -235px;
+    top: -409px;
+}
+.logo23-sofla {
+    left: -264px;
+    top: -409px;
+}
+.logo23-sou {
+    left: -293px;
+    top: -409px;
+}
+.logo23-soudak {
+    left: -322px;
+    top: -409px;
+}
+.logo23-soumis {
+    left: -351px;
+    top: -409px;
+}
+.logo23-sout {
+    left: -380px;
+    top: -409px;
+}
+.logo23-stan {
+    left: -409px;
+    top: -409px;
+}
+.logo23-stbon {
+    left: -438px;
+    top: -409px;
+}
+.logo23-stet {
+    left: -467px;
+    top: -409px;
+}
+.logo23-stf-ny {
+    left: -496px;
+    top: -409px;
+}
+.logo23-stf-pa {
+    left: -3px;
+    top: -438px;
+}
+.logo23-stjn {
+    left: -32px;
+    top: -438px;
+}
+.logo23-stjoes {
+    left: -61px;
+    top: -438px;
+}
+.logo23-stl {
+    left: -90px;
+    top: -438px;
+}
+.logo23-stmry {
+    left: -119px;
+    top: -438px;
+}
+.logo23-stnybr {
+    left: -148px;
+    top: -438px;
+}
+.logo23-stpete {
+    left: -177px;
+    top: -438px;
+}
+.logo23-syr {
+    left: -206px;
+    top: -438px;
+}
+.logo23-ta\&mcc {
+    left: -235px;
+    top: -438px;
+}
+.logo23-tcu {
+    left: -264px;
+    top: -438px;
+}
+.logo23-temple {
+    left: -293px;
+    top: -438px;
+}
+.logo23-tenn {
+    left: -322px;
+    top: -438px;
+}
+.logo23-tennst {
+    left: -351px;
+    top: -438px;
+}
+.logo23-tex {
+    left: -380px;
+    top: -438px;
+}
+.logo23-tex-pa {
+    left: -409px;
+    top: -438px;
+}
+.logo23-texa\&m {
+    left: -438px;
+    top: -438px;
+}
+.logo23-tn-mar {
+    left: -467px;
+    top: -438px;
+}
+.logo23-tntech {
+    left: -496px;
+    top: -438px;
+}
+.logo23-toledo {
+    left: -3px;
+    top: -467px;
+}
+.logo23-towson {
+    left: -32px;
+    top: -467px;
+}
+.logo23-troy {
+    left: -61px;
+    top: -467px;
+}
+.logo23-tulane {
+    left: -90px;
+    top: -467px;
+}
+.logo23-tulsa {
+    left: -119px;
+    top: -467px;
+}
+.logo23-tx-ar {
+    left: -148px;
+    top: -467px;
+}
+.logo23-txso {
+    left: -177px;
+    top: -467px;
+}
+.logo23-txst {
+    left: -206px;
+    top: -467px;
+}
+.logo23-txtch {
+    left: -235px;
+    top: -467px;
+}
+.logo23-uab {
+    left: -264px;
+    top: -467px;
+}
+.logo23-uc-irv {
+    left: -293px;
+    top: -467px;
+}
+.logo23-uc-sb {
+    left: -322px;
+    top: -467px;
+}
+.logo23-ucdav {
+    left: -351px;
+    top: -467px;
+}
+.logo23-ucf {
+    left: -380px;
+    top: -467px;
+}
+.logo23-ucla {
+    left: -409px;
+    top: -467px;
+}
+.logo23-uconn {
+    left: -438px;
+    top: -467px;
+}
+.logo23-uga {
+    left: -467px;
+    top: -467px;
+}
+.logo23-uic {
+    left: -496px;
+    top: -467px;
+}
+.logo23-ul-mon {
+    left: -3px;
+    top: -496px;
+}
+.logo23-umass {
+    left: -32px;
+    top: -496px;
+}
+.logo23-umbc {
+    left: -61px;
+    top: -496px;
+}
+.logo23-umkc {
+    left: -90px;
+    top: -496px;
+}
+.logo23-unc {
+    left: -119px;
+    top: -496px;
+}
+.logo23-unh {
+    left: -148px;
+    top: -496px;
+}
+.logo23-unlv {
+    left: -177px;
+    top: -496px;
+}
+.logo23-uno {
+    left: -206px;
+    top: -496px;
+}
+.logo23-uri {
+    left: -235px;
+    top: -496px;
+}
+.logo23-usa {
+    left: -264px;
+    top: -496px;
+}
+.logo23-usc {
+    left: -293px;
+    top: -496px;
+}
+.logo23-utah {
+    left: -322px;
+    top: -496px;
+}
+.logo23-utahst {
+    left: -351px;
+    top: -496px;
+}
+.logo23-utep {
+    left: -380px;
+    top: -496px;
+}
+.logo23-utsa {
+    left: -409px;
+    top: -496px;
+}
+.logo23-uva {
+    left: -438px;
+    top: -496px;
+}
+.logo23-uvu {
+    left: -467px;
+    top: -496px;
+}
+.logo23-uw-mil {
+    left: -496px;
+    top: -496px;
+}
+.logo23-valpo {
+    left: -525px;
+    top: -3px;
+}
+.logo23-vandy {
+    left: -525px;
+    top: -32px;
+}
+.logo23-vatech {
+    left: -525px;
+    top: -61px;
+}
+.logo23-vcu {
+    left: -525px;
+    top: -90px;
+}
+.logo23-ver {
+    left: -525px;
+    top: -119px;
+}
+.logo23-vill {
+    left: -525px;
+    top: -148px;
+}
+.logo23-vmi {
+    left: -525px;
+    top: -177px;
+}
+.logo23-w\&m {
+    left: -525px;
+    top: -206px;
+}
+.logo23-wagner {
+    left: -525px;
+    top: -235px;
+}
+.logo23-wake {
+    left: -525px;
+    top: -264px;
+}
+.logo23-wash {
+    left: -525px;
+    top: -293px;
+}
+.logo23-washst {
+    left: -525px;
+    top: -322px;
+}
+.logo23-wcu {
+    left: -525px;
+    top: -351px;
+}
+.logo23-web {
+    left: -525px;
+    top: -380px;
+}
+.logo23-westil {
+    left: -525px;
+    top: -409px;
+}
+.logo23-westky {
+    left: -525px;
+    top: -438px;
+}
+.logo23-westmi {
+    left: -525px;
+    top: -467px;
+}
+.logo23-wich {
+    left: -525px;
+    top: -496px;
+}
+.logo23-win {
+    left: -3px;
+    top: -525px;
+}
+.logo23-wisc {
+    left: -32px;
+    top: -525px;
+}
+.logo23-wof {
+    left: -61px;
+    top: -525px;
+}
+.logo23-wright {
+    left: -90px;
+    top: -525px;
+}
+.logo23-wvu {
+    left: -119px;
+    top: -525px;
+}
+.logo23-wyo {
+    left: -148px;
+    top: -525px;
+}
+.logo23-xavier {
+    left: -177px;
+    top: -525px;
+}
+.logo23-yale {
+    left: -206px;
+    top: -525px;
+}
+.logo23-ysu {
+    left: -235px;
+    top: -525px;
+}
+.logo30-abichr {
+    left: -5px;
+    top: -5px;
+}
+.logo30-af {
+    left: -45px;
+    top: -5px;
+}
+.logo30-akron {
+    left: -85px;
+    top: -5px;
+}
+.logo30-ala {
+    left: -125px;
+    top: -5px;
+}
+.logo30-alaa\&m {
+    left: -165px;
+    top: -5px;
+}
+.logo30-albany {
+    left: -205px;
+    top: -5px;
+}
+.logo30-alc {
+    left: -245px;
+    top: -5px;
+}
+.logo30-alst {
+    left: -285px;
+    top: -5px;
+}
+.logo30-amer {
+    left: -325px;
+    top: -5px;
+}
+.logo30-app {
+    left: -365px;
+    top: -5px;
+}
+.logo30-apsu {
+    left: -405px;
+    top: -5px;
+}
+.logo30-ari {
+    left: -445px;
+    top: -5px;
+}
+.logo30-arist {
+    left: -485px;
+    top: -5px;
+}
+.logo30-ark {
+    left: -525px;
+    top: -5px;
+}
+.logo30-ark-lr {
+    left: -565px;
+    top: -5px;
+}
+.logo30-ark-pb {
+    left: -605px;
+    top: -5px;
+}
+.logo30-arkst {
+    left: -645px;
+    top: -5px;
+}
+.logo30-army {
+    left: -685px;
+    top: -5px;
+}
+.logo30-auburn {
+    left: -5px;
+    top: -45px;
+}
+.logo30-b-c {
+    left: -45px;
+    top: -45px;
+}
+.logo30-ballst {
+    left: -85px;
+    top: -45px;
+}
+.logo30-baylor {
+    left: -125px;
+    top: -45px;
+}
+.logo30-bc {
+    left: -165px;
+    top: -45px;
+}
+.logo30-belmnt {
+    left: -205px;
+    top: -45px;
+}
+.logo30-bgsu {
+    left: -245px;
+    top: -45px;
+}
+.logo30-bing {
+    left: -285px;
+    top: -45px;
+}
+.logo30-boise {
+    left: -325px;
+    top: -45px;
+}
+.logo30-brad {
+    left: -365px;
+    top: -45px;
+}
+.logo30-brown {
+    left: -405px;
+    top: -45px;
+}
+.logo30-bryant {
+    left: -445px;
+    top: -45px;
+}
+.logo30-bu {
+    left: -485px;
+    top: -45px;
+}
+.logo30-buck {
+    left: -525px;
+    top: -45px;
+}
+.logo30-buff {
+    left: -565px;
+    top: -45px;
+}
+.logo30-butler {
+    left: -605px;
+    top: -45px;
+}
+.logo30-byu {
+    left: -645px;
+    top: -45px;
+}
+.logo30-cal {
+    left: -685px;
+    top: -45px;
+}
+.logo30-calply {
+    left: -5px;
+    top: -85px;
+}
+.logo30-calrv {
+    left: -45px;
+    top: -85px;
+}
+.logo30-camp {
+    left: -85px;
+    top: -85px;
+}
+.logo30-can {
+    left: -125px;
+    top: -85px;
+}
+.logo30-cenark {
+    left: -165px;
+    top: -85px;
+}
+.logo30-centct {
+    left: -205px;
+    top: -85px;
+}
+.logo30-centmi {
+    left: -245px;
+    top: -85px;
+}
+.logo30-char {
+    left: -285px;
+    top: -85px;
+}
+.logo30-chat {
+    left: -325px;
+    top: -85px;
+}
+.logo30-chist {
+    left: -365px;
+    top: -85px;
+}
+.logo30-chrstn {
+    left: -405px;
+    top: -85px;
+}
+.logo30-chsou {
+    left: -445px;
+    top: -85px;
+}
+.logo30-cin {
+    left: -485px;
+    top: -85px;
+}
+.logo30-cit {
+    left: -525px;
+    top: -85px;
+}
+.logo30-clem {
+    left: -565px;
+    top: -85px;
+}
+.logo30-clest {
+    left: -605px;
+    top: -85px;
+}
+.logo30-coastc {
+    left: -645px;
+    top: -85px;
+}
+.logo30-colg {
+    left: -685px;
+    top: -85px;
+}
+.logo30-colo {
+    left: -5px;
+    top: -125px;
+}
+.logo30-colost {
+    left: -45px;
+    top: -125px;
+}
+.logo30-colum {
+    left: -85px;
+    top: -125px;
+}
+.logo30-coppin {
+    left: -125px;
+    top: -125px;
+}
+.logo30-cor {
+    left: -165px;
+    top: -125px;
+}
+.logo30-cre {
+    left: -205px;
+    top: -125px;
+}
+.logo30-cs-bk {
+    left: -245px;
+    top: -125px;
+}
+.logo30-cs-nr {
+    left: -285px;
+    top: -125px;
+}
+.logo30-csf {
+    left: -325px;
+    top: -125px;
+}
+.logo30-dart {
+    left: -365px;
+    top: -125px;
+}
+.logo30-dav {
+    left: -405px;
+    top: -125px;
+}
+.logo30-dayton {
+    left: -445px;
+    top: -125px;
+}
+.logo30-del {
+    left: -485px;
+    top: -125px;
+}
+.logo30-delst {
+    left: -525px;
+    top: -125px;
+}
+.logo30-denver {
+    left: -565px;
+    top: -125px;
+}
+.logo30-depaul {
+    left: -605px;
+    top: -125px;
+}
+.logo30-det {
+    left: -645px;
+    top: -125px;
+}
+.logo30-drake {
+    left: -685px;
+    top: -125px;
+}
+.logo30-drexel {
+    left: -5px;
+    top: -165px;
+}
+.logo30-duke {
+    left: -45px;
+    top: -165px;
+}
+.logo30-duq {
+    left: -85px;
+    top: -165px;
+}
+.logo30-eastil {
+    left: -125px;
+    top: -165px;
+}
+.logo30-eastky {
+    left: -165px;
+    top: -165px;
+}
+.logo30-eastmi {
+    left: -205px;
+    top: -165px;
+}
+.logo30-easttn {
+    left: -245px;
+    top: -165px;
+}
+.logo30-eastwa {
+    left: -285px;
+    top: -165px;
+}
+.logo30-ecu {
+    left: -325px;
+    top: -165px;
+}
+.logo30-elon {
+    left: -365px;
+    top: -165px;
+}
+.logo30-evan {
+    left: -405px;
+    top: -165px;
+}
+.logo30-fair {
+    left: -445px;
+    top: -165px;
+}
+.logo30-fdu {
+    left: -485px;
+    top: -165px;
+}
+.logo30-fiu {
+    left: -525px;
+    top: -165px;
+}
+.logo30-fla {
+    left: -565px;
+    top: -165px;
+}
+.logo30-flaa\&m {
+    left: -605px;
+    top: -165px;
+}
+.logo30-flaatl {
+    left: -645px;
+    top: -165px;
+}
+.logo30-flagc {
+    left: -685px;
+    top: -165px;
+}
+.logo30-flast {
+    left: -5px;
+    top: -205px;
+}
+.logo30-ford {
+    left: -45px;
+    top: -205px;
+}
+.logo30-fres {
+    left: -85px;
+    top: -205px;
+}
+.logo30-furman {
+    left: -125px;
+    top: -205px;
+}
+.logo30-g-webb {
+    left: -165px;
+    top: -205px;
+}
+.logo30-gaso {
+    left: -205px;
+    top: -205px;
+}
+.logo30-gast {
+    left: -245px;
+    top: -205px;
+}
+.logo30-gatech {
+    left: -285px;
+    top: -205px;
+}
+.logo30-gb {
+    left: -325px;
+    top: -205px;
+}
+.logo30-gmason {
+    left: -365px;
+    top: -205px;
+}
+.logo30-gonz {
+    left: -405px;
+    top: -205px;
+}
+.logo30-gracan {
+    left: -445px;
+    top: -205px;
+}
+.logo30-gram {
+    left: -485px;
+    top: -205px;
+}
+.logo30-gtown {
+    left: -525px;
+    top: -205px;
+}
+.logo30-gw {
+    left: -565px;
+    top: -205px;
+}
+.logo30-hamp {
+    left: -605px;
+    top: -205px;
+}
+.logo30-hart {
+    left: -645px;
+    top: -205px;
+}
+.logo30-harv {
+    left: -685px;
+    top: -205px;
+}
+.logo30-hawaii {
+    left: -5px;
+    top: -245px;
+}
+.logo30-highpt {
+    left: -45px;
+    top: -245px;
+}
+.logo30-hof {
+    left: -85px;
+    top: -245px;
+}
+.logo30-holycr {
+    left: -125px;
+    top: -245px;
+}
+.logo30-hou {
+    left: -165px;
+    top: -245px;
+}
+.logo30-houbap {
+    left: -205px;
+    top: -245px;
+}
+.logo30-howard {
+    left: -245px;
+    top: -245px;
+}
+.logo30-iast {
+    left: -285px;
+    top: -245px;
+}
+.logo30-idaho {
+    left: -325px;
+    top: -245px;
+}
+.logo30-idast {
+    left: -365px;
+    top: -245px;
+}
+.logo30-ill {
+    left: -405px;
+    top: -245px;
+}
+.logo30-illst {
+    left: -445px;
+    top: -245px;
+}
+.logo30-incwor {
+    left: -485px;
+    top: -245px;
+}
+.logo30-ind {
+    left: -525px;
+    top: -245px;
+}
+.logo30-inst {
+    left: -565px;
+    top: -245px;
+}
+.logo30-iona {
+    left: -605px;
+    top: -245px;
+}
+.logo30-iowa {
+    left: -645px;
+    top: -245px;
+}
+.logo30-ipfw {
+    left: -685px;
+    top: -245px;
+}
+.logo30-iupui {
+    left: -5px;
+    top: -285px;
+}
+.logo30-jac {
+    left: -45px;
+    top: -285px;
+}
+.logo30-jacst {
+    left: -85px;
+    top: -285px;
+}
+.logo30-jkst {
+    left: -125px;
+    top: -285px;
+}
+.logo30-jmu {
+    left: -165px;
+    top: -285px;
+}
+.logo30-kansas {
+    left: -205px;
+    top: -285px;
+}
+.logo30-kanst {
+    left: -245px;
+    top: -285px;
+}
+.logo30-kentst {
+    left: -285px;
+    top: -285px;
+}
+.logo30-ksawst {
+    left: -325px;
+    top: -285px;
+}
+.logo30-kty {
+    left: -365px;
+    top: -285px;
+}
+.logo30-laf {
+    left: -405px;
+    top: -285px;
+}
+.logo30-lamar {
+    left: -445px;
+    top: -285px;
+}
+.logo30-lasal {
+    left: -485px;
+    top: -285px;
+}
+.logo30-latech {
+    left: -525px;
+    top: -285px;
+}
+.logo30-lehigh {
+    left: -565px;
+    top: -285px;
+}
+.logo30-lgbch {
+    left: -605px;
+    top: -285px;
+}
+.logo30-lib {
+    left: -645px;
+    top: -285px;
+}
+.logo30-lips {
+    left: -685px;
+    top: -285px;
+}
+.logo30-liu {
+    left: -5px;
+    top: -325px;
+}
+.logo30-lngwd {
+    left: -45px;
+    top: -325px;
+}
+.logo30-lou {
+    left: -85px;
+    top: -325px;
+}
+.logo30-louis {
+    left: -125px;
+    top: -325px;
+}
+.logo30-lsu {
+    left: -165px;
+    top: -325px;
+}
+.logo30-ly-il {
+    left: -205px;
+    top: -325px;
+}
+.logo30-ly-md {
+    left: -245px;
+    top: -325px;
+}
+.logo30-lymnt {
+    left: -285px;
+    top: -325px;
+}
+.logo30-ma-low {
+    left: -325px;
+    top: -325px;
+}
+.logo30-maine {
+    left: -365px;
+    top: -325px;
+}
+.logo30-manhat {
+    left: -405px;
+    top: -325px;
+}
+.logo30-marist {
+    left: -445px;
+    top: -325px;
+}
+.logo30-marq {
+    left: -485px;
+    top: -325px;
+}
+.logo30-marsh {
+    left: -525px;
+    top: -325px;
+}
+.logo30-mcne {
+    left: -565px;
+    top: -325px;
+}
+.logo30-md {
+    left: -605px;
+    top: -325px;
+}
+.logo30-md-es {
+    left: -645px;
+    top: -325px;
+}
+.logo30-mem {
+    left: -685px;
+    top: -325px;
+}
+.logo30-mercer {
+    left: -5px;
+    top: -365px;
+}
+.logo30-mia-fl {
+    left: -45px;
+    top: -365px;
+}
+.logo30-mia-o {
+    left: -85px;
+    top: -365px;
+}
+.logo30-mich {
+    left: -125px;
+    top: -365px;
+}
+.logo30-middtn {
+    left: -165px;
+    top: -365px;
+}
+.logo30-minn {
+    left: -205px;
+    top: -365px;
+}
+.logo30-miss {
+    left: -245px;
+    top: -365px;
+}
+.logo30-missou {
+    left: -285px;
+    top: -365px;
+}
+.logo30-missst {
+    left: -325px;
+    top: -365px;
+}
+.logo30-monm {
+    left: -365px;
+    top: -365px;
+}
+.logo30-mont {
+    left: -405px;
+    top: -365px;
+}
+.logo30-montst {
+    left: -445px;
+    top: -365px;
+}
+.logo30-mor {
+    left: -485px;
+    top: -365px;
+}
+.logo30-morgan {
+    left: -525px;
+    top: -365px;
+}
+.logo30-mostu {
+    left: -565px;
+    top: -365px;
+}
+.logo30-msm {
+    left: -605px;
+    top: -365px;
+}
+.logo30-msu {
+    left: -645px;
+    top: -365px;
+}
+.logo30-msvl {
+    left: -685px;
+    top: -365px;
+}
+.logo30-murray {
+    left: -5px;
+    top: -405px;
+}
+.logo30-navy {
+    left: -45px;
+    top: -405px;
+}
+.logo30-nc-ash {
+    left: -85px;
+    top: -405px;
+}
+.logo30-nc-gre {
+    left: -125px;
+    top: -405px;
+}
+.logo30-nc-wil {
+    left: -165px;
+    top: -405px;
+}
+.logo30-nca\&t {
+    left: -205px;
+    top: -405px;
+}
+.logo30-nccent {
+    left: -245px;
+    top: -405px;
+}
+.logo30-ncsu {
+    left: -285px;
+    top: -405px;
+}
+.logo30-nd {
+    left: -325px;
+    top: -405px;
+}
+.logo30-ndakst {
+    left: -365px;
+    top: -405px;
+}
+.logo30-ne {
+    left: -405px;
+    top: -405px;
+}
+.logo30-neb {
+    left: -445px;
+    top: -405px;
+}
+.logo30-neoma {
+    left: -485px;
+    top: -405px;
+}
+.logo30-nevada {
+    left: -525px;
+    top: -405px;
+}
+.logo30-nia {
+    left: -565px;
+    top: -405px;
+}
+.logo30-nich {
+    left: -605px;
+    top: -405px;
+}
+.logo30-niu {
+    left: -645px;
+    top: -405px;
+}
+.logo30-njit {
+    left: -685px;
+    top: -405px;
+}
+.logo30-nm {
+    left: -5px;
+    top: -445px;
+}
+.logo30-nmst {
+    left: -45px;
+    top: -445px;
+}
+.logo30-noari {
+    left: -85px;
+    top: -445px;
+}
+.logo30-nocol {
+    left: -125px;
+    top: -445px;
+}
+.logo30-nofla {
+    left: -165px;
+    top: -445px;
+}
+.logo30-noia {
+    left: -205px;
+    top: -445px;
+}
+.logo30-nor {
+    left: -245px;
+    top: -445px;
+}
+.logo30-nordak {
+    left: -285px;
+    top: -445px;
+}
+.logo30-nortky {
+    left: -325px;
+    top: -445px;
+}
+.logo30-nortx {
+    left: -365px;
+    top: -445px;
+}
+.logo30-nw {
+    left: -405px;
+    top: -445px;
+}
+.logo30-nwst {
+    left: -445px;
+    top: -445px;
+}
+.logo30-oak {
+    left: -485px;
+    top: -445px;
+}
+.logo30-odu {
+    left: -525px;
+    top: -445px;
+}
+.logo30-ohio {
+    left: -565px;
+    top: -445px;
+}
+.logo30-ohiost {
+    left: -605px;
+    top: -445px;
+}
+.logo30-okla {
+    left: -645px;
+    top: -445px;
+}
+.logo30-okst {
+    left: -685px;
+    top: -445px;
+}
+.logo30-oregon {
+    left: -5px;
+    top: -485px;
+}
+.logo30-orest {
+    left: -45px;
+    top: -485px;
+}
+.logo30-orrob {
+    left: -85px;
+    top: -485px;
+}
+.logo30-pac {
+    left: -125px;
+    top: -485px;
+}
+.logo30-penn {
+    left: -165px;
+    top: -485px;
+}
+.logo30-pepper {
+    left: -205px;
+    top: -485px;
+}
+.logo30-pitt {
+    left: -245px;
+    top: -485px;
+}
+.logo30-por {
+    left: -285px;
+    top: -485px;
+}
+.logo30-porst {
+    left: -325px;
+    top: -485px;
+}
+.logo30-presby {
+    left: -365px;
+    top: -485px;
+}
+.logo30-prince {
+    left: -405px;
+    top: -485px;
+}
+.logo30-prov {
+    left: -445px;
+    top: -485px;
+}
+.logo30-psu {
+    left: -485px;
+    top: -485px;
+}
+.logo30-purdue {
+    left: -525px;
+    top: -485px;
+}
+.logo30-pva\&m {
+    left: -565px;
+    top: -485px;
+}
+.logo30-quinni {
+    left: -605px;
+    top: -485px;
+}
+.logo30-rad {
+    left: -645px;
+    top: -485px;
+}
+.logo30-rice {
+    left: -685px;
+    top: -485px;
+}
+.logo30-rich {
+    left: -5px;
+    top: -525px;
+}
+.logo30-rider {
+    left: -45px;
+    top: -525px;
+}
+.logo30-rmor {
+    left: -85px;
+    top: -525px;
+}
+.logo30-rut {
+    left: -125px;
+    top: -525px;
+}
+.logo30-sac {
+    left: -165px;
+    top: -525px;
+}
+.logo30-sam {
+    left: -205px;
+    top: -525px;
+}
+.logo30-samhou {
+    left: -245px;
+    top: -525px;
+}
+.logo30-sanfr {
+    left: -285px;
+    top: -525px;
+}
+.logo30-santac {
+    left: -325px;
+    top: -525px;
+}
+.logo30-savan {
+    left: -365px;
+    top: -525px;
+}
+.logo30-sc {
+    left: -405px;
+    top: -525px;
+}
+.logo30-sc-ups {
+    left: -445px;
+    top: -525px;
+}
+.logo30-scst {
+    left: -485px;
+    top: -525px;
+}
+.logo30-sd {
+    left: -525px;
+    top: -525px;
+}
+.logo30-sdakst {
+    left: -565px;
+    top: -525px;
+}
+.logo30-sdsu {
+    left: -605px;
+    top: -525px;
+}
+.logo30-seattl {
+    left: -645px;
+    top: -525px;
+}
+.logo30-sela {
+    left: -685px;
+    top: -525px;
+}
+.logo30-semo {
+    left: -5px;
+    top: -565px;
+}
+.logo30-setonh {
+    left: -45px;
+    top: -565px;
+}
+.logo30-sfa {
+    left: -85px;
+    top: -565px;
+}
+.logo30-sheart {
+    left: -125px;
+    top: -565px;
+}
+.logo30-siena {
+    left: -165px;
+    top: -565px;
+}
+.logo30-siu {
+    left: -205px;
+    top: -565px;
+}
+.logo30-siue {
+    left: -245px;
+    top: -565px;
+}
+.logo30-sjsu {
+    left: -285px;
+    top: -565px;
+}
+.logo30-smu {
+    left: -325px;
+    top: -565px;
+}
+.logo30-sofla {
+    left: -365px;
+    top: -565px;
+}
+.logo30-sou {
+    left: -405px;
+    top: -565px;
+}
+.logo30-soudak {
+    left: -445px;
+    top: -565px;
+}
+.logo30-soumis {
+    left: -485px;
+    top: -565px;
+}
+.logo30-sout {
+    left: -525px;
+    top: -565px;
+}
+.logo30-stan {
+    left: -565px;
+    top: -565px;
+}
+.logo30-stbon {
+    left: -605px;
+    top: -565px;
+}
+.logo30-stet {
+    left: -645px;
+    top: -565px;
+}
+.logo30-stf-ny {
+    left: -685px;
+    top: -565px;
+}
+.logo30-stf-pa {
+    left: -5px;
+    top: -605px;
+}
+.logo30-stjn {
+    left: -45px;
+    top: -605px;
+}
+.logo30-stjoes {
+    left: -85px;
+    top: -605px;
+}
+.logo30-stl {
+    left: -125px;
+    top: -605px;
+}
+.logo30-stmry {
+    left: -165px;
+    top: -605px;
+}
+.logo30-stnybr {
+    left: -205px;
+    top: -605px;
+}
+.logo30-stpete {
+    left: -245px;
+    top: -605px;
+}
+.logo30-syr {
+    left: -285px;
+    top: -605px;
+}
+.logo30-ta\&mcc {
+    left: -325px;
+    top: -605px;
+}
+.logo30-tcu {
+    left: -365px;
+    top: -605px;
+}
+.logo30-temple {
+    left: -405px;
+    top: -605px;
+}
+.logo30-tenn {
+    left: -445px;
+    top: -605px;
+}
+.logo30-tennst {
+    left: -485px;
+    top: -605px;
+}
+.logo30-tex {
+    left: -525px;
+    top: -605px;
+}
+.logo30-tex-pa {
+    left: -565px;
+    top: -605px;
+}
+.logo30-texa\&m {
+    left: -605px;
+    top: -605px;
+}
+.logo30-tn-mar {
+    left: -645px;
+    top: -605px;
+}
+.logo30-tntech {
+    left: -685px;
+    top: -605px;
+}
+.logo30-toledo {
+    left: -5px;
+    top: -645px;
+}
+.logo30-towson {
+    left: -45px;
+    top: -645px;
+}
+.logo30-troy {
+    left: -85px;
+    top: -645px;
+}
+.logo30-tulane {
+    left: -125px;
+    top: -645px;
+}
+.logo30-tulsa {
+    left: -165px;
+    top: -645px;
+}
+.logo30-tx-ar {
+    left: -205px;
+    top: -645px;
+}
+.logo30-txso {
+    left: -245px;
+    top: -645px;
+}
+.logo30-txst {
+    left: -285px;
+    top: -645px;
+}
+.logo30-txtch {
+    left: -325px;
+    top: -645px;
+}
+.logo30-uab {
+    left: -365px;
+    top: -645px;
+}
+.logo30-uc-irv {
+    left: -405px;
+    top: -645px;
+}
+.logo30-uc-sb {
+    left: -445px;
+    top: -645px;
+}
+.logo30-ucdav {
+    left: -485px;
+    top: -645px;
+}
+.logo30-ucf {
+    left: -525px;
+    top: -645px;
+}
+.logo30-ucla {
+    left: -565px;
+    top: -645px;
+}
+.logo30-uconn {
+    left: -605px;
+    top: -645px;
+}
+.logo30-uga {
+    left: -645px;
+    top: -645px;
+}
+.logo30-uic {
+    left: -685px;
+    top: -645px;
+}
+.logo30-ul-mon {
+    left: -5px;
+    top: -685px;
+}
+.logo30-umass {
+    left: -45px;
+    top: -685px;
+}
+.logo30-umbc {
+    left: -85px;
+    top: -685px;
+}
+.logo30-umkc {
+    left: -125px;
+    top: -685px;
+}
+.logo30-unc {
+    left: -165px;
+    top: -685px;
+}
+.logo30-unh {
+    left: -205px;
+    top: -685px;
+}
+.logo30-unlv {
+    left: -245px;
+    top: -685px;
+}
+.logo30-uno {
+    left: -285px;
+    top: -685px;
+}
+.logo30-uri {
+    left: -325px;
+    top: -685px;
+}
+.logo30-usa {
+    left: -365px;
+    top: -685px;
+}
+.logo30-usc {
+    left: -405px;
+    top: -685px;
+}
+.logo30-utah {
+    left: -445px;
+    top: -685px;
+}
+.logo30-utahst {
+    left: -485px;
+    top: -685px;
+}
+.logo30-utep {
+    left: -525px;
+    top: -685px;
+}
+.logo30-utsa {
+    left: -565px;
+    top: -685px;
+}
+.logo30-uva {
+    left: -605px;
+    top: -685px;
+}
+.logo30-uvu {
+    left: -645px;
+    top: -685px;
+}
+.logo30-uw-mil {
+    left: -685px;
+    top: -685px;
+}
+.logo30-valpo {
+    left: -725px;
+    top: -5px;
+}
+.logo30-vandy {
+    left: -725px;
+    top: -45px;
+}
+.logo30-vatech {
+    left: -725px;
+    top: -85px;
+}
+.logo30-vcu {
+    left: -725px;
+    top: -125px;
+}
+.logo30-ver {
+    left: -725px;
+    top: -165px;
+}
+.logo30-vill {
+    left: -725px;
+    top: -205px;
+}
+.logo30-vmi {
+    left: -725px;
+    top: -245px;
+}
+.logo30-w\&m {
+    left: -725px;
+    top: -285px;
+}
+.logo30-wagner {
+    left: -725px;
+    top: -325px;
+}
+.logo30-wake {
+    left: -725px;
+    top: -365px;
+}
+.logo30-wash {
+    left: -725px;
+    top: -405px;
+}
+.logo30-washst {
+    left: -725px;
+    top: -445px;
+}
+.logo30-wcu {
+    left: -725px;
+    top: -485px;
+}
+.logo30-web {
+    left: -725px;
+    top: -525px;
+}
+.logo30-westil {
+    left: -725px;
+    top: -565px;
+}
+.logo30-westky {
+    left: -725px;
+    top: -605px;
+}
+.logo30-westmi {
+    left: -725px;
+    top: -645px;
+}
+.logo30-wich {
+    left: -725px;
+    top: -685px;
+}
+.logo30-win {
+    left: -5px;
+    top: -725px;
+}
+.logo30-wisc {
+    left: -45px;
+    top: -725px;
+}
+.logo30-wof {
+    left: -85px;
+    top: -725px;
+}
+.logo30-wright {
+    left: -125px;
+    top: -725px;
+}
+.logo30-wvu {
+    left: -165px;
+    top: -725px;
+}
+.logo30-wyo {
+    left: -205px;
+    top: -725px;
+}
+.logo30-xavier {
+    left: -245px;
+    top: -725px;
+}
+.logo30-yale {
+    left: -285px;
+    top: -725px;
+}
+.logo30-ysu {
+    left: -325px;
+    top: -725px;
+}

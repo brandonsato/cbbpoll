@@ -1,35 +1,28 @@
 {% extends "base.html" %}
 {% set active_page = "index" %}
 {% block content %}
-{% if not g.user.is_authenticated() %}
 <div class="jumbotron">
   <h1>Welcome!</h1>
-  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Pollsters are not being added at this time, but feel free to login or create an account with the big button below.</p>
-  <p><a href="{{authorize_url}}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
-</div>
-{% elif not poll %}
-<div class="jumbotron">
-  <h1>Welcome!</h1>
-  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are no completed polls yet, but we can't wait for the season to start!
-</div>
-
+{% if not g.user.is_authenticated() -%}  
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Applications for voters are currently being accepted. Please log in to apply or to submit a ballot.</p>
+  <p><a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
+{% elif open_poll -%}
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. The {{open_poll}} is currently open for ballot submission until {{timestamp(closes_eastern)}}. Applications for voters are currently being accepted!</p>
+  <p>{% set ballot = g.user.submitted_ballot_to(open_poll.id) %}{% if ballot %}<a href="{{url_for('ballot', ballot_id = ballot.id)}}" class="btn btn-primary btn-lg">View Your Ballot{% else %}<a href="{{ url_for('submitballot') }}" class="btn btn-primary btn-lg">Submit Your Ballot{%endif%}</a></p>
+{% elif not poll -%}
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are no completed polls yet, but we can't wait for the season to start! Applications for voters are currently being accepted.</p>
+{% else -%}
+  <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are currently no polls open for ballot submission.</p>
+{%- endif %}
+{% if g.user.is_authenticated() and not g.user.is_voter and not g.user.voterApplication -%}
+<a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
 {% endif %}
+</div>
 {% if poll %}
 <h2> Latest Poll Results </h2>
-{% include 'resulttable.html' %}
-<div>
-  <h5>Official Ballots</h5>
-  {% for ballot in official_ballots %}
-  {%- if loop.index != 1 %}, {% endif %}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {%- endfor %}
-  {%if provisional_ballots%}
-  <h5>Provisional Ballots</h5>
-  {% for ballot in provisional_ballots %}
-  {%- if loop.index != 1 -%}, {%- endif -%}
-  <a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).nickname}}</a>
-  {% endfor %}
-  {% endif %}
+<div class="row">
+<div class="h6 col-xs-8 col-md-5">Closed on {{timestamp(closed_eastern)}}</div><div class="h6 col-xs-4 col-md-3 text-right"><a href="{{url_for("polls", s=poll.season|int, w= poll.week|int)}}">Permalink to these Results</a></div>
 </div>
+{% include 'resulttable.html' %}
 {% endif %}
 {% endblock %}

@@ -4,19 +4,29 @@
 CSRF_ENABLED = True
 SECRET_KEY = 'Hard to guess!'
 
+# Debug allows arbitrary execution of code by people who can
+# access the site--for dev environments only.
+DEBUG = True
+
+# domain goes here, uncomment for remote deployment
+#SERVER_NAME = 'example.com'
+
 REDDIT_CLIENT_ID = "From Reddit"
 REDDIT_CLIENT_SECRET = "Also from Reddit... DO NOT SHARE"
-REDDIT_REDIRECT_URI = "localhost:5000/reddit_callback"
+REDDIT_REDIRECT_URI = "http://localhost:5000/authorize_callback"
 REDDIT_USER_AGENT = '/r/CollegeBasketball User Poll'
 
 REDDIT_USERNAME = 'bot_name'
 REDDIT_PASSWORD = 'bot_password'
+REDDIT_SUB      = 'subreddit_name'
 
 SQLALCHEMY_DATABASE_URI = 'mysql://username:password@mysql.server/dbname'
 
 # for pythonanywhere deployment
 SQLALCHEMY_POOL_RECYCLE = 499
 SQLALCHEMY_POOL_TIMEOUT = 20
+
+LOGFILE = 'logfile.txt'
 
 # email server
 MAIL_SERVER = 'smtp.gmail.com'

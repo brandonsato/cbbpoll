@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="applications">
+{% for application in applications %}
+<div class="application col-sm-6 col-lg-4">
+{% if application.user.ballots.first() %}
+{{ macros.application(application, application.user.nickname, [(application.user.ballots.first(), url_for('ballot', ballot_id=application.user.ballots.first().id))]) }}
+{% else %}
+{{ macros.application(application, application.user.nickname) }}
+{% endif %}
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src='//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.5/masonry.pkgd.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js'></script>
+<script>
+var options = {transitionDuration: 0}
+var $container = $('#applications').masonry(options);
+$container.imagesLoaded( function() {
+  $container.masonry(options);
+});
+</script>
+{% if g.user.is_admin() %}
+<script>
+  $(function() {
+    var flag_user = function(e) {
+      var flagButton = $(this)
+      $.getJSON('/_flag_user', {
+        id: $(this).data('userid'),
+      }, function(data) {
+        if (data.flagged){
+        $(flagButton).addClass('text-primary');
+      } else {
+        $(flagButton).removeClass('text-primary')
+      }
+      });
+      return false;
+    };
+    $('span.flag-button').bind('click', flag_user);
+  });
+</script>
+{% endif %}
+{% endblock %}

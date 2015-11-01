@@ -5,5 +5,5 @@ The /r/CollegeBasketball User {{poll}} is closing soon! Follow the link below to
 {{ url_for('submitballot', _external = True) }}
 
 Thanks!
-
-Note: this is a bot, PMs are not monitored. For help please contact /u/Concision or /u/whatnamesarenttaken
+*****
+^(Note: This is a bot, PMs are not monitored. For help please contact /u/Concision or /u/whatnamesarenttaken)

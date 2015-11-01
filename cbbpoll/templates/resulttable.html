@@ -1,49 +1,63 @@
 {% if poll %}
-<div class="col-md-8">
-<table class="results table table-striped">
-	<tr>
-		<th>Rank</th><th>&nbsp;</th><th>Team</th><th>Score(First Place Votes)</th>
-	</tr>
-	{% set prev_score = -1 %}
-	{% set prev_onevotes = -1 %}
-	{% for result in results %}
-	{% set team = teams.get(result[0]) %}
-	{%- if loop.index < 26 -%}
-	<tr>
-		<td>
-			{% if result[1][0] == prev_score and result[1][1] == prev_onevotes %}
-				{% set rank = prev_rank %}
-			{% else %}
-				{% set rank = loop.index %}
-			{% endif %}
-			{% set prev_rank = rank %}
-			{% set prev_score = result[1][0] %}
-			{% set prev_onevotes = result[1][1] %}
-			{{rank}}
-		</td>
-		<td>
-		</td>
-		<td>
-			<img src="{{team.png_url()}}" alt="{{team.full_name}} Logo"> 
-			{% if team.short_name %}{{ team.short_name }}
-			{% else %}{{ team.full_name }}
-			{% endif %}
-		</td>
-		<td>
-			{{ result[1][0]}}{% if result[1][1] %}({{result[1][1]}}){%endif%}
-		</td>
-	</tr>
-	{%- if loop.index == 25 -%}
-</table>
-	{%- endif -%}
-	{%- elif loop.index == 26 -%}
+	<div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+		<div class="table-responsive">
+	<table class="results table table-striped">
+		<tr>
+			<th>Rank</th><th>Team (First Place Votes)</th><th>Score</th>
+		</tr>
+		{%- set prev_score = -1 -%}
+		{%- set prev_onevotes = -1 -%}
+		{%- for result in results -%}
+		{%- set team = teams.get(result[0]) %}
+		{%- if team.short_name %}{% set name = team.short_name %}{% else %}{% set name = team.full_name %}{% endif -%}
+		{%- if loop.index < 26 %}
+		<tr>
+			<td>
+				{%- if result[1][0] == prev_score and result[1][1] == prev_onevotes -%}
+					{%- set rank = prev_rank -%}
+				{%- else -%}
+					{%- set rank = loop.index -%}
+				{%- endif -%}
+				{%- set prev_rank = rank -%}
+				{%- set prev_score = result[1][0] -%}
+				{%- set prev_onevotes = result[1][1] -%}
+				{{rank}}</td>
+			<td><span class='team-name'>{{team.logo_html()|safe}} {{name}}{% if result[1][1] %}({{result[1][1]}}){%endif%}</span></td>
+			<td>{{ result[1][0]}}</td>
+		</tr>
+		{%- if loop.index == 25 %}
+	</table>
+</div>
+		{%- endif -%}
+		{%- elif loop.index == 26 %}
 	<div class='panel panel-default'>
 		<div class='panel-body'>
-			<strong>Others Receiving Votes:</strong> {{ team.short_name }}({{result[1][0]}}){%- else -%}, {{ team.short_name }}({{result[1][0]}})
-	{%- endif -%}
-	{% endfor %}
-	{%- if results|length > 25 -%}
-</div></div>
-{% endif %}
+			<strong>Others Receiving Votes:</strong> {{ name }}({{result[1][0]}}){%- else -%}, {{ name }}({{result[1][0]}})
+		{%- endif -%}
+		{%- endfor -%}
+		{%- if results|length > 25 %}
+		</div>
+	</div>
+		{% elif results|length < 25 %}
+	</table></div>
+{%- endif %}
 </div>
-{% endif %}
+<div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+  <h5>Official Ballots</h5>
+  {% for ballot in official_ballots %}
+  <span class='ballot-list-item'><a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).name_with_flair(23)|safe}}</a>{%- if official_ballots|length > loop.index %}, {% endif %}</span>
+  {%- endfor %}
+  {%if provisional_ballots%}
+  <h5>Provisional Ballots</h5>
+  {% for ballot in provisional_ballots %}
+  <span class='ballot-list-item'><a href="{{ url_for('ballot', ballot_id=ballot.id) }}">{{users.get(ballot.user_id).name_with_flair(23)|safe}}</a>{%- if provisional_ballots|length > loop.index %}, {% endif %}</span>
+  {% endfor %}
+  {% endif %}
+  {%if nonvoters %}
+  <h5>Voters Failing to Submit Ballots</h5>
+  {% for voter in nonvoters %}
+  <a href="{{url_for('user', nickname=voter.nickname)}}"><span class='ballot-list-item'>{{voter.name_with_flair(23)|safe}}</a>{%- if nonvoters|length > loop.index %}, {% endif %}</span>
+  {% endfor %}
+  {% endif %}
+</div>
+{%- endif -%}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% set active_page = "users" %}
+{% block content %}
+<div class="page-header">
+<h1>{{title}}</h1>
+</div>
+<div id="users">
+{% set prev_conf = -1 %}
+{%- for user in users|sort(attribute='conference') -%}
+    {%- if prev_conf != user.conference -%}
+        {%- if loop.index != 1 -%}
+</div>
+</div>
+</div>
+        {%- endif -%}
+<div class="conference col-xs-12 col-sm-4 col-md-3">
+<div class="panel panel-default">
+<div class="panel-heading">
+<h3 class="panel-title">{{user.conference}}<br><small>flags: <span class="num-flags"></span> voters: <span class="num-voters"></span> either: <span class="num-both"></span></small></h3>
+</div>
+<div class="list-group">
+    {%- endif -%}
+    {%- set prev_conf = user.conference -%}
+<a class="list-group-item{% if user.is_voter %} list-group-item-success{% elif user.applicationFlag %} list-group-item-info{% endif %}" href="{{url_for('user', nickname=user.nickname)}}">{{ user.name_with_flair(23)|safe }}<span class="flag-button pull-right{% if user.applicationFlag %} text-primary{% endif %}" data-userid={{user.id}}><i class="glyphicon glyphicon-flag"></i></span></a>
+{%- endfor -%}
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script src='//cdnjs.cloudflare.com/ajax/libs/masonry/3.1.5/masonry.pkgd.min.js'></script>
+<script>
+$('#users').masonry({transitionDuration: 0});
+</script>
+
+{% if g.user.is_admin() %}
+<script>
+  $(function() {
+    var flag_user = function(e) {
+      var flagButton = $(this)
+      $.getJSON('/_flag_user', {
+        id: $(this).data('userid'),
+      }, function(data) {
+        if (data.flagged){
+        $(flagButton).addClass('text-primary');
+        $(flagButton).parent().not('.list-group-item-success').addClass('list-group-item-info');
+      } else {
+        $(flagButton).removeClass('text-primary');
+        $(flagButton).parent().removeClass('list-group-item-info');
+      }
+      }).done( function(){
+      var conf = $(flagButton).closest('.conference')
+    var voters = $(conf).find('a.list-group-item-success span.flag-button').length;
+    var flags = $(conf).find('span.text-primary.flag-button').length;
+    var either = $(conf).find('a span.text-primary.flag-button, a.list-group-item-success span.flag-button').length;
+
+    $(conf).find('.num-flags').text(flags);
+    $(conf).find('.num-voters').text(voters);
+    $(conf).find('.num-both').text(either);
+    console.log($(conf).find('a span.text-primary.flag-button, a.list-group-item-success.flag-button'))
+    return false;
+    })};
+    $("a span.flag-button").click(function(e){
+     e.preventDefault();
+    });
+    $('span.flag-button').bind('click', flag_user);
+  });
+  $(function(){
+    $('.conference').each(function(){ 
+        var voters = $(this).find('a.list-group-item-success span.flag-button').length;
+        var flags = $(this).find('a span.text-primary.flag-button').length;
+        var either = $(this).find('a span.text-primary.flag-button, a.list-group-item-success span.flag-button').length;
+        $(this).find('.num-flags').text(flags);
+        $(this).find('.num-voters').text(voters);
+        $(this).find('.num-both').text(either);
+    })
+
+  })
+</script>
+{% endif %}
+{% endblock %}

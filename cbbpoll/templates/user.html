@@ -1,24 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
+<div class="page-header">
+<span class="h1">{{user.name_with_flair(40)|safe}}{%if user.is_voter%} <span id="voter-icon" class="glyphicon glyphicon-check" data-toggle="tooltip" data-placement="right" title="Approved Voter"></span>{%endif%}</span>{%- if user.id == g.user.id %}<a class="pull-right btn btn-default" href="{{url_for('edit')}}">Edit Profile</a>{% endif %}
 
-<h1>{% if user.flair -%} <img src='{{user.team.png_url(40)}}' alt='{{user.team.name}} Logo'>
-{%-endif -%}
-{{user.nickname}}</h1>
-
-{%- if user.id == g.user.id %}<p><a href="{{url_for('edit')}}">Edit Your Profile</a></p>{% endif %}
-<hr>
-<h4>Submitted Ballots</h4>
+<p class='h5'><a href="//reddit.com/user/{{user.nickname}}">User Profile on Reddit</a></p>
+</div>
+<div class="row">
+	<div class='col-md-7'>
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><h3 class='panel-title'>Submitted Ballots</h3></div>
 {% if ballots.items %}
+
 <div class="list-group">
 {% for ballot in ballots.items %}
-<a class="list-group-item" href="{{url_for('ballot', ballot_id=ballot.id)}}">{{ballot}}{%if ballot.is_provisional %} (Provisional){%endif%}</a>
+<a class="list-group-item{% if not ballot.fullpoll.has_completed %} list-group-item-info{% endif %}" href="{{url_for('ballot', ballot_id=ballot.id)}}"><strong>{{ballot}}</strong>{%if ballot.is_provisional %} (Provisional){%endif%}{% if not ballot.fullpoll.has_completed %} (Poll is Active){% endif %}</a>
 {% endfor %}
 </div>
 {% else %}
-No ballots submitted
+<div class="panel-body">
+ There doesn't seem to be anything here!
+</div>
 {% endif %}
+</div>
 <ul class="pager">
-{% if ballots.items.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.next_num) }}">&larr; Older</a></li>{% endif %}
-{% if ballots.items.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.items.prev_num) }}">Newer &rarr;</a></li>{% endif %}
+{% if ballots.has_next %}<li class="previous"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.next_num) }}">&larr; Older</a></li>{% endif %}
+{% if ballots.has_prev %}<li class="next"><a href="{{ url_for('user', nickname=user.nickname, page=ballots.prev_num) }}">Newer &rarr;</a></li>{% endif %}
 </ul>
+</div>
+<div class="col-md-5">
+{% if application and (user.id ==g.user.id or g.user.is_admin())%}
+{{ macros.application(application) }}
+{% elif g.user.id == user.id and not user.is_voter %}
+<a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
+{% endif %}
+</div>
+
+</div>
+{% endblock %}
+{% block scripts %}
+{{super()}}
+<script>
+$('#voter-icon').tooltip()
+</script>
+{% if g.user.is_admin() %}
+<script>
+  $(function() {
+    var flag_user = function(e) {
+      var flagButton = $(this)
+      $.getJSON('/_flag_user', {
+        id: $(this).data('userid'),
+      }, function(data) {
+        if (data.flagged){
+        $(flagButton).addClass('text-primary');
+      } else {
+        $(flagButton).removeClass('text-primary')
+      }
+      });
+      return false;
+    };
+    $('span.flag-button').bind('click', flag_user);
+  });
+</script>
+{% endif %}
+
 {% endblock %}

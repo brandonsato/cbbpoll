@@ -1,10 +1,9 @@
 app.db
-d1teamssimple.csv
-db_create.py
 db_repository
 .venv
 config.py
 TODO
 *.pyc
-
 *.swp
+logfile.txt
+*.out
