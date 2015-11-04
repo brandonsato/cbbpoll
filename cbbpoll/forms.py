@@ -82,4 +82,5 @@ class VoterApplicationForm(Form):
     will_participate = BooleanField('''I understand that there is a participation requirement to this poll. \
         If I fail to submit a ballot three times, I understand that I may lose voting privilege''',
          validators=[DataRequired()])
+    season=2016
     submit = SubmitField('Submit Application')

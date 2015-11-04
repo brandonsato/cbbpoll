@@ -173,7 +173,7 @@ def user(nickname, page=1):
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     ballots = user.ballots.filter(Poll.has_completed == True)
-    application = VoterApplication.query.filter_by(user_id=user.id).first()
+    application = VoterApplication.query.filter_by(user_id=user.id).filter_by(season=2016).first()
     if user == g.user or g.user.is_admin():
         pending_ballot = user.ballots.filter(Poll.has_completed == False).first()
         if pending_ballot:
@@ -423,7 +423,7 @@ def voters():
 @app.route('/apply', methods = ['GET', 'POST'])
 @login_required
 def apply():
-    application = VoterApplication.query.filter_by(user_id=g.user.id).first()
+    application = VoterApplication.query.filter_by(user_id=g.user.id).filter_by(season=2016).first()
     if application:
         flash("Application Already Submitted", 'info')
         return redirect(url_for('index'))
@@ -435,7 +435,8 @@ def apply():
         approach = form.approach.data,
         other_comments = form.other_comments.data,
         will_participate = form.will_participate.data,
-        updated = datetime.utcnow()
+        updated = datetime.utcnow(),
+        season=2016
         )
         for team in form.data['other_teams']:
             application.other_teams.append(team)
@@ -447,11 +448,21 @@ def apply():
         return redirect(url_for('user', nickname=g.user.nickname))
     return render_template('apply.html', title='Submit Application', form = form)
 
-@app.route('/applications')
-def applications():
+@app.route('/applications/all')
+def all_applications():
     if not current_user.is_admin():
         abort(403)
     applications = VoterApplication.query.all()
+    return render_template('applications.html', title='Applications', applications = applications)
+
+@app.route('/applications')
+@app.route('/applications/<int:season>')
+def applications(season=0):
+    if not current_user.is_admin():
+        abort(403)
+    if not season:
+        season = 2016
+    applications = VoterApplication.query.filter(VoterApplication.season == season)
     return render_template('applications.html', title='Applications', applications = applications)
 
 @app.route('/users')
