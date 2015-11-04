@@ -141,30 +141,6 @@ class VoterEventAdmin(AdminModelView):
     column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
     column_default_sort = ('timestamp', True)
 
-# class VoterAdmin(AdminModelView):
-#     list_template = 'admin/voter_manage.html'
-#     can_delete = False
-#     page_size = 500
-#     column_list = ['nickname', 'email', 'emailConfirmed', 'role', 'is_voter', 'flair_team', 'flair_team.conference']
-#     column_searchable_list = ('nickname', 'email')
-#     column_filters = ('flair_team.full_name', 'flair_team.conference')
-
-#     @action('promote', 'Make Voter', 'Are you sure you want to grant voter status to the selected users?')
-#     def action_promote(self, ids):
-#         for Id in ids:
-#             user = User.query.get(Id)
-#             user.is_voter = True
-#             db.session.add(user)
-#             db.session.commit()
-
-#     @action('demote', 'Revoke Voter Status', 'Are you sure you want to revoke voter status from the selected users?')
-#     def action_demote(self, ids):
-#         for Id in ids:
-#             user = User.query.get(Id)
-#             user.is_voter = False
-#             db.session.add(user)
-#             db.session.commit()
-
 class VoterApplicationAdmin(AdminModelView):
     column_display_pk = True
     column_list = ['id', 'user_id', 'user.nickname', 'primary_team', 'other_teams', 'consumption_tags']
@@ -183,7 +159,6 @@ admin.add_view(PollAdmin(Poll, db.session))
 admin.add_view(BallotAdmin(Ballot, db.session))
 admin.add_view(VoteAdmin(Vote, db.session))
 admin.add_view(VoterEventAdmin(VoterEvent, db.session))
-#admin.add_view(VoterAdmin(User, db.session, name='Voter Manager', endpoint='voters'))
 admin.add_view(VoterApplicationAdmin(VoterApplication, db.session))
 admin.add_view(ConsumptionTagAdmin(ConsumptionTag, db.session))
 
