@@ -298,6 +298,7 @@ class VoterApplication(db.Model):
     other_comments = db.Column(db.Text, nullable=True)
     will_participate = db.Column(db.Boolean, nullable=False)
     updated = db.Column(db.DateTime, default=datetime.utcnow)
+    season = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
         return '<Application %r>' % self.user.nickname
