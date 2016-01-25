@@ -7,6 +7,7 @@ TODO
 *.swp
 logfile.txt
 *.out
+.idea/*
 .python-version
 Vagrantfile
 .vagrant/*
