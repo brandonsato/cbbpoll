@@ -1,21 +1,18 @@
 from flask import redirect, url_for
-from flask.ext import admin
-from flask.ext.admin import expose
-from flask.ext.admin.contrib import sqla
-from flask.ext.admin.form.fields import Select2Field
-from flask.ext.admin.form import FormOpts
+from flask_admin import Admin
+from flask_admin.actions import action
+from flask_admin.base import AdminIndexView, expose
+from flask_admin.contrib.sqla import ModelView
+from flask_admin.form.fields import Select2Field
 from flask.ext.login import current_user
-from flask.ext.admin.actions import action
-from wtforms.fields import SelectField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import InputRequired
 from flask_wtf import Form as flask_wtf__Form
 from datetime import datetime, timedelta
 from botactions import update_flair
 
-
 from cbbpoll import app, db
 from models import User, Team, Ballot, Poll, Vote, VoterEvent, VoterApplication, ConsumptionTag
+
 
 def teamChoices():
     try:
@@ -28,12 +25,14 @@ def teamChoices():
         choices = None
     return choices
 
-class AdminModelView(sqla.ModelView):
+
+class AdminModelView(ModelView):
     form_base_class = flask_wtf__Form
     def is_accessible(self):
         return current_user.is_admin()
 
-class MyAdminIndexView(admin.AdminIndexView):
+
+class MyAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
         if not current_user.is_admin():
@@ -50,7 +49,7 @@ class UserAdmin(AdminModelView):
     column_filters = ('flair_team.full_name', 'flair_team.conference', 'applicationFlag')
     form_overrides = dict(role=Select2Field)
     form_args = dict(
-     #Pass the choices to the `SelectField`
+    # Pass the choices to the `SelectField`
         role=dict(
         choices=[('u', 'user'), ('a', 'admin')]
         ))
@@ -93,12 +92,14 @@ class UserAdmin(AdminModelView):
             db.session.add(user)
         db.session.commit()
 
+
 class TeamAdmin(AdminModelView):
     column_display_pk = True
     page_size = 100
     form_columns = ['full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
     column_list = ['id', 'full_name', 'short_name', 'nickname', 'conference', 'flair', 'png_name']
     column_searchable_list = ('full_name', 'short_name', 'nickname', 'conference')
+
 
 class PollAdmin(AdminModelView):
     column_display_pk = True
@@ -119,6 +120,7 @@ class PollAdmin(AdminModelView):
         db.session.add(poll)
         db.session.commit()
 
+
 class VoteAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['ballot_id', 'rank', 'team_id', 'reason']
@@ -130,10 +132,12 @@ class VoteAdmin(AdminModelView):
         coerce=int
     ))
 
+
 class BallotAdmin(AdminModelView):
     column_display_pk = True
     form_columns = ['user_id','voter', 'poll_id']
     column_list = ['id', 'voter.nickname', 'poll_id', 'updated', 'is_provisional']
+
 
 class VoterEventAdmin(AdminModelView):
     column_display_pk = True
@@ -141,9 +145,11 @@ class VoterEventAdmin(AdminModelView):
     column_list = ['id', 'user_id', 'user.nickname', 'is_voter', 'timestamp']
     column_default_sort = ('timestamp', True)
 
+
 class VoterApplicationAdmin(AdminModelView):
     column_display_pk = True
     column_list = ['id', 'user_id', 'user.nickname', 'primary_team', 'other_teams', 'consumption_tags']
+
 
 class ConsumptionTagAdmin(AdminModelView):
     column_display_pk = True
@@ -152,7 +158,7 @@ class ConsumptionTagAdmin(AdminModelView):
 
 
 # Create admin
-admin = admin.Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
+admin = Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
 admin.add_view(UserAdmin(User, db.session))
 admin.add_view(TeamAdmin(Team, db.session))
 admin.add_view(PollAdmin(Poll, db.session))

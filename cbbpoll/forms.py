@@ -1,12 +1,11 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, FieldList, FormField, BooleanField, TextAreaField, widgets
-from flask.ext.admin.form.fields import Select2Field
-from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
-from wtforms.validators import Email, Required, Optional, DataRequired, Length, ValidationError, AnyOf
+from wtforms_alchemy.fields import QuerySelectField, QuerySelectMultipleField
+from wtforms.validators import Email, Optional, DataRequired, Length, ValidationError
 from cbbpoll import app
 from models import Team, ConsumptionTag
 
-def allTeams():
+def all_teams():
     return Team.query
 
 class LoginForm(Form):
@@ -43,7 +42,7 @@ class EditProfileForm(Form):
     submit = SubmitField('Save Changes')
 
 class VoteForm(Form):
-    team = QuerySelectField('Team', query_factory=allTeams, allow_blank=True, blank_text='Select a Team',
+    team = QuerySelectField('Team', query_factory=all_teams, allow_blank=True, blank_text='Select a Team',
         validators=[DataRequired(message="You must select a team.")])
     reason = StringField('Reason', validators=[Optional(), Length(max=140)])
 
@@ -72,10 +71,10 @@ class PollBallotForm(Form):
 
 class VoterApplicationForm(Form):
     primary_team_id = QuerySelectField('Which team do you Primarily support?',
-        query_factory=allTeams, allow_blank=True, blank_text='Select a Team',
+        query_factory=all_teams, allow_blank=True, blank_text='Select a Team',
         validators=[DataRequired(message="You must select a team.")])
     other_teams = QuerySelectMultipleField('Which other teams, if any, do you support?',
-        query_factory=allTeams)
+        query_factory=all_teams)
     consumption_tags = QueryMultiCheckboxField('In which of the following ways do you inform your opinion of basketball teams? (select all that apply)', query_factory=lambda: ConsumptionTag.query.all(), option_widget=widgets.CheckboxInput())
     approach = TextAreaField('If selected, how would you approach filling out your ballot? What would lead you to decide to vote for one team over another?', [DataRequired(), Length(max=1000)])
     other_comments = TextAreaField('Anything else to say?', [Optional(), Length(max=1000)])

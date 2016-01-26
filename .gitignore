@@ -11,3 +11,5 @@ logfile.txt
 .python-version
 Vagrantfile
 .vagrant/*
+
+*.ini
