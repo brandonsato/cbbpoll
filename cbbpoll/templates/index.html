@@ -14,7 +14,7 @@
 {% else -%}
   <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are currently no polls open for ballot submission.</p>
 {%- endif %}
-{% if g.user.is_authenticated() and not g.user.is_voter -%}
+{% if g.user.is_authenticated() -%} <!--and not g.user.is_voter -%}--> 
 <a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
 {% endif %}
 </div>
