@@ -11,6 +11,9 @@ DEBUG = True
 # domain goes here, uncomment for remote deployment
 #SERVER_NAME = 'example.com'
 
+SEASON = 2018
+APPLICATIONS_OPEN = True
+
 REDDIT_CLIENT_ID = "From Reddit"
 REDDIT_CLIENT_SECRET = "Also from Reddit... DO NOT SHARE"
 REDDIT_REDIRECT_URI = "http://localhost:5000/authorize_callback"

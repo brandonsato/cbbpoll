@@ -173,7 +173,7 @@ def user(nickname, page=1):
         flash('User ' + nickname + ' not found.', 'warning')
         return redirect(url_for('index'))
     ballots = user.ballots.filter(Poll.has_completed == True)
-    application = VoterApplication.query.filter_by(user_id=user.id).filter_by(season=2017).first()
+    application = VoterApplication.query.filter_by(user_id=user.id).filter_by(season=app.config['SEASON']).first()
     if user == g.user or g.user.is_admin():
         pending_ballot = user.ballots.filter(Poll.has_completed == False).first()
         if pending_ballot:
@@ -423,7 +423,7 @@ def voters():
 @app.route('/apply', methods = ['GET', 'POST'])
 @login_required
 def apply():
-    application = VoterApplication.query.filter_by(user_id=g.user.id).filter_by(season=2017).first()
+    application = VoterApplication.query.filter_by(user_id=g.user.id).filter_by(season=app.config['SEASON']).first()
     if application:
         flash("Application Already Submitted", 'info')
         return redirect(url_for('index'))
@@ -436,7 +436,7 @@ def apply():
         other_comments = form.other_comments.data,
         will_participate = form.will_participate.data,
         updated = datetime.utcnow(),
-        season=2017
+        season=app.config['SEASON']
         )
         for team in form.data['other_teams']:
             application.other_teams.append(team)
@@ -461,7 +461,7 @@ def applications(season=0):
     if not current_user.is_admin():
         abort(403)
     if not season:
-        season = 2017
+        season = app.config['SEASON']
     applications = VoterApplication.query.filter(VoterApplication.season == season)
     return render_template('applications.html', title='Applications', applications = applications)
 
