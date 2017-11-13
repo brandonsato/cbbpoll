@@ -13,7 +13,7 @@
 		{%- if loop.index < 26 %}
 		<tr>
 			<td>
-				{%- if result[1][0] == prev_score and result[1][1] == prev_onevotes -%}
+				{%- if result[1][0] == prev_score -%}
 					{%- set rank = prev_rank -%}
 				{%- else -%}
 					{%- set rank = loop.index -%}
