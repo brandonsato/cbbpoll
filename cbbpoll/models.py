@@ -8,29 +8,44 @@ from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from flask.ext.sqlalchemy import models_committed
 from flask.ext.login import AnonymousUserMixin
 
-def on_models_committed(sender, changes):
+
+def on_models_committed(_, changes):
     for obj, change in changes:
         if change == 'insert' and hasattr(obj, '__commit_insert__'):
             obj.__commit_insert__()
+
 models_committed.connect(on_models_committed, sender=app)
+
 
 class User(db.Model):
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key = True, autoincrement=True)
-    nickname = db.Column(db.String(20), index = True)
-    email = db.Column(db.String(120), index = True)
+    id = db.Column(db.Integer,
+                   primary_key=True,
+                   autoincrement=True)
+
+    nickname = db.Column(db.String(20), index=True)
+    email = db.Column(db.String(120), index=True)
     emailConfirmed = db.Column(db.Boolean, default=False)
-    role = db.Column(db.Enum('u', 'a'), default = 'u')
+    role = db.Column(db.Enum('u', 'a'), default='u')
     accessToken = db.Column(db.String(30))
     refreshToken = db.Column(db.String(30))
     refreshAfter = db.Column(db.DateTime)
     emailReminders = db.Column(db.Boolean, default=False)
     pmReminders = db.Column(db.Boolean, default=False)
     applicationFlag = db.Column(db.Boolean, default=False)
+
     flair = db.Column(db.Integer, db.ForeignKey('team.id'))
-    ballots = db.relationship('Ballot', backref = 'voter', lazy = 'dynamic', cascade="all, delete-orphan",
-                    passive_deletes=True)
-    voterEvents = db.relationship('VoterEvent', backref = 'user', lazy = 'dynamic', order_by='desc(VoterEvent.timestamp)')
+    ballots = db.relationship('Ballot',
+                              backref='voter',
+                              lazy='dynamic',
+                              cascade="all, delete-orphan",
+                              passive_deletes=True)
+
+    voterEvents = db.relationship('VoterEvent',
+                                  backref='user',
+                                  lazy='dynamic',
+                                  order_by='desc(VoterEvent.timestamp)')
+
     voterApplication = db.relationship('VoterApplication', uselist=False, backref='user')
 
     def is_authenticated(self):
@@ -46,7 +61,7 @@ class User(db.Model):
         return self.role == 'a'
 
     def submitted_ballot_to(self, poll_id):
-        return self.ballots.filter_by(poll_id = poll_id).first()
+        return self.ballots.filter_by(poll_id=poll_id).first()
 
     @property
     def team(self):
@@ -68,43 +83,43 @@ class User(db.Model):
 
     @hybrid_property
     def remind_viaRedditPM(self):
-        return (self.is_voter == True) | (self.role =='a') | (self.pmReminders == True)
+        return (self.is_voter == True) | (self.role == 'a') | (self.pmReminders == True)
 
     @hybrid_property
     def is_voter(self):
-        #latestEvent = VoterEvent.query.filter_by(user=self).order_by(VoterEvent.timestamp.desc()).first()
-        #return latestEvent and latestEvent.is_voter
         return self.was_voter_at(datetime.utcnow())
 
     @is_voter.expression
     def is_voter(cls):
         return select([VoterEvent.is_voter]).\
-        where(VoterEvent.user_id == cls.id).\
-        order_by(desc("timestamp")).\
-        limit(1).as_scalar()
+            where(VoterEvent.user_id == cls.id).\
+            order_by(desc("timestamp")).\
+            limit(1).as_scalar()
 
     @is_voter.setter
     def is_voter(self, value):
-        event = VoterEvent(timestamp = datetime.utcnow() - timedelta(seconds = 1), user_id = self.id, is_voter = value)
+        event = VoterEvent(timestamp=(datetime.utcnow() - timedelta(seconds=1)),
+                           user_id=self.id,
+                           is_voter=value)
         db.session.add(event)
         db.session.commit()
 
     @hybrid_method
     def was_voter_at(self, timestamp):
-        mostRecent = VoterEvent.query.filter_by(user=self) \
+        most_recent = VoterEvent.query.filter_by(user=self) \
             .group_by(VoterEvent.timestamp) \
             .having(VoterEvent.timestamp < timestamp) \
             .order_by(VoterEvent.timestamp.desc()) \
             .first()
-        return mostRecent and mostRecent.is_voter
+        return most_recent and most_recent.is_voter
 
     @was_voter_at.expression
     def was_voter_at(cls, timestamp):
         return select([VoterEvent.is_voter]).\
-        where(VoterEvent.user_id == cls.id).\
-        where(VoterEvent.timestamp < timestamp).\
-        order_by(desc("timestamp")).\
-        limit(1).as_scalar()
+            where(VoterEvent.user_id == cls.id).\
+            where(VoterEvent.timestamp < timestamp).\
+            order_by(desc("timestamp")).\
+            limit(1).as_scalar()
 
     def get_id(self):
         return unicode(self.id)
@@ -122,7 +137,7 @@ class User(db.Model):
         if data.get('confirm') != self.id:
             return False
         if data.get('email') == self.email and self.emailConfirmed:
-            #Avoid a database write, but don't want to give an error to user.
+            # Avoid a database write, but don't want to give an error to user.
             return True
         self.email = data.get('email')
         self.emailConfirmed = True
@@ -137,10 +152,11 @@ class User(db.Model):
         return "%s%s" % (team.logo_html(size), self.nickname)
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return '<User %r>' % self.nickname
 
     def __str__(self):
         return str(self.nickname)
+
 
 class AnonymousUser(AnonymousUserMixin):
     def is_admin(self):
@@ -152,15 +168,20 @@ class AnonymousUser(AnonymousUserMixin):
 
     ballots = None
 
+
 class Poll(db.Model):
     __tablename__ = 'poll'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     season = db.Column(db.Integer)
     week = db.Column(db.Integer)
     openTime = db.Column(db.DateTime)
     closeTime = db.Column(db.DateTime)
-    ballots = db.relationship('Ballot', backref = 'fullpoll', lazy = 'dynamic', cascade="all, delete-orphan",
-                    passive_deletes=True)
+    ballots = db.relationship('Ballot',
+                              backref='fullpoll',
+                              lazy='dynamic',
+                              cascade="all, delete-orphan",
+                              passive_deletes=True)
+
     redditUrl = db.Column(db.String(2083))
 
     @hybrid_property
@@ -169,7 +190,7 @@ class Poll(db.Model):
 
     @hybrid_property
     def has_completed(self):
-        return (datetime.utcnow() > self.closeTime)
+        return datetime.utcnow() > self.closeTime
 
     @hybrid_property
     def recently_opened(self):
@@ -177,7 +198,8 @@ class Poll(db.Model):
 
     @hybrid_property
     def closing_soon(self):
-        return (self.closeTime < datetime.utcnow() + timedelta(hours=16)) & (self.closeTime > datetime.utcnow() + timedelta(hours=15))
+        return (self.closeTime < datetime.utcnow() + timedelta(hours=16)) & \
+               (self.closeTime > datetime.utcnow() + timedelta(hours=15))
 
     def __repr__(self):
         return '<Poll Week %r of %r>' % (self.week, self.season)
@@ -188,31 +210,33 @@ class Poll(db.Model):
         else:
             return 'Poll for Preseason of %r-%r' % (int(self.season-1), int(self.season-2000))
 
+
 class Team(db.Model):
     __tablename__ = 'team'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(75))
     short_name = db.Column(db.String(50))
     flair = db.Column(db.String(50))
     nickname = db.Column(db.String(50))
     png_name = db.Column(db.String(50))
     conference = db.Column(db.String(50))
-    fans = db.relationship('User', backref = 'flair_team')
+    fans = db.relationship('User', backref='flair_team')
 
     def png_url(self, size=30):
         return "http://cdn-png.si.com//sites/default/files/teams/basketball/cbk/logos/%s_%s.png" % (self.png_name, size)
 
     def logo_html(self, size=30):
         if size == 30 or size == 23:
-            return "<span class=logo%s><img src='%s' class='logo%s-%s' alt=\"%s Logo\"></span>" % (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
+            return "<span class=logo%s><img src='%s' class='logo%s-%s' alt=\"%s Logo\"></span>" % \
+                   (size, url_for('static', filename='img/logos_%s.png' % size), size, self.png_name, self.full_name)
         else:
             return "<img src='%s' alt='%s Logo'>" % (self.png_url(size), self.full_name)
 
     def __repr__(self):
         if self.short_name:
-            return '<Team %r>' % (self.short_name)
+            return '<Team %r>' % self.short_name
         else:
-            return '<Team %r>' % (self.full_name)
+            return '<Team %r>' % self.full_name
 
     def __str__(self):
         if self.short_name:
@@ -220,14 +244,19 @@ class Team(db.Model):
         else:
             return self.full_name
 
+
 class Ballot(db.Model):
     __tablename__ = 'ballot'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     updated = db.Column(db.DateTime, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'))
     poll_id = db.Column(db.Integer, db.ForeignKey('poll.id', ondelete='CASCADE'))
-    votes = db.relationship('Vote', backref = 'fullballot', lazy = 'dynamic', cascade="all, delete-orphan",
-                    passive_deletes=True)
+    votes = db.relationship('Vote',
+                            backref='fullballot',
+                            lazy='dynamic',
+                            cascade="all, delete-orphan",
+                            passive_deletes=True)
+
     __table_args__ = (
         UniqueConstraint('user_id', 'poll_id', name='oneballot'),
         {})
@@ -235,22 +264,29 @@ class Ballot(db.Model):
     @property
     def is_provisional(self):
         return not self.voter.was_voter_at(self.fullpoll.closeTime)
+
     @is_provisional.setter
     def is_provisional(self, value):
         raise AttributeError('is_provisional is not a settable field')
 
     def __repr__(self):
-        return '<Ballot %r>' % (self.id)
+        return '<Ballot %r>' % self.id
 
     def __str__(self):
         if self.fullpoll.week:
-            return "%s's Ballot for Week %s of %s-%s" % (self.voter.nickname, int(self.fullpoll.week), int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
+            return "%s's Ballot for Week %s of %s-%s" % (self.voter.nickname,
+                                                         int(self.fullpoll.week),
+                                                         int(self.fullpoll.season-1),
+                                                         int(self.fullpoll.season-2000))
         else:
-            return "%s's Ballot for Preseason of %s-%s" % (self.voter.nickname, int(self.fullpoll.season-1), int(self.fullpoll.season-2000))
+            return "%s's Ballot for Preseason of %s-%s" % (self.voter.nickname,
+                                                           int(self.fullpoll.season-1),
+                                                           int(self.fullpoll.season-2000))
+
 
 class Vote(db.Model):
     __tablename__ = 'vote'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     ballot_id = db.Column(db.Integer, db.ForeignKey('ballot.id', ondelete='CASCADE'))
     team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     rank = db.Column(db.SmallInteger)
@@ -259,15 +295,16 @@ class Vote(db.Model):
     def __repr__(self):
         return '<Vote %r on Ballot %r>' % (self.rank, self.ballot_id)
 
+
 class VoterEvent(db.Model):
     __tablename__ = 'voter_event'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     is_voter = db.Column(db.Boolean)
 
     def __repr__(self):
-        return '<VoterEvent %r>' % (self.id)
+        return '<VoterEvent %r>' % self.id
 
     def __commit_insert__(self):
         if self.is_voter:
@@ -286,9 +323,10 @@ application_tags_table = db.Table('application_tags',
     db.Column('application_id', db.Integer, db.ForeignKey('voter_application.id')),
     db.Column('tag_id', db.Integer, db.ForeignKey('consumption_tags.id')))
 
+
 class VoterApplication(db.Model):
     __tablename__ = 'voter_application'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     primary_team_id = db.Column(db.Integer, db.ForeignKey('team.id'))
     primary_team = db.relationship('Team')
@@ -303,9 +341,10 @@ class VoterApplication(db.Model):
     def __repr__(self):
         return '<Application %r>' % self.user.nickname
 
+
 class ConsumptionTag(db.Model):
     __tablename__ = 'consumption_tags'
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(160))
 
     def __repr__(self):
