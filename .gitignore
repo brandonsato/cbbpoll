@@ -8,6 +8,7 @@ TODO
 logfile.txt
 *.out
 .idea/*
+.vscode/*
 .python-version
 Vagrantfile
 .vagrant/*

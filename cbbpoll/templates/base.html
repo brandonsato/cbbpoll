@@ -66,7 +66,7 @@
             {% endfor %}
           </ul>
           <ul class="nav navbar-nav navbar-right">
-          {% if g.user.is_authenticated() %}
+          {% if g.user.is_authenticated %}
             {% if g.user.is_admin() %}
             <li><a href="{{url_for('admin.index')}}">Admin</a></li>
             {% endif %}

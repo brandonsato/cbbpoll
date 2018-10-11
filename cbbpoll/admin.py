@@ -4,9 +4,9 @@ from flask_admin.actions import action
 from flask_admin.base import AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_admin.form.fields import Select2Field
-from flask.ext.login import current_user
+from flask_login import current_user
 from wtforms.validators import InputRequired
-from flask_wtf import Form as flask_wtf__Form
+from flask_wtf import FlaskForm as flask_wtf__Form
 from datetime import datetime, timedelta
 from botactions import update_flair
 
@@ -158,7 +158,8 @@ class ConsumptionTagAdmin(AdminModelView):
 
 
 # Create admin
-admin = Admin(app, 'User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
+admin = Admin(name='User Poll Control Panel', index_view=MyAdminIndexView(endpoint="admin"))
+admin.init_app(app)
 admin.add_view(UserAdmin(User, db.session))
 admin.add_view(TeamAdmin(Team, db.session))
 admin.add_view(PollAdmin(Poll, db.session))

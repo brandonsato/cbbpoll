@@ -1,7 +1,7 @@
 from praw import Reddit
 from flask import render_template, flash, redirect, session, url_for, request, g, abort, jsonify
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from cbbpoll import app, db, lm, admin, message, handler
+from flask_login import login_user, logout_user, current_user, login_required
+from cbbpoll import app, db, lm, admin, message
 from forms import EditProfileForm, PollBallotForm, VoterApplicationForm
 from models import User, Poll, Team, Ballot, Vote, VoterApplication
 from datetime import datetime
@@ -135,12 +135,11 @@ def authorized():
     reddit_code = request.args.get('code', '')
     if not reddit_state or not reddit_code:
         return redirect(url_for('index'))
-    r = Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
-    r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'],
-                         app.config['REDDIT_CLIENT_SECRET'],
-                         app.config['REDDIT_REDIRECT_URI'])
-    reddit_info = r.get_access_information(reddit_code)
-    reddit_user = r.get_me()
+    r = Reddit('cbbpoll')
+
+    refresh_token = r.auth.authorize(reddit_code)
+
+    reddit_user = r.user.me()
     next_path = session['last_path']
     if reddit_state != session['oauth_state']:
         flash("Invalid state given, please try again.", 'danger')
@@ -150,11 +149,9 @@ def authorized():
         nickname = reddit_user.name
         user = User(nickname=nickname,
                     role='u',
-                    accessToken=reddit_info['access_token'],
-                    refreshToken=reddit_info['refresh_token'])
+                    refreshToken=refresh_token)
     else:
-        user.accessToken = reddit_info['access_token']
-        user.refreshToken = reddit_info['refresh_token']
+        user.refreshToken = refresh_token
     db.session.add(user)
     db.session.commit()
     remember_me = False
@@ -162,7 +159,7 @@ def authorized():
         remember_me = session['remember_me']
         session.pop('remember_me', None)
     login_user(user, remember=remember_me)
-    update_flair(user)
+    update_flair(user, r.user.me())
     return redirect(next_path or url_for('index'))
 
 
@@ -181,12 +178,9 @@ def login():
     session['oauth_state'] = state
     session['last_path'] = next
 
-    r = Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
-    r.set_oauth_app_info(app.config['REDDIT_CLIENT_ID'],
-                         app.config['REDDIT_CLIENT_SECRET'],
-                         app.config['REDDIT_REDIRECT_URI'])
+    r = Reddit('cbbpoll')
 
-    authorize_url = r.get_authorize_url(state, refreshable=True)
+    authorize_url = r.auth.url({'identity'}, state, duration='temporary')
     return redirect(authorize_url)
 
 
@@ -257,7 +251,6 @@ def edit():
 @login_required
 def confirm(token):
     if current_user.confirm(token):
-        print(current_user.email)
         flash('You have successfully confirmed your email address.  Thanks!', 'success')
     else:
         flash('The confirmation link is invalid or has expired.', 'danger')

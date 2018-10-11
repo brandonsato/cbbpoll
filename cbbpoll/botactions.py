@@ -6,9 +6,11 @@ def team_by_flair(flair):
     return Team.query.filter_by(flair = flair).first()
 
 @async
-def update_flair(user):
-    user_flair = bot.get_flair('collegebasketball', user.nickname)
-    team_id = None
+def update_flair(user, redditor):
+    user_flair = None
+    for flair in bot.subreddit('collegebasketball').flair(redditor=redditor):
+        user_flair = flair
+
     if user_flair:
         if user_flair['flair_css_class']:
             flair_class = user_flair['flair_css_class']

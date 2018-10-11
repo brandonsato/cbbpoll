@@ -5,8 +5,8 @@ from cbbpoll.message import send_reddit_pm
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from sqlalchemy import select, desc, UniqueConstraint
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
-from flask.ext.sqlalchemy import models_committed
-from flask.ext.login import AnonymousUserMixin
+from flask_sqlalchemy import models_committed
+from flask_login import AnonymousUserMixin
 
 
 def on_models_committed(_, changes):
@@ -48,12 +48,14 @@ class User(db.Model):
 
     voterApplication = db.relationship('VoterApplication', uselist=False, backref='user')
 
+    @property
     def is_authenticated(self):
         return True
 
     def is_active(self):
         return True
 
+    @property
     def is_anonymous(self):
         return False
 
@@ -107,7 +109,6 @@ class User(db.Model):
     @hybrid_method
     def was_voter_at(self, timestamp):
         most_recent = VoterEvent.query.filter_by(user=self) \
-            .group_by(VoterEvent.timestamp) \
             .having(VoterEvent.timestamp < timestamp) \
             .order_by(VoterEvent.timestamp.desc()) \
             .first()

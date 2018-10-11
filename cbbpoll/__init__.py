@@ -1,18 +1,11 @@
 from flask import Flask
 from flask_bootstrap import Bootstrap
-from flask.ext.sqlalchemy import SQLAlchemy
-from flask.ext.login import LoginManager
-from flask.ext.mail import Mail
-from flask.ext.migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_mail import Mail
+from flask_migrate import Migrate
 import praw
-import OAuth2Util
-from praw.handlers import MultiprocessHandler
 
-# handler needs to be started separately by running praw-multiprocess
-# this allows the handler to adhere to rate limit of reddit API
-# see r and bot below to enable in production.
-
-handler = MultiprocessHandler()
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -32,9 +25,7 @@ if not app.debug:
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 
-bot = praw.Reddit(app.config['REDDIT_USER_AGENT'], handler=handler)
-o = OAuth2Util.OAuth2Util(bot)
-o.refresh(force=True)
+bot = praw.Reddit('cbbpollbot', user_agent="cbbpoll development")
 
 from cbbpoll import views, models, admin
 lm.anonymous_user = models.AnonymousUser

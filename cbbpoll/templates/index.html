@@ -3,7 +3,7 @@
 {% block content %}
 <div class="jumbotron">
   <h1>Welcome!</h1>
-{% if not g.user.is_authenticated() -%}  
+{% if not g.user.is_authenticated -%}  
   <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. Applications for voters are currently being accepted. Please log in to apply or to submit a ballot.</p>
   <p><a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login Using Reddit</a></p>
 {% elif open_poll -%}
@@ -14,7 +14,7 @@
 {% else -%}
   <p>This is the site for the <a href='//reddit.com/r/CollegeBasketball'>/r/CollegeBasketball</a> User Poll. There are currently no polls open for ballot submission.</p>
 {%- endif %}
-{% if g.user.is_authenticated() -%} <!--and not g.user.is_voter -%}--> 
+{% if g.user.is_authenticated -%}
 <a href="{{url_for('apply')}}" class="btn btn-success btn-lg">Apply for Voter Status</a>
 {% endif %}
 </div>

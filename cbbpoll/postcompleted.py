@@ -1,5 +1,5 @@
 from flask import render_template
-from flask.ext.script import Manager
+from flask_script import Manager
 from cbbpoll import app, bot, db
 from models import Poll, Team
 from views import generate_results
