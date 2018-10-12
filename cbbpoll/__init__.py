@@ -25,7 +25,13 @@ if not app.debug:
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 
-bot = praw.Reddit('cbbpollbot', user_agent="cbbpoll development")
+bot = praw.Reddit(
+    client_id=app.config['BOT_REDDIT_CLIENT_ID'],
+    client_secret=app.config['BOT_REDDIT_CLIENT_SECRET'],
+    username=app.config['BOT_REDDIT_USERNAME'],
+    password=app.config['BOT_REDDIT_PASSWORD'],
+    user_agent=app.config['BOT_REDDIT_USER_AGENT'],
+    )
 
 from cbbpoll import views, models, admin
 lm.anonymous_user = models.AnonymousUser

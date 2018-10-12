@@ -135,7 +135,13 @@ def authorized():
     reddit_code = request.args.get('code', '')
     if not reddit_state or not reddit_code:
         return redirect(url_for('index'))
-    r = Reddit('cbbpoll')
+
+    r = Reddit(
+        client_id=app.config['REDDIT_CLIENT_ID'],
+        client_secret=app.config['REDDIT_CLIENT_SECRET'],
+        redirect_uri=app.config['REDDIT_REDIRECT_URI'],
+        user_agent=app.config['REDDIT_USER_AGENT'],
+    )
 
     refresh_token = r.auth.authorize(reddit_code)
 
@@ -178,7 +184,12 @@ def login():
     session['oauth_state'] = state
     session['last_path'] = next
 
-    r = Reddit('cbbpoll')
+    r = Reddit(
+        client_id=app.config['REDDIT_CLIENT_ID'],
+        client_secret=app.config['REDDIT_CLIENT_SECRET'],
+        redirect_uri=app.config['REDDIT_REDIRECT_URI'],
+        user_agent=app.config['REDDIT_USER_AGENT'],
+    )
 
     authorize_url = r.auth.url({'identity'}, state, duration='temporary')
     return redirect(authorize_url)
