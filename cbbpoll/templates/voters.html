@@ -5,9 +5,9 @@
 <h1>Current Voters by Conference</h1>
 </div>
 <div id="voters">
-{% set prev_conf = -1 %}
+{% set prev_conf = {'last': -1} %}
 {%- for voter in voters|sort(attribute='conference') -%}
-    {%- if prev_conf != voter.conference -%}
+    {%- if prev_conf.last != voter.conference -%}
         {%- if loop.index != 1 -%}
 </div>
 </div>
@@ -20,7 +20,7 @@
 </div>
 <div class="list-group">
     {%- endif -%}
-    {%- set prev_conf = voter.conference -%}
+    {% if prev_conf.update({'last': voter.conference}) %} {% endif %}
 <a class="list-group-item" href="{{url_for('user', nickname=voter.nickname)}}">{{ voter.name_with_flair(23)|safe }}</a>
 {%- endfor -%}
 </div>
