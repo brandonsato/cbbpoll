@@ -5,9 +5,9 @@
 <h1>{{title}}</h1>
 </div>
 <div id="users">
-{% set prev_conf = -1 %}
+  {% set prev_conf = {'last': -1} %}
 {%- for user in users|sort(attribute='conference') -%}
-    {%- if prev_conf != user.conference -%}
+{%- if prev_conf.last != user.conference -%}
         {%- if loop.index != 1 -%}
 </div>
 </div>
@@ -20,7 +20,7 @@
 </div>
 <div class="list-group">
     {%- endif -%}
-    {%- set prev_conf = user.conference -%}
+    {% if prev_conf.update({'last': voter.conference}) %} {% endif %}
 <a class="list-group-item{% if user.is_voter %} list-group-item-success{% elif user.applicationFlag %} list-group-item-info{% endif %}" href="{{url_for('user', nickname=user.nickname)}}">{{ user.name_with_flair(23)|safe }}<span class="flag-button pull-right{% if user.applicationFlag %} text-primary{% endif %}" data-userid={{user.id}}><i class="glyphicon glyphicon-flag"></i></span></a>
 {%- endfor -%}
 </div>
