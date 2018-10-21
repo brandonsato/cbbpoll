@@ -20,7 +20,7 @@
 </div>
 <div class="list-group">
     {%- endif -%}
-    {% if prev_conf.update({'last': voter.conference}) %} {% endif %}
+    {% if prev_conf.update({'last': user.conference}) %} {% endif %}
 <a class="list-group-item{% if user.is_voter %} list-group-item-success{% elif user.applicationFlag %} list-group-item-info{% endif %}" href="{{url_for('user', nickname=user.nickname)}}">{{ user.name_with_flair(23)|safe }}<span class="flag-button pull-right{% if user.applicationFlag %} text-primary{% endif %}" data-userid={{user.id}}><i class="glyphicon glyphicon-flag"></i></span></a>
 {%- endfor -%}
 </div>
