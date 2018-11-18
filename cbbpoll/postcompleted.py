@@ -22,7 +22,8 @@ def post_poll(poll):
     results = generate_results(poll)[0]
     text = render_template('reddit_results_post.md', results=results, teams=Team.query, poll=poll)
 
-    submission = bot.submit(app.config['REDDIT_SUB'], announcement_title(poll), text=text, save=True)
+    submission = bot.subreddit(app.config['REDDIT_SUB']).submit(announcement_title(poll), selftext=text)
+    submission.save()
     submission.distinguish(as_made_by='mod')
     submission.sticky()
     submission.approve()

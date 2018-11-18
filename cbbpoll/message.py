@@ -17,7 +17,7 @@ def send_async_pm(recipient, subject, msg):
         print(recipient, subject, msg)
         return
     with app.app_context():
-        bot.send_message(recipient, subject, msg)
+        bot.redditor(recipient).message(subject,msg)
 
 def send_email(subject, recipients, template, **kwargs):
     msg = Message(subject, sender = app.config['MAIL_FROM'], recipients = recipients)
