@@ -12,7 +12,7 @@ Rank||Team (First Place Votes)|Score
       {%- endif -%}
     {%- set prev_rank = rank -%}
     {%- set prev_score = result[1][0] -%}
-#{{rank}}|{%- if team.flair -%}[](/{{team.flair}}){%-endif-%}|{{name}} {% if result[1][1] -%}({{result[1][1]}}){%-endif %}|{{ result[1][0]}}
+#{{rank}}|{%- if team.flair -%}[](#f/{{team.flair}}){%-endif-%}|{{name}} {% if result[1][1] -%}({{result[1][1]}}){%-endif %}|{{ result[1][0]}}
 {% elif loop.index == 26 %}
 Others Receiving Votes: {{name}}({{result[1][0]}}){%- else -%}, {{name}}({{result[1][0]}})
 {%- endif -%}
