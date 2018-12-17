@@ -27,7 +27,7 @@ def post_poll(poll):
     submission.mod.distinguish()
     submission.mod.sticky()
     submission.mod.approve()
-    poll.redditUrl = submission.permalink
+    poll.redditUrl = "https://www.reddit.com" + submission.permalink
     db.session.add(poll)
     db.session.commit()
 
