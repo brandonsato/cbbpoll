@@ -24,9 +24,9 @@ def post_poll(poll):
 
     submission = bot.subreddit(app.config['REDDIT_SUB']).submit(announcement_title(poll), selftext=text)
     submission.save()
-    submission.distinguish(as_made_by='mod')
-    submission.sticky()
-    submission.approve()
+    submission.mod.distinguish(as_made_by='mod')
+    submission.mod.sticky()
+    submission.mod.approve()
     poll.redditUrl = submission.permalink
     db.session.add(poll)
     db.session.commit()
